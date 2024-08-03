@@ -11,6 +11,8 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
+    //import antlr
+    api("org.antlr:antlr4:4.13.1")
 }
 
 tasks.test {
