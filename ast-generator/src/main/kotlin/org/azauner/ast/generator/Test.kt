@@ -1,14 +1,11 @@
 package org.azauner.ast.generator
 
-import org.antlr.runtime.ANTLRInputStream
+import org.antlr.runtime.tree.ParseTree
 import org.antlr.v4.runtime.BufferedTokenStream
 import org.antlr.v4.runtime.CharStreams
-import org.antlr.v4.runtime.TokenStream
+import org.antlr.v4.runtime.tree.ParseTreeWalker
 import org.azauner.parser.minicppLexer
 import org.azauner.parser.minicppParser
-import java.io.FileInputStream
-import java.nio.file.Files
-import java.nio.file.Path
 
 fun main() {
     val fileName = "Sieve.mcpp"
@@ -18,5 +15,8 @@ fun main() {
     val lexer = minicppLexer(charStream)
     val tokenStream = BufferedTokenStream(lexer)
     val parser = minicppParser(tokenStream)
-    parser.miniCpp()
+    val walker = ParseTreeWalker()
+
+    walker.walk(MiniCppListener(parser), parser.miniCpp())
+    MIniCppVisitor().visit(parser.miniCpp())
 }

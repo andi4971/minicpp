@@ -32,7 +32,7 @@ void main() {
 void Sieve(int n) { // defintion
 
   int col, i, j;
-  int a = -5.4;
+  int a = -54;
   bool test = true;
   bool test2 = false;
   bool *sieve = nullptr;

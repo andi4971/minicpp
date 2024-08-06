@@ -3,11 +3,11 @@ grammar minicpp;
 miniCpp:     (constDef|varDef| funcDecl|funcDef| SEM )* EOF;
 
 constDef:    'const' type IDENT init (',' IDENT init)* SEM;
-init:        '=' ( 'true' |'false'  | 'nullptr'
-                 | (PLUSMINUS)? number );
-varDef:      type ('*')? IDENT (init)?
-             (',' ('*')? IDENT (init)? )* SEM;
-
+init:        '=' (  BOOLEAN | NULLPTR
+                 | (PLUSMINUS)? INT );
+varDef:      type varDefEnty
+             (',' varDefEnty)* SEM;
+varDefEnty: ('*')? IDENT (init)?;
 funcDecl:    funcHead SEM;
 funcDef:     funcHead block;
 funcHead:    type ('*')? IDENT '(' formParList? ')';
@@ -42,7 +42,7 @@ simpleExpr:  (PLUSMINUS)?
              term ( (PLUSMINUS) term )*;
 term:        notFact ( ('*' | '/' | '%') notFact )*;
 notFact:     ('!')? fact;
-fact:        ( 'false' | 'true' | 'nullptr' | number
+fact:        ( BOOLEAN | 'nullptr' | INT
              | ('++' | '--')?
                IDENT ( ( '[' expr             ']')
                   | ( '(' (actParList)?    ')')
@@ -53,19 +53,54 @@ fact:        ( 'false' | 'true' | 'nullptr' | number
              );
 actParList:  expr (',' expr)*;
 
-number: INT | FLOAT;
-
+BOOLEAN: TRUE | FALSE;
 /** Keywords */
 
-IDENT: [a-zA-Z_][a-zA-Z_0-9]*;
-INT: [0-9]+;
-FLOAT: [0-9]+'.'[0-9]*;
-STRING: '"' (~[\r\n"] | '""')* '"';
+
 
 SEM: ';';
 PLUSMINUS: '+' | '-';
+TRUE: 'true';
+FALSE: 'false';
+NULLPTR: 'nullptr';
 
-
+/*CONST : 'const' ;
+EQUAL : '=' ;
+MUL : '*' ;
+VOID : 'void' ;
+IF : 'if' ;
+ELSE : 'else' ;
+WHILE : 'while' ;
+BREAK : 'break' ;
+CIN : 'cin' ;
+T__1 : '>>' ;
+COUT : 'cout' ;
+T__3 : '<<' ;
+ENDL : 'endl' ;
+DELETE : 'delete' ;
+RETURN : 'return' ;
+ADD_ASSIGN : '+=' ;
+SUB_ASSIGN : '-=' ;
+MUL_ASSIGN : '*=' ;
+DIV_ASSIGN : '/=' ;
+MOD_ASSIGN : '%=' ;
+OR : '||' ;
+AND : '&&' ;
+EQUAL_EQUAL : '==' ;
+NOT_EQUAL : '!=' ;
+LT : '<' ;
+LE : '<=' ;
+GT : '>' ;
+GE : '>=' ;
+DIV : '/' ;
+MOD : '%' ;
+BANG : '!' ;
+INC : '++' ;
+DEC : '--' ;
+NEW : 'new' ;*/
+IDENT: [a-zA-Z_][a-zA-Z_0-9]*;
+INT: [0-9]+;
+STRING: '"' (~[\r\n"] | '""')* '"';
 WS: [ \t\n\r]+ -> skip;
 LINE_COMMENT: '//' ~[\r\n]* -> skip;
 BLOCK_COMMENT: '/*' .*? '*/' -> skip;
