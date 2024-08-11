@@ -1,4 +1,6 @@
 package org.azauner.ast.node.func
 
-data class FuncDef(val funHead:FuncHead, val block:Block) {
+import org.azauner.ast.node.field.Block
+
+data class FuncDef(val funHead:FuncHead, val block: Block) {
 }
