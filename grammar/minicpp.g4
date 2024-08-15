@@ -1,17 +1,18 @@
 grammar minicpp;
 
 miniCpp:     (miniCppEntry)* EOF;
-miniCppEntry:    constDef     /*#ConstDefOption*/
-                | varDef      /*#VarDefOption*/
-                | funcDecl    /*#FuncDeclOption*/
-                | funcDef     /*#FuncDefOption*/
-                | emptyStat         /*#SemOption;*/
+miniCppEntry:    constDef    
+                | varDef
+                | funcDecl
+                | funcDef
+                | emptyStat
                 ;
-constDef:    CONST type IDENT init (',' IDENT init)* SEM;
+constDef:    CONST type constDefEntry (',' constDefEntry)* SEM;
+constDefEntry: IDENT init;
 init:        '='  initOption;
-initOption:    BOOLEAN          /*#BooleanInit*/
-             | NULLPTR          /*#NullptrInit*/
-             | (PLUSMINUS)? INT /*#IntInit*/
+initOption:    BOOLEAN          #BooleanInit
+             | NULLPTR          #NullptrInit
+             | (PLUSMINUS)? INT #IntInit
              ;
 
 varDef:      type varDefEntry

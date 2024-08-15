@@ -1,4 +1,4 @@
-package org.azauner.ast.generator
+package org.azauner.ast.generator.visitor
 
 import org.azauner.ast.node.MiniCpp
 import org.azauner.ast.node.Scope

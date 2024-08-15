@@ -1,3 +1,3 @@
 package org.azauner.ast.node
 
-data class ConstDefEntry(val name: String, val value: Init)
+data class ConstDefEntry(val ident: Ident, val value: Init)
