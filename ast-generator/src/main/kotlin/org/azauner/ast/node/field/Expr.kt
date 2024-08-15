@@ -2,13 +2,13 @@ package org.azauner.ast.node.field
 
 import org.azauner.ast.node.Type
 
-data class Expr(val firstExpr: OrExpr, val exprEntries: List<ExprEntry>) : OutputStatEntry, FactChild, ActionOperation
+data class Expr(val firstExpr: OrExpr, val exprEntries: List<ExprEntry>) : OutputStatEntry, FactChild
 
 data class ExprEntry(val orExpr: OrExpr, val assignOperator: AssignOperator)
 
 enum class AssignOperator {
     ASSIGN,
-    ADD_ASSIGN,
+    ADD_ASSIGN, 
     SUB_ASSIGN,
     MUL_ASSIGN,
     DIV_ASSIGN,
@@ -60,9 +60,11 @@ sealed interface FactChild
 
 data class NewTypeFact(val type: Type, val expr: Expr): FactChild
 
-data class ActionFact(val prefix: FactOperator?, val ident: String, val actionOp: ActionOperation?, val suffix: FactOperator?)
+data class ActionFact(val prefix: FactOperator?, val ident: String, val actionOp: ActionOperation?, val suffix: FactOperator?): FactChild
 
 sealed interface ActionOperation
+
+data class ArrayAccessOperation(val expr: Expr): ActionOperation
 
 data class CallOperation(var actParList: List<Expr>): ActionOperation
 
