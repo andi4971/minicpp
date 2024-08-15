@@ -1,21 +1,32 @@
 grammar minicpp;
 
-miniCpp:     (constDef|varDef| funcDecl|funcDef| SEM )* EOF;
+miniCpp:     (miniCppEntry)* EOF;
+miniCppEntry:    constDef     /*#ConstDefOption*/
+                | varDef      /*#VarDefOption*/
+                | funcDecl    /*#FuncDeclOption*/
+                | funcDef     /*#FuncDefOption*/
+                | emptyStat         /*#SemOption;*/
+                ;
+constDef:    CONST type IDENT init (',' IDENT init)* SEM;
+init:        '='  initOption;
+initOption:    BOOLEAN          /*#BooleanInit*/
+             | NULLPTR          /*#NullptrInit*/
+             | (PLUSMINUS)? INT /*#IntInit*/
+             ;
 
-constDef:    'const' type IDENT init (',' IDENT init)* SEM;
-init:        '=' (  BOOLEAN | NULLPTR
-                 | (PLUSMINUS)? INT );
-varDef:      type varDefEnty
-             (',' varDefEnty)* SEM;
-varDefEnty: ('*')? IDENT (init)?;
+varDef:      type varDefEntry
+             (',' varDefEntry)* SEM;
+varDefEntry: STAR? IDENT (init)?;
 funcDecl:    funcHead SEM;
 funcDef:     funcHead block;
-funcHead:    type ('*')? IDENT '(' formParList? ')';
-formParList: ('void'
-              |     type ('*')? IDENT ('[' ']')?
-               (',' type ('*')? IDENT ('[' ']')?)*
+funcHead:    type STAR? IDENT '(' formParList? ')';
+formParList: (VOID
+              |     formParListEntry
+               (',' formParListEntry)*
               );
-type:        'void' | 'bool' | 'int';
+formParListEntry: type STAR? IDENT (BRACKETS)?;
+
+type:        VOID | BOOL | INT_LIT;
 block:       '{' (constDef|varDef|stat)* '}';
 stat:        ( emptyStat  | blockStat  | exprStat
              | ifStat     | whileStat  | breakStat
@@ -29,53 +40,66 @@ ifStat:      'if' '(' expr ')' stat ('else' stat)?;
 whileStat:   'while' '(' expr ')' stat;
 breakStat:   'break' SEM;
 inputStat:   'cin' '>>' IDENT SEM;
-outputStat:  'cout' '<<' ( expr | STRING | 'endl')
-                    ('<<' ( expr | STRING | 'endl') )* SEM;
+outputStat:  'cout' '<<' outputStatEntry
+                    ('<<' outputStatEntry )* SEM;
+outputStatEntry: expr | STRING | 'endl';
 deleteStat:  'delete' '[' ']' IDENT SEM;
 returnStat:  'return' (expr)? SEM;
-expr:        orExpr ( ('=' | '+=' | '-=' | '*=' | '/=' | '%=') orExpr )*;
+expr:        orExpr (
+                ( EQUAL
+                | ADD_ASSIGN
+                | SUB_ASSIGN
+                | MUL_ASSIGN
+                | DIV_ASSIGN
+                | MOD_ASSIGN
+                ) orExpr )*;
 orExpr:      andExpr ( '||' andExpr )*;
 andExpr:     relExpr ( '&&' relExpr )*;
 relExpr:     simpleExpr
-             ( ('==' | '!=' | '<' | '<=' | '>' | '>=') simpleExpr )*;
+             ( ( EQUAL_EQUAL
+                | NOT_EQUAL
+                | LT
+                | LE
+                | GT
+                | GE
+                )
+                simpleExpr )*;
 simpleExpr:  (PLUSMINUS)?
              term ( (PLUSMINUS) term )*;
-term:        notFact ( ('*' | '/' | '%') notFact )*;
-notFact:     ('!')? fact;
-fact:        ( BOOLEAN | 'nullptr' | INT
-             | ('++' | '--')?
-               IDENT ( ( '[' expr             ']')
+term:        notFact (termOperator notFact )*;
+termOperator: (STAR | DIV | MOD);
+notFact:     NOT? fact;
+fact:        ( BOOLEAN | NULLPTR | INT
+             | INC_DEC?
+               IDENT ( ( '[' expr    ']')
                   | ( '(' (actParList)?    ')')
                   )?
-               ('++' | '--')?
-             | 'new' type '[' expr ']'
+               INC_DEC?
+             | NEW type '[' expr ']'
              | '(' expr ')'
              );
 actParList:  expr (',' expr)*;
 
+INC_DEC: INC | DEC;
 BOOLEAN: TRUE | FALSE;
-/** Keywords */
-
-
-
 SEM: ';';
 PLUSMINUS: '+' | '-';
 TRUE: 'true';
 FALSE: 'false';
 NULLPTR: 'nullptr';
-
-/*CONST : 'const' ;
+CONST : 'const' ;
+NEW : 'new' ;
+INT_LIT: 'int';
+BOOL : 'bool' ;
 EQUAL : '=' ;
-MUL : '*' ;
+STAR : '*' ;
 VOID : 'void' ;
 IF : 'if' ;
 ELSE : 'else' ;
 WHILE : 'while' ;
 BREAK : 'break' ;
 CIN : 'cin' ;
-T__1 : '>>' ;
 COUT : 'cout' ;
-T__3 : '<<' ;
 ENDL : 'endl' ;
 DELETE : 'delete' ;
 RETURN : 'return' ;
@@ -94,10 +118,10 @@ GT : '>' ;
 GE : '>=' ;
 DIV : '/' ;
 MOD : '%' ;
-BANG : '!' ;
+NOT : '!' ;
 INC : '++' ;
 DEC : '--' ;
-NEW : 'new' ;*/
+BRACKETS: '[' ']';
 IDENT: [a-zA-Z_][a-zA-Z_0-9]*;
 INT: [0-9]+;
 STRING: '"' (~[\r\n"] | '""')* '"';

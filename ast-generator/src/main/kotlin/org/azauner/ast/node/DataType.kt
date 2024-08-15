@@ -1,4 +1,4 @@
-package org.azauner.ast.node.field
+package org.azauner.ast.node
 
 sealed interface DataType: FactChild
 

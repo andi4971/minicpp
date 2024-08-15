@@ -1,6 +1,5 @@
 package org.azauner.ast.generator
 
-import org.antlr.runtime.tree.ParseTree
 import org.antlr.v4.runtime.BufferedTokenStream
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.tree.ParseTreeWalker
@@ -18,5 +17,5 @@ fun main() {
     val walker = ParseTreeWalker()
 
     walker.walk(MiniCppListener(parser), parser.miniCpp())
-    MIniCppVisitor().visit(parser.miniCpp())
+    MiniCppVisitor().visit(parser.miniCpp())
 }

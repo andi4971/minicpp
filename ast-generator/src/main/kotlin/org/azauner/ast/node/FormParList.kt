@@ -1,6 +1,4 @@
-package org.azauner.ast.node.func
-
-import org.azauner.ast.node.Type
+package org.azauner.ast.node
 
 data class FormParList (val child: FormParListChild)
 
@@ -10,5 +8,5 @@ data object VoidFormParListChild: FormParListChild()
 
 data class FormParListEntries(val entries: List<FormParListEntry>): FormParListChild()
 
-data class FormParListEntry(val type: Type, val star: Boolean, val ident: String, val array: Boolean)
+data class FormParListEntry(val type: Type, val star: Boolean, val ident: Ident, val array: Boolean)
 

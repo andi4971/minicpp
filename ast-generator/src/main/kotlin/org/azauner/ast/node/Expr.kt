@@ -1,6 +1,4 @@
-package org.azauner.ast.node.field
-
-import org.azauner.ast.node.Type
+package org.azauner.ast.node
 
 data class Expr(val firstExpr: OrExpr, val exprEntries: List<ExprEntry>) : OutputStatEntry, FactChild
 
@@ -60,7 +58,8 @@ sealed interface FactChild
 
 data class NewTypeFact(val type: Type, val expr: Expr): FactChild
 
-data class ActionFact(val prefix: FactOperator?, val ident: String, val actionOp: ActionOperation?, val suffix: FactOperator?): FactChild
+data class ActionFact(val prefix: FactOperator?, val ident: Ident, val actionOp: ActionOperation?, val suffix: FactOperator?):
+    FactChild
 
 sealed interface ActionOperation
 

@@ -1,6 +1,8 @@
 package org.azauner.ast.node
 
-class MiniCpp(
-    val globalScope: Scope
-) {
-}
+data class MiniCpp(
+    val globalScope: Scope,
+    val entries: List<MiniCppEntry>
+)
+
+sealed interface MiniCppEntry
