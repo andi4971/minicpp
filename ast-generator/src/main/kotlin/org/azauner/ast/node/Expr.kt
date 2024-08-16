@@ -1,6 +1,7 @@
 package org.azauner.ast.node
 
-data class Expr(val firstExpr: OrExpr, val exprEntries: List<ExprEntry>) : OutputStatEntry, FactChild
+data class Expr(val firstExpr: OrExpr, val exprEntries: List<ExprEntry>) : OutputStatEntry,
+    FactChild
 
 data class ExprEntry(val orExpr: OrExpr, val assignOperator: AssignOperator)
 

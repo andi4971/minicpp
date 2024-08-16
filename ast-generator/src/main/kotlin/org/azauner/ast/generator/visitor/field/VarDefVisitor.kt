@@ -1,5 +1,6 @@
-package org.azauner.ast.generator.visitor
-import org.azauner.ast.node.Ident
+package org.azauner.ast.generator.visitor.field
+import org.azauner.ast.generator.visitor.IdentVisitor
+import org.azauner.ast.generator.visitor.TypeVisitor
 import org.azauner.ast.node.VarDef
 import org.azauner.ast.node.VarDefEntry
 import org.azauner.parser.minicppBaseVisitor

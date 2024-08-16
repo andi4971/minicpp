@@ -1,7 +1,8 @@
-package org.azauner.ast.generator.visitor
+package org.azauner.ast.generator.visitor.field
+import org.azauner.ast.generator.visitor.IdentVisitor
+import org.azauner.ast.generator.visitor.TypeVisitor
 import org.azauner.ast.node.ConstDef
 import org.azauner.ast.node.ConstDefEntry
-import org.azauner.ast.node.Ident
 import org.azauner.parser.minicppBaseVisitor
 import org.azauner.parser.minicppParser
 class ConstDefVisitor : minicppBaseVisitor<ConstDef>() {

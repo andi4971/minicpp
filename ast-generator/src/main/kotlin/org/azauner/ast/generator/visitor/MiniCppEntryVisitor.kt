@@ -1,8 +1,10 @@
 package org.azauner.ast.generator.visitor
 
-import org.azauner.ast.node.ConstDef
-import org.azauner.ast.node.ConstDefEntry
-import org.azauner.ast.node.Ident
+import org.antlr.v4.runtime.tree.TerminalNode
+import org.azauner.ast.generator.visitor.field.ConstDefVisitor
+import org.azauner.ast.generator.visitor.field.VarDefVisitor
+import org.azauner.ast.generator.visitor.func.FuncDeclVisitor
+import org.azauner.ast.generator.visitor.func.FuncDefVisitor
 import org.azauner.ast.node.MiniCppEntry
 import org.azauner.parser.minicppBaseVisitor
 import org.azauner.parser.minicppParser
@@ -18,14 +20,14 @@ class MiniCppEntryVisitor: minicppBaseVisitor<MiniCppEntry>() {
     }
 
     override fun visitFuncDecl(ctx: minicppParser.FuncDeclContext): MiniCppEntry {
-        return
+        return ctx.accept(FuncDeclVisitor())
     }
 
     override fun visitFuncDef(ctx: minicppParser.FuncDefContext): MiniCppEntry {
-        return
+        return  ctx.accept(FuncDefVisitor())
     }
 
-    override fun visitEmptyStat(ctx: minicppParser.EmptyStatContext): MiniCppEntry {
-        return
+    override fun visitTerminal(node: TerminalNode): MiniCppEntry {
+        return super.visitTerminal(node)
     }
 }

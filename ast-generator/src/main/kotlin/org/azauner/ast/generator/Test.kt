@@ -17,6 +17,7 @@ fun main() {
     val parser = minicppParser(tokenStream)
     val walker = ParseTreeWalker()
 
-    walker.walk(MiniCppListener(parser), parser.miniCpp())
-    MiniCppVisitor().visit(parser.miniCpp())
+    //walker.walk(MiniCppListener(parser), parser.miniCpp())
+    val result = MiniCppVisitor().visit(parser.miniCpp())
+    println(result)
 }

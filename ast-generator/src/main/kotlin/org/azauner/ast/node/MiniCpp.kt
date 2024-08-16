@@ -6,3 +6,5 @@ data class MiniCpp(
 )
 
 sealed interface MiniCppEntry
+
+data object Sem: MiniCppEntry

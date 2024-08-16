@@ -1,4 +1,4 @@
-package org.azauner.ast.generator.visitor
+package org.azauner.ast.generator.visitor.field
 
 import org.azauner.ast.node.*
 import org.azauner.parser.minicppBaseVisitor

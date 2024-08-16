@@ -5,7 +5,7 @@ miniCppEntry:    constDef
                 | varDef
                 | funcDecl
                 | funcDef
-                | emptyStat
+                | SEM
                 ;
 constDef:    CONST type constDefEntry (',' constDefEntry)* SEM;
 constDefEntry: IDENT init;
@@ -28,8 +28,10 @@ formParList: (VOID
 formParListEntry: type STAR? IDENT (BRACKETS)?;
 
 type:        VOID | BOOL | INT_LIT;
-block:       '{' (constDef|varDef|stat)* '}';
-stat:        ( emptyStat  | blockStat  | exprStat
+block:       '{' (blockEntry)* '}';
+blockEntry: constDef|varDef|stat;
+stat:        ( emptyStat
+             | blockStat  | exprStat
              | ifStat     | whileStat  | breakStat
              | inputStat  | outputStat
              | deleteStat | returnStat
@@ -44,16 +46,17 @@ inputStat:   'cin' '>>' IDENT SEM;
 outputStat:  'cout' '<<' outputStatEntry
                     ('<<' outputStatEntry )* SEM;
 outputStatEntry: expr | STRING | 'endl';
-deleteStat:  'delete' '[' ']' IDENT SEM;
+deleteStat:  'delete' BRACKETS IDENT SEM;
 returnStat:  'return' (expr)? SEM;
-expr:        orExpr (
-                ( EQUAL
-                | ADD_ASSIGN
-                | SUB_ASSIGN
-                | MUL_ASSIGN
-                | DIV_ASSIGN
-                | MOD_ASSIGN
-                ) orExpr )*;
+expr:        orExpr (exprEntry)*;
+exprEntry: exprAssign orExpr;
+exprAssign: EQUAL #EqualAssign
+           | ADD_ASSIGN #AddAssign
+           | SUB_ASSIGN #SubAssign
+           | MUL_ASSIGN #MulAssign
+           | DIV_ASSIGN #DivAssign
+           | MOD_ASSIGN #ModAssign
+           ;
 orExpr:      andExpr ( '||' andExpr )*;
 andExpr:     relExpr ( '&&' relExpr )*;
 relExpr:     simpleExpr
