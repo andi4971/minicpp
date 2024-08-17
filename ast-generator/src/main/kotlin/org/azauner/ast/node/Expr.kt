@@ -26,9 +26,9 @@ data class RelExprEntry(val simpleExpr: SimpleExpr, val relOperator: RelOperator
 enum class RelOperator {
     EQUAL,
     NOT_EQUAL,
-    LESS,
+    LESS_THAN_EQUAL,
     LESS_THAN,
-    GREATER,
+    GREATER_THAN_EQUAL,
     GREATER_THAN
 }
 

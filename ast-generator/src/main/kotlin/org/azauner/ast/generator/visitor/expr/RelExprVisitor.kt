@@ -7,6 +7,9 @@ import org.azauner.parser.minicppParser
 class RelExprVisitor: minicppBaseVisitor<RelExpr>() {
 
     override fun visitRelExpr(ctx: minicppParser.RelExprContext): RelExpr {
-        return RelExpr(addExpressions = ctx.addExpr().map { it.accept(AddExprVisitor()) })
+        return RelExpr(
+            firstExpr = ctx.simpleExpr().accept(SimpleExprVisitor()),
+            relExprEntries = ctx.relExprEntry().map { it.accept(RelExprEntryVisitor()) }
+        )
     }
 }

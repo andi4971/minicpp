@@ -12,7 +12,7 @@ constDefEntry: IDENT init;
 init:        '='  initOption;
 initOption:    BOOLEAN          #BooleanInit
              | NULLPTR          #NullptrInit
-             | (PLUSMINUS)? INT #IntInit
+             | (SIGN)? INT #IntInit
              ;
 
 varDef:      type varDefEntry
@@ -56,20 +56,23 @@ exprAssign: EQUAL #EqualAssign
            | MUL_ASSIGN #MulAssign
            | DIV_ASSIGN #DivAssign
            | MOD_ASSIGN #ModAssign
+
            ;
 orExpr:      andExpr ( '||' andExpr )*;
 andExpr:     relExpr ( '&&' relExpr )*;
 relExpr:     simpleExpr
-             ( ( EQUAL_EQUAL
-                | NOT_EQUAL
-                | LT
-                | LE
-                | GT
-                | GE
-                )
-                simpleExpr )*;
-simpleExpr:  (PLUSMINUS)?
-             term ( (PLUSMINUS) term )*;
+             ( relExprEntry )*;
+relExprEntry: relOperator simpleExpr;
+relOperator: EQUAL_EQUAL #EqualEqualOperator
+            | NOT_EQUAL #NotEqualOperator
+            | LT #LessThanOperator
+            | LE #LessEqualOperator
+            | GT #GreaterThanOperator
+            | GE #GreaterEqualOperator
+            ;
+simpleExpr:  (SIGN)?
+             term ( simpleExprEntry )*;
+simpleExprEntry: SIGN term;
 term:        notFact (termOperator notFact )*;
 termOperator: (STAR | DIV | MOD);
 notFact:     NOT? fact;
@@ -87,7 +90,7 @@ actParList:  expr (',' expr)*;
 INC_DEC: INC | DEC;
 BOOLEAN: TRUE | FALSE;
 SEM: ';';
-PLUSMINUS: '+' | '-';
+SIGN: '+' | '-';
 TRUE: 'true';
 FALSE: 'false';
 NULLPTR: 'nullptr';
