@@ -73,18 +73,28 @@ relOperator: EQUAL_EQUAL #EqualEqualOperator
 simpleExpr:  (SIGN)?
              term ( simpleExprEntry )*;
 simpleExprEntry: SIGN term;
-term:        notFact (termOperator notFact )*;
-termOperator: (STAR | DIV | MOD);
+term:        notFact (termEntry)*;
+termEntry: termOperator notFact;
+termOperator:   STAR #StarOperator
+               | DIV #DivOperator
+               | MOD #ModOperator
+              ;
 notFact:     NOT? fact;
-fact:        ( BOOLEAN | NULLPTR | INT
-             | INC_DEC?
-               IDENT ( ( '[' expr    ']')
-                  | ( '(' (actParList)?    ')')
-                  )?
-               INC_DEC?
-             | NEW type '[' expr ']'
-             | '(' expr ')'
-             );
+fact:
+               BOOLEAN #BooleanFact
+             | NULLPTR #NullptrFact
+             | INT #IntFact
+             | callFactEntry #CallFact
+             | NEW type '[' expr ']' #NewArrayFact
+             | '(' expr ')' #ExprFact
+             ;
+callFactEntry:
+            INC_DEC?
+              IDENT ( ( '[' expr    ']')
+                 | ( '(' (actParList)?    ')')
+                 )?
+              INC_DEC?
+              ;
 actParList:  expr (',' expr)*;
 
 INC_DEC: INC | DEC;

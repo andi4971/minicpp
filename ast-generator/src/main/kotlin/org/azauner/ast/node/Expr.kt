@@ -1,7 +1,6 @@
 package org.azauner.ast.node
 
-data class Expr(val firstExpr: OrExpr, val exprEntries: List<ExprEntry>) : OutputStatEntry,
-    FactChild
+data class Expr(val firstExpr: OrExpr, val exprEntries: List<ExprEntry>) : OutputStatEntry
 
 data class ExprEntry(val orExpr: OrExpr, val assignOperator: AssignOperator)
 
@@ -43,9 +42,9 @@ data class SimpleExprEntry(val sign: Sign, val term: Term)
 
 data class Term(val firstNotFact: NotFact, val termEntries: List<TermEntry>)
 
-data class TermEntry(val notFact: NotFact, val mulOperator: MulOperator)
+data class TermEntry(val notFact: NotFact, val termOperator: TermOperator)
 
-enum class MulOperator {
+enum class TermOperator {
     MUL,
     DIV,
     MOD
@@ -53,14 +52,15 @@ enum class MulOperator {
 
 data class NotFact(val negated: Boolean, val fact: Fact)
 
-data class Fact(val child: FactChild)
 
-sealed interface FactChild
+sealed interface Fact
 
-data class NewTypeFact(val type: Type, val expr: Expr): FactChild
+data class ExprFact(val expr: Expr): Fact
+
+data class NewArrayTypeFact(val type: Type, val expr: Expr): Fact
 
 data class ActionFact(val prefix: FactOperator?, val ident: Ident, val actionOp: ActionOperation?, val suffix: FactOperator?):
-    FactChild
+    Fact
 
 sealed interface ActionOperation
 

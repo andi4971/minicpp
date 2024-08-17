@@ -10,11 +10,7 @@ class InitVisitor : minicppBaseVisitor<Init>() {
     }
 
     override fun visitBooleanInit(ctx: minicppParser.BooleanInitContext): Init {
-        return when (ctx.BOOLEAN().text) {
-            "true" -> Init(BoolType(true))
-            "false" -> Init(BoolType(false))
-            else -> throw IllegalStateException("Unknown boolean init")
-        }
+        return Init(ctx.BOOLEAN().accept(BooleanVisitor()))
     }
 
     override fun visitNullptrInit(ctx: minicppParser.NullptrInitContext): Init {
@@ -22,13 +18,11 @@ class InitVisitor : minicppBaseVisitor<Init>() {
     }
 
     override fun visitIntInit(ctx: minicppParser.IntInitContext): Init {
-        val isPos = if (ctx.PLUSMINUS() != null) {
-            ctx.PLUSMINUS().text == "+"
+        val isPos = if (ctx.SIGN() != null) {
+            ctx.SIGN().text == "+"
         } else {
             true
         }
-        val value = ctx.INT().text.toIntOrNull() ?: throw IllegalStateException("Invalid int value")
-        val signedValue = if (isPos) value else -value
-        return Init(IntType(signedValue))
+        return Init(ctx.INT().accept(IntVisitor(isPos)))
     }
 }

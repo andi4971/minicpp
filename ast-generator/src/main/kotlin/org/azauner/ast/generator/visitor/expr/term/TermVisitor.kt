@@ -8,7 +8,7 @@ class TermVisitor: minicppBaseVisitor<Term>() {
 
     override fun visitTerm(ctx: minicppParser.TermContext): Term {
         return Term(
-            firstFactor = ctx.factor().accept(FactorVisitor()),
+            firstNotFact = ctx.notFact().accept(NotFactVisitor()),
             termEntries = ctx.termEntry().map { it.accept(TermEntryVisitor()) }
         )
     }

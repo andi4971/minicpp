@@ -1,6 +1,6 @@
 package org.azauner.ast.node
 
-sealed interface DataType: FactChild
+sealed interface DataType: Fact
 
 data class IntType(val value: Int): DataType
 
