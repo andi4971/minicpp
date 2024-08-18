@@ -1,3 +1,4 @@
 package org.azauner.ast.node
 
-data class Text(val text: String): OutputStatEntry
+@JvmInline
+value class Text(val text: String): OutputStatEntry

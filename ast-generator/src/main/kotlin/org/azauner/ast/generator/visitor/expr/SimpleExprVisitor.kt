@@ -9,7 +9,7 @@ class SimpleExprVisitor: minicppBaseVisitor<SimpleExpr>() {
 
     override fun visitSimpleExpr(ctx: minicppParser.SimpleExprContext): SimpleExpr {
         return SimpleExpr(
-            sign = ctx.SIGN().accept(SignVisitor()),
+            sign = ctx.SIGN()?.accept(SignVisitor()),
             term = ctx.term().accept(TermVisitor()),
             simpleExprEntries = ctx.simpleExprEntry().map { it.accept(SimpleExprEntryVisitor()) }
         )

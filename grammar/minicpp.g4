@@ -27,7 +27,10 @@ formParList: (VOID
               );
 formParListEntry: type STAR? IDENT (BRACKETS)?;
 
-type:        VOID | BOOL | INT_LIT;
+type:        VOID #VoidType
+            | BOOL #BoolType
+            | INT_LIT #IntType
+            ;
 block:       '{' (blockEntry)* '}';
 blockEntry: constDef|varDef|stat;
 stat:        ( emptyStat
@@ -39,13 +42,17 @@ stat:        ( emptyStat
 emptyStat:   SEM;
 blockStat:   block;
 exprStat:    expr SEM;
-ifStat:      'if' '(' expr ')' stat ('else' stat)?;
+ifStat:      'if' '(' expr ')' stat elseStat?;
+elseStat:    'else' stat;
 whileStat:   'while' '(' expr ')' stat;
 breakStat:   'break' SEM;
 inputStat:   'cin' '>>' IDENT SEM;
 outputStat:  'cout' '<<' outputStatEntry
                     ('<<' outputStatEntry )* SEM;
-outputStatEntry: expr | STRING | 'endl';
+outputStatEntry: expr    #ExprOutputStatEntry
+                | STRING #StringOutputStatEntry
+                | 'endl' #EndlOutputStatEntry
+                ;
 deleteStat:  'delete' BRACKETS IDENT SEM;
 returnStat:  'return' (expr)? SEM;
 expr:        orExpr (exprEntry)*;
@@ -89,12 +96,15 @@ fact:
              | '(' expr ')' #ExprFact
              ;
 callFactEntry:
-            INC_DEC?
-              IDENT ( ( '[' expr    ']')
-                 | ( '(' (actParList)?    ')')
-                 )?
-              INC_DEC?
+            preIncDec=INC_DEC?
+              IDENT
+                 callFactEntryOperation?
+              postIncDec=INC_DEC?
               ;
+callFactEntryOperation:
+                   ( '[' expr    ']') #ExprFactOperation
+                 | ( '(' (actParList)?    ')') #ActParListFactOperation
+                 ;
 actParList:  expr (',' expr)*;
 
 INC_DEC: INC | DEC;

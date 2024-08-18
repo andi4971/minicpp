@@ -10,7 +10,7 @@ data class ExprStat(val expr: Expr): Stat
 
 data class IfStat(val condition: Expr, val thenStat: Stat, val elseStat: Stat?): Stat
 
-data class WhileStat(val condition: Expr, val whileBlock: Block): Stat
+data class WhileStat(val condition: Expr, val whileStat: Stat): Stat
 
 data object BreakStat : Stat
 

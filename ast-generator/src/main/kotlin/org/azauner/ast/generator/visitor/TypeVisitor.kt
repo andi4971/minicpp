@@ -1,16 +1,20 @@
 package org.azauner.ast.generator.visitor
 import org.azauner.ast.node.Type
+import org.azauner.ast.node.Type.*
 import org.azauner.parser.minicppBaseVisitor
 import org.azauner.parser.minicppParser
 
 class TypeVisitor: minicppBaseVisitor<Type>() {
 
-    override fun visitType(ctx: minicppParser.TypeContext): Type {
-        return when {
-            ctx.INT_LIT() != null -> Type.INT
-            ctx.BOOL() != null -> Type.BOOL
-            ctx.VOID() != null -> Type.VOID
-            else -> throw IllegalStateException("Unknown type")
-        }
+    override fun visitIntType(ctx: minicppParser.IntTypeContext?): Type {
+        return INT
+    }
+
+    override fun visitBoolType(ctx: minicppParser.BoolTypeContext?): Type {
+        return BOOL
+    }
+
+    override fun visitVoidType(ctx: minicppParser.VoidTypeContext?): Type {
+        return  VOID
     }
 }

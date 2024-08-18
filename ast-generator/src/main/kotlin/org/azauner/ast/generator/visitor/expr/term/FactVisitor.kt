@@ -25,7 +25,7 @@ class FactVisitor: minicppBaseVisitor<Fact>() {
     }
 
     override fun visitCallFact(ctx: minicppParser.CallFactContext): Fact {
-        return ctx.
+        return ctx.callFactEntry().accept(CallFactEntryVisitor())
     }
 
 

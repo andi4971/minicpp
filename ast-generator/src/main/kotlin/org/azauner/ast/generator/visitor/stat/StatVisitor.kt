@@ -2,6 +2,7 @@ package org.azauner.ast.generator.visitor.stat
 
 import org.azauner.ast.generator.visitor.IdentVisitor
 import org.azauner.ast.generator.visitor.block.BlockVisitor
+import org.azauner.ast.generator.visitor.expr.ExprVisitor
 import org.azauner.ast.node.*
 import org.azauner.parser.minicppBaseVisitor
 import org.azauner.parser.minicppParser
@@ -21,9 +22,18 @@ class StatVisitor: minicppBaseVisitor<Stat>() {
     }
 
     override fun visitIfStat(ctx: minicppParser.IfStatContext): Stat {
+        return IfStat(
+            condition = ctx.expr().accept(ExprVisitor()),
+            thenStat = ctx.stat().accept(StatVisitor()),
+            elseStat = ctx.elseStat()?.stat()?.accept(StatVisitor())
+        )
     }
 
     override fun visitWhileStat(ctx: minicppParser.WhileStatContext): Stat {
+        return WhileStat(
+            condition = ctx.expr().accept(ExprVisitor()),
+            whileStat = ctx.stat().accept(StatVisitor())
+        )
     }
 
     override fun visitBreakStat(ctx: minicppParser.BreakStatContext): Stat {
@@ -35,7 +45,7 @@ class StatVisitor: minicppBaseVisitor<Stat>() {
     }
 
     override fun visitOutputStat(ctx: minicppParser.OutputStatContext): Stat {
-
+        return OutputStat(ctx.outputStatEntry().map { it.accept(OutputStatEntryVisitor()) })
     }
 
 
@@ -44,5 +54,6 @@ class StatVisitor: minicppBaseVisitor<Stat>() {
     }
 
     override fun visitReturnStat(ctx: minicppParser.ReturnStatContext): Stat {
+        return ReturnStat(ctx.expr()?.accept(ExprVisitor()))
     }
 }

@@ -59,7 +59,7 @@ data class ExprFact(val expr: Expr): Fact
 
 data class NewArrayTypeFact(val type: Type, val expr: Expr): Fact
 
-data class ActionFact(val prefix: FactOperator?, val ident: Ident, val actionOp: ActionOperation?, val suffix: FactOperator?):
+data class ActionFact(val prefix: IncDec?, val ident: Ident, val actionOp: ActionOperation?, val suffix: IncDec?):
     Fact
 
 sealed interface ActionOperation
@@ -69,7 +69,7 @@ data class ArrayAccessOperation(val expr: Expr): ActionOperation
 data class CallOperation(var actParList: List<Expr>): ActionOperation
 
 
-enum class FactOperator {
+enum class IncDec {
     INCREASE,
     DECREASE
 }
