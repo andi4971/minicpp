@@ -1,15 +1,16 @@
 package org.azauner.ast.generator.visitor
 
 import org.azauner.ast.node.MiniCpp
-import org.azauner.ast.node.Scope
+import org.azauner.ast.node.scope.Scope
 import org.azauner.parser.minicppBaseVisitor
 import org.azauner.parser.minicppParser
 
 class MiniCppVisitor: minicppBaseVisitor<MiniCpp>() {
     override fun visitMiniCpp(ctx: minicppParser.MiniCppContext): MiniCpp {
-        val entries = ctx.miniCppEntry().map { it.accept(MiniCppEntryVisitor()) }
+        val scope = Scope(null)
+        val entries = ctx.miniCppEntry().map { it.accept(MiniCppEntryVisitor(scope)) }
         return MiniCpp(
-            globalScope = Scope(null),
+            globalScope = scope,
             entries = entries
         )
     }

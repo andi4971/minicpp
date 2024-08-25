@@ -1,10 +1,22 @@
 package org.azauner.ast.generator.visitor.func
 import org.azauner.ast.node.FuncDecl
+import org.azauner.ast.node.scope.Scope
 import org.azauner.parser.minicppBaseVisitor
 import org.azauner.parser.minicppParser
 
-class FuncDeclVisitor: minicppBaseVisitor<FuncDecl>() {
+class FuncDeclVisitor(private val scope: Scope) : minicppBaseVisitor<FuncDecl>() {
     override fun visitFuncDecl(ctx: minicppParser.FuncDeclContext): FuncDecl {
-        return FuncDecl(ctx.funcHead().accept(FuncHeadVisitor()))
+        val funcDecl =  FuncDecl(ctx.funcHead().accept(FuncHeadVisitor()))
+
+        funcDecl.funcHead.run {
+            scope.addFunction(
+                ident = ident,
+                returnType = type,
+                returnTypePointer = pointer,
+                formParList= formParList
+            )
+        }
+
+        return funcDecl
     }
 }

@@ -7,10 +7,11 @@ import org.azauner.ast.node.ExprFact
 import org.azauner.ast.node.Fact
 import org.azauner.ast.node.NewArrayTypeFact
 import org.azauner.ast.node.NullPtrType
+import org.azauner.ast.node.scope.Scope
 import org.azauner.parser.minicppBaseVisitor
 import org.azauner.parser.minicppParser
 
-class FactVisitor: minicppBaseVisitor<Fact>() {
+class FactVisitor(private val scope: Scope) : minicppBaseVisitor<Fact>() {
 
     override fun visitBooleanFact(ctx: minicppParser.BooleanFactContext): Fact {
         return ctx.BOOLEAN().accept(BooleanVisitor())
@@ -25,18 +26,18 @@ class FactVisitor: minicppBaseVisitor<Fact>() {
     }
 
     override fun visitCallFact(ctx: minicppParser.CallFactContext): Fact {
-        return ctx.callFactEntry().accept(CallFactEntryVisitor())
+        return ctx.callFactEntry().accept(CallFactEntryVisitor(scope))
     }
 
 
     override fun visitNewArrayFact(ctx: minicppParser.NewArrayFactContext): Fact {
         return NewArrayTypeFact(
             type = ctx.type().accept(TypeVisitor()),
-            expr = ctx.expr().accept(ExprVisitor())
+            expr = ctx.expr().accept(ExprVisitor(scope))
         )
     }
 
     override fun visitExprFact(ctx: minicppParser.ExprFactContext): Fact {
-        return ExprFact(ctx.expr().accept(ExprVisitor()))
+        return ExprFact(ctx.expr().accept(ExprVisitor(scope)))
     }
 }

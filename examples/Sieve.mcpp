@@ -36,9 +36,9 @@ void Sieve(int n) { // defintion
   bool test = true;
   bool test2 = false;
   bool *sieve = nullptr;
-
+  bool seas = test || test2;
   sieve = new bool[n + 1];
-  
+  Sieve(0);
   i = 2;
   while (i <= n) {
     sieve[i] = true;
