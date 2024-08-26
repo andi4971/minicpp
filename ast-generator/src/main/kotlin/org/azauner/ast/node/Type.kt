@@ -5,3 +5,12 @@ enum class Type {
     BOOL,
     INT
 }
+
+enum class ExprType {
+    VOID,
+    BOOL,
+    INT,
+    NULLPTR,
+    INT_ARR,
+    BOOL_ARR
+}

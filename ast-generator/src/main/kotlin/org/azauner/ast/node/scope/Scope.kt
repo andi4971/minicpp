@@ -14,13 +14,11 @@ class Scope(private val parent: Scope?) {
         variables.add(variable)
     }
 
-    fun getVariable(ident: Ident, type: Type, pointer: Boolean): Variable {
-        val variable = Variable(ident, type, pointer, false)
-        return if (variableExists(variable)) {
-            variable
-        } else {
-            throw Exception("Variable does not exist")
-        }
+    fun getVariable(ident: Ident): Variable {
+        return variables.find { it.ident == ident }
+            ?:
+            parent?.getVariable(ident)
+                ?: throw Exception("Variable does not exist")
     }
 
     private fun variableExists(variable: Variable): Boolean {
