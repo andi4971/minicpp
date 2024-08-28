@@ -2,6 +2,7 @@ package org.azauner.ast.generator.visitor.func
 import org.azauner.ast.generator.visitor.IdentVisitor
 import org.azauner.ast.generator.visitor.TypeVisitor
 import org.azauner.ast.node.FuncHead
+import org.azauner.ast.node.VoidFormParListChild
 import org.azauner.parser.minicppBaseVisitor
 import org.azauner.parser.minicppParser
 

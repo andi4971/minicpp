@@ -28,16 +28,22 @@ void main() {
   
 } // main
 
-  
-void Sieve(int n) { // defintion
+void Seas(int a, bool b) {
 
+}
+
+
+void Sieve(int n) { // defintion
+  Seas(5, true);
   int col, i, j;
-  int a = -54;
+  int a = 6;
   bool test = true;
   bool test2 = false;
   bool *sieve = nullptr;
+  bool testerg;
+  testerg = test || test2;
   sieve = new bool[n + 1];
-  
+  Sieve(0);
   i = 2;
   while (i <= n) {
     sieve[i] = true;

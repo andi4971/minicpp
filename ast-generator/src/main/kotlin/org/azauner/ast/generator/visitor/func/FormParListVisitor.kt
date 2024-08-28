@@ -9,12 +9,12 @@ import org.azauner.parser.minicppParser
 class FormParListVisitor: minicppBaseVisitor<FormParList>() {
     override fun visitFormParList(ctx: minicppParser.FormParListContext): FormParList {
         if(ctx.VOID() != null) {
-            return FormParList(VoidFormParListChild)
+            return VoidFormParListChild
         }else {
             val entries = ctx.formParListEntry().map { entry ->
                 entry.accept(FormParListEntryVisitor())
             }
-            return FormParList(FormParListEntries(entries))
+            return FormParListEntries(entries)
         }
     }
 }

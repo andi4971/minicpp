@@ -1,12 +1,10 @@
 package org.azauner.ast.node
 
-data class FormParList (val child: FormParListChild)
+sealed interface FormParList
 
-sealed class FormParListChild
+data object VoidFormParListChild: FormParList
 
-data object VoidFormParListChild: FormParListChild()
-
-data class FormParListEntries(val entries: List<FormParListEntry>): FormParListChild()
+data class FormParListEntries(val entries: List<FormParListEntry>): FormParList
 
 data class FormParListEntry(val type: Type, val pointer: Boolean, val ident: Ident, val array: Boolean)
 

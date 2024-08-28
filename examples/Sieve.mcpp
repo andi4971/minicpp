@@ -28,9 +28,13 @@ void main() {
   
 } // main
 
-  
-void Sieve(int n) { // defintion
+void Seas(int a, bool b) {
 
+}
+
+
+void Sieve(int n) { // defintion
+  Seas(5, true);
   int col, i, j;
   int a = -5.4;
   bool test = true;

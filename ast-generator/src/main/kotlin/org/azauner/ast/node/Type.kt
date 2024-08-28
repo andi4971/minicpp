@@ -12,5 +12,9 @@ enum class ExprType {
     INT,
     NULLPTR,
     INT_ARR,
-    BOOL_ARR
+    BOOL_ARR,
+    INT_PTR,
+    BOOL_PTR,
+    BOOL_ARR_PTR,
+    INT_ARR_PTR
 }

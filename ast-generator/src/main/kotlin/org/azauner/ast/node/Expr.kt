@@ -31,6 +31,10 @@ enum class RelOperator {
     GREATER_THAN
 }
 
+val numericRelOperators = RelOperator.entries.toList()
+
+val boolRelOperators = listOf(RelOperator.EQUAL, RelOperator.NOT_EQUAL)
+
 data class SimpleExpr(val sign: Sign?, val term: Term, val simpleExprEntries: List<SimpleExprEntry>)
 
 enum class Sign {
