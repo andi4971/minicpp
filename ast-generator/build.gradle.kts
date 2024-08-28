@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm")
+    id("io.freefair.aspectj.post-compile-weaving") version "8.10"
 }
 
 group = "org.azauner"
@@ -12,6 +13,8 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
     api(project(":parser"))
+    implementation("org.aspectj:aspectjrt:1.9.21")
+    implementation("org.aspectj:aspectjweaver:1.9.21")
 }
 
 tasks.test {

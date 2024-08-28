@@ -8,6 +8,10 @@ import org.azauner.ast.node.scope.Scope
 fun Token.getTerminalNodeFromTokenList(list: List<TerminalNode>): TerminalNode =
     list.first { it.symbol.tokenIndex == this.tokenIndex }
 
+fun Expr.validate(scope: Scope) {
+    this.getType(scope)
+}
+
 fun Expr.getType(scope: Scope): ExprType {
     val firstType = firstExpr.getType(scope)
     return if (exprEntries.isNotEmpty()) {
@@ -15,7 +19,9 @@ fun Expr.getType(scope: Scope): ExprType {
         validateExprEntry(firstType, firstEntry.assignOperator, firstEntry.orExpr.getType(scope))
         //todo check how this should work
         exprEntries.drop(1).forEach {
-            require(it.orExpr.getType(scope) == ExprType.BOOL)
+            requireSemantic(it.orExpr.getType(scope) == ExprType.BOOL) {
+                "All or expressions have to be of type bool"
+            }
         }
         ExprType.BOOL
     } else {
@@ -25,11 +31,11 @@ fun Expr.getType(scope: Scope): ExprType {
 
 fun validateExprEntry(firstType: ExprType, operator: AssignOperator, secondType: ExprType) {
     if(operator == AssignOperator.ASSIGN) {
-        require(firstType == secondType) {
+        requireSemantic(firstType == secondType) {
             "First and second type have to be the same"
         }
     }else {
-        require(firstType == ExprType.INT && secondType == ExprType.INT) {
+        requireSemantic(firstType == ExprType.INT && secondType == ExprType.INT) {
             "First and second type have to be int"
         }
     }
@@ -37,9 +43,12 @@ fun validateExprEntry(firstType: ExprType, operator: AssignOperator, secondType:
 
 fun OrExpr.getType(scope: Scope): ExprType {
     return if(andExpressions.size > 1) {
-        require(andExpressions.all { it.getType(scope) == ExprType.BOOL }) {
-            "All and expressions have to be of type bool"
+        andExpressions.forEach {
+            requireSemantic(it.getType(scope) == ExprType.BOOL) {
+                "required all expressions to be type bool but found one with ${it.getType(scope)}"
+            }
         }
+
         ExprType.BOOL
     }else {
         andExpressions.first().getType(scope)
@@ -48,7 +57,7 @@ fun OrExpr.getType(scope: Scope): ExprType {
 
 private fun AndExpr.getType(scope: Scope): ExprType {
     return if(relExpressions.size > 1) {
-        require(relExpressions.all { it.getType(scope) == ExprType.BOOL }) {
+        requireSemantic(relExpressions.all { it.getType(scope) == ExprType.BOOL }) {
             "All rel expressions have to be of type bool"
         }
         ExprType.BOOL
@@ -63,7 +72,9 @@ private fun RelExpr.getType(scope: Scope): ExprType {
         val firstEntry = relExprEntries.first()
         validateRelExpOperatorTypes(firstType,firstEntry.relOperator,firstEntry.simpleExpr.getType(scope))
         relExprEntries.drop(1).forEach {
-            require(it.simpleExpr.getType(scope) == ExprType.BOOL)
+            requireSemantic(it.simpleExpr.getType(scope) == ExprType.BOOL) {
+                "All simple expressions have to be of type bool"
+            }
         }
         ExprType.BOOL
     }else {
@@ -72,11 +83,11 @@ private fun RelExpr.getType(scope: Scope): ExprType {
 }
 
 private fun validateRelExpOperatorTypes(leftType: ExprType, operator: RelOperator, rightType: ExprType) {
-    require(leftType == rightType) {
+    requireSemantic(leftType == rightType) {
         "Left and right type have to be the same"
     }
    if(operator !in boolRelOperators) {
-       require(leftType == ExprType.INT) {
+       requireSemantic(leftType == ExprType.INT) {
            "Left and right type have to be int"
        }
    }
@@ -85,15 +96,15 @@ private fun validateRelExpOperatorTypes(leftType: ExprType, operator: RelOperato
 private fun SimpleExpr.getType(scope: Scope): ExprType {
     val firstType = term.getType(scope)
     if(sign!= null) {
-        require(firstType == ExprType.INT) {
+        requireSemantic(firstType == ExprType.INT) {
             "Sign can only be used with int"
         }
     }
     if (simpleExprEntries.isNotEmpty()) {
-        require(simpleExprEntries.all { it.term.getType(scope) == ExprType.INT }) {
+        requireSemantic(simpleExprEntries.all { it.term.getType(scope) == ExprType.INT }) {
             "All simple expr entries have to be of type int"
         }
-        require(firstType == ExprType.INT) {
+        requireSemantic(firstType == ExprType.INT) {
             "First type has to be int"
         }
     }
@@ -103,7 +114,7 @@ private fun SimpleExpr.getType(scope: Scope): ExprType {
 private fun Term.getType(scope: Scope): ExprType {
     val firstType = firstNotFact.getType(scope)
     if (termEntries.isNotEmpty()) {
-        require(termEntries.all { it.notFact.getType(scope) == ExprType.INT }) {
+        requireSemantic(termEntries.all { it.notFact.getType(scope) == ExprType.INT }) {
             "All term entries have to be of type int"
         }
     }
@@ -159,6 +170,6 @@ fun Type.toExprType(): ExprType {
     return when (this) {
         Type.BOOL -> ExprType.BOOL
         Type.INT -> ExprType.INT
-        Type.VOID -> throw IllegalStateException("Cannot create an expr type of void")
+        Type.VOID -> ExprType.VOID
     }
 }

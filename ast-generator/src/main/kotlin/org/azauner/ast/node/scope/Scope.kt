@@ -1,5 +1,6 @@
 package org.azauner.ast.node.scope
 
+import org.azauner.ast.generator.exception.SemanticException
 import org.azauner.ast.node.*
 import org.azauner.ast.util.toExprType
 
@@ -10,7 +11,7 @@ class Scope(private val parent: Scope?) {
     fun addVariable(ident: Ident, type: Type, pointer: Boolean, const: Boolean = false) {
         val variable = Variable(ident, type, pointer, const)
         if (variableExists(variable)) {
-            throw Exception("Variable ${variable.ident} already exists")
+            throw SemanticException("Variable ${variable.ident} already exists")
         }
         variables.add(variable)
     }
@@ -18,7 +19,7 @@ class Scope(private val parent: Scope?) {
     fun getVariable(ident: Ident): Variable {
         return variables.find { it.ident == ident }
             ?: parent?.getVariable(ident)
-            ?: throw Exception("Variable does not exist")
+            ?: throw SemanticException("Variable does not exist")
     }
 
     private fun variableExists(variable: Variable): Boolean {
@@ -35,14 +36,14 @@ class Scope(private val parent: Scope?) {
 
     fun checkVariableExists(ident: Ident) {
         if (!variableExists(ident)) {
-            throw Exception("Variable $ident does not exist")
+            throw SemanticException("Variable $ident does not exist")
         }
     }
 
     fun addFunction(ident: Ident, returnType: Type, returnTypePointer: Boolean, formParList: FormParList?) {
         val function = Function(ident, returnType, returnTypePointer, (formParList?: VoidFormParListChild).toExprTypes())
         if (functionExists(function)) {
-            throw Exception("Function already exists")
+            throw SemanticException("Function already exists")
         }
         functions.add(function)
     }
@@ -68,7 +69,7 @@ class Scope(private val parent: Scope?) {
     fun getFunction(ident: Ident, formParTypes: List<ExprType>): Function {
         return functions.find { func -> func.ident == ident && func.formParTypes == formParTypes }
             ?: parent?.getFunction(ident, formParTypes)
-            ?: throw Exception("Function does not exist")
+            ?: throw SemanticException("Function does not exist")
     }
 
 
@@ -91,7 +92,7 @@ private fun List<FormParListEntry>.toExprTypes(): List<ExprType> {
                 pointer && baseType == ExprType.INT -> ExprType.INT_PTR
                 pointer && baseType == ExprType.BOOL -> ExprType.BOOL_PTR
                 else -> if(baseType == ExprType.VOID) {
-                    throw Exception("cannot use void for multiple parameters")
+                    throw SemanticException("cannot use void for multiple parameters")
                 }else {
                     baseType
                 }
