@@ -19,6 +19,7 @@ class CallFactEntryVisitor(private val scope: Scope) : minicppBaseVisitor<Action
             suffix = ctx.postIncDec?.getTerminalNodeFromTokenList(ctx.INC_DEC())?.accept(IncDecVisitor()),
             actionOp = ctx.callFactEntryOperation()?.accept(CallFactEntryOperationVisitor(scope))
         )
+        //todo move to expr logic
         actionFact.run {
             when {
                 actionOp != null && actionOp is CallOperation -> {
