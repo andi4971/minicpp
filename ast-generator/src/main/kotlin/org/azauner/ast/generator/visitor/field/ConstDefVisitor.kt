@@ -16,7 +16,7 @@ class ConstDefVisitor(private val scope: Scope) : minicppBaseVisitor<ConstDef>()
             ConstDefEntry(ident, init)
         }
         idents.forEach { node ->
-            scope.addVariable(node.ident, type, pointer = false, const = true)
+            scope.addVariable(node.ident, type, const = true)
         }
         return ConstDef(type, idents)
     }

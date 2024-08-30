@@ -1,3 +1,3 @@
 package org.azauner.ast.node
 
-data class FuncHead(val type: Type, val pointer: Boolean, val ident: Ident, val formParList: FormParList?)
+data class FuncHead(val type: ExprType, val ident: Ident, val formParList: FormParList?)

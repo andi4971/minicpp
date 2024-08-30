@@ -6,5 +6,5 @@ data object VoidFormParListChild: FormParList
 
 data class FormParListEntries(val entries: List<FormParListEntry>): FormParList
 
-data class FormParListEntry(val type: Type, val pointer: Boolean, val ident: Ident, val array: Boolean)
+data class FormParListEntry(val type: ExprType, val ident: Ident)
 

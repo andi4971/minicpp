@@ -14,8 +14,7 @@ class FuncDefVisitor(private val scope: Scope) : minicppBaseVisitor<FuncDef>() {
             if(!scope.functionExists(this)) {
                 scope.addFunction(
                     ident = ident,
-                    returnType = type,
-                    returnTypePointer = pointer,
+                    returnType =type,
                     formParList = formParList
                 )
             }
@@ -23,8 +22,7 @@ class FuncDefVisitor(private val scope: Scope) : minicppBaseVisitor<FuncDef>() {
                 formParList.entries.forEach { entry ->
                     childScope.addVariable(
                         ident = entry.ident,
-                        type = entry.type,
-                        pointer = entry.pointer
+                        type = entry.type
                     )
                 }
             }

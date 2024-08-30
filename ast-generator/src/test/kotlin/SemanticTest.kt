@@ -284,9 +284,34 @@ class SemanticTest {
         }
     }
 
-
-
-
+    @Test
+    fun testIntIncrease() {
+        assertDoesNotThrow {
+            testCodeInMain(
+                """
+                    int test = 5;
+                    test++;
+                    test--;
+                    --test;
+                    ++test;
+               """.trimIndent()
+            )
+        }
+    }
+    @Test
+    fun testIntIncreaseInvalidType() {
+        assertThrows<SemanticException> {
+            testCodeInMain(
+                """
+                    bool test = true;
+                    test++;
+                    test--;
+                    --test;
+                    ++test;
+               """.trimIndent()
+            )
+        }
+    }
 
     @Test
     fun varNotFound() {
@@ -328,7 +353,7 @@ class SemanticTest {
         @JvmStatic
         @BeforeAll
         fun beforeAll() {
-            SemanticErrorAspect.isEnabled = false
+            SemanticErrorAspect.doExit = false
         }
     }
 }

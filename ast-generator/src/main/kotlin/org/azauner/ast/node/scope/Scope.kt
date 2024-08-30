@@ -2,14 +2,13 @@ package org.azauner.ast.node.scope
 
 import org.azauner.ast.generator.exception.SemanticException
 import org.azauner.ast.node.*
-import org.azauner.ast.util.toExprType
 
 class Scope(private val parent: Scope?) {
     private val variables = mutableListOf<Variable>()
     private val functions: MutableList<Function> = mutableListOf()
 
-    fun addVariable(ident: Ident, type: Type, pointer: Boolean, const: Boolean = false) {
-        val variable = Variable(ident, type, pointer, const)
+    fun addVariable(ident: Ident, type: ExprType, const: Boolean = false) {
+        val variable = Variable(ident, type, const)
         if (variableExists(variable)) {
             throw SemanticException("Variable ${variable.ident} already exists")
         }
@@ -40,8 +39,8 @@ class Scope(private val parent: Scope?) {
         }
     }
 
-    fun addFunction(ident: Ident, returnType: Type, returnTypePointer: Boolean, formParList: FormParList?) {
-        val function = Function(ident, returnType, returnTypePointer, (formParList?: VoidFormParListChild).toExprTypes())
+    fun addFunction(ident: Ident, returnType: ExprType, formParList: FormParList?) {
+        val function = Function(ident, returnType,(formParList?: VoidFormParListChild).toExprTypes())
         if (functionExists(function)) {
             throw SemanticException("Function already exists")
         }
@@ -59,7 +58,6 @@ class Scope(private val parent: Scope?) {
             Function(
                 ident = ident,
                 returnType = type,
-                returnTypePointer = pointer,
                 formParTypes = (formParList ?: VoidFormParListChild).toExprTypes()
             )
         }
@@ -83,20 +81,5 @@ private fun FormParList.toExprTypes(): List<ExprType> {
 }
 
 private fun List<FormParListEntry>.toExprTypes(): List<ExprType> {
-    return map { entry ->
-        entry.run {
-            val baseType = type.toExprType()
-            return@map when {
-                pointer && array  && baseType == ExprType.INT -> ExprType.INT_ARR_PTR
-                pointer && array  && baseType == ExprType.BOOL -> ExprType.BOOL_ARR_PTR
-                pointer && baseType == ExprType.INT -> ExprType.INT_PTR
-                pointer && baseType == ExprType.BOOL -> ExprType.BOOL_PTR
-                else -> if(baseType == ExprType.VOID) {
-                    throw SemanticException("cannot use void for multiple parameters")
-                }else {
-                    baseType
-                }
-            }
-        }
-    }
+    return map { entry -> entry.type    }
 }

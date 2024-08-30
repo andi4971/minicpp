@@ -1,5 +1,4 @@
 package org.azauner.ast.generator.visitor.func
-import org.azauner.ast.node.FormParListEntries
 import org.azauner.ast.node.FuncDecl
 import org.azauner.ast.node.VoidFormParListChild
 import org.azauner.ast.node.scope.Scope
@@ -14,7 +13,6 @@ class FuncDeclVisitor(private val scope: Scope) : minicppBaseVisitor<FuncDecl>()
             scope.addFunction(
                 ident = ident,
                 returnType = type,
-                returnTypePointer = pointer,
                 formParList= formParList ?: VoidFormParListChild
             )
         }

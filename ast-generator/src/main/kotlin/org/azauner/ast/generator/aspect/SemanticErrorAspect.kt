@@ -11,9 +11,11 @@ import kotlin.system.exitProcess
 @Aspect
 class SemanticErrorAspect {
 
+
+    private var previousException: SemanticException? = null
     companion object {
         @JvmStatic
-        var isEnabled: Boolean = true
+        var doExit: Boolean = true
     }
 
     @Pointcut("execution(* org.azauner.ast.generator.visitor..*.visit*(..))")
@@ -21,9 +23,6 @@ class SemanticErrorAspect {
 
     @Around("visitorPointcut()")
     fun addErrorHandling(joinPoint: ProceedingJoinPoint): Any {
-        if(!isEnabled) {
-            return joinPoint.proceed()
-        }
         //todo potentially refactor to not use exceptions but static variable with errors
         //problem still remains then when required functions or variables are not found
         //maybe return a dummy variable or function in this case
@@ -31,8 +30,19 @@ class SemanticErrorAspect {
             joinPoint.proceed()
         }catch (e: SemanticException) {
             val ctx = joinPoint.args.first() as ParserRuleContext
-            System.err.println("Error on line ${ctx.start.line}:${ctx.start.charPositionInLine} : ${e.message}")
-            exitProcess(1)
+
+            //todo find better solution to stop bubbling
+            if(previousException != e) {
+                System.err.println("Error on line ${ctx.start.line}:${ctx.start.charPositionInLine} : ${e.message}")
+            }
+
+            previousException = e
+
+            if(doExit) {
+                exitProcess(1)
+            }else {
+                throw e
+            }
         }
     }
 }
