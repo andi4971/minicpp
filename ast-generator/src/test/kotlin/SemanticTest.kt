@@ -221,6 +221,34 @@ class SemanticTest {
     }
 
     @Test
+    fun testMethodDuplicateDefinition() {
+        assertThrows<SemanticException> {
+            testCode(
+                """
+                  void test(int value) {
+                  
+                  }
+                  
+                  void test(int value) {
+                  }
+               """.trimIndent()
+            )
+        }
+    }
+
+    @Test
+    fun testMethodDuplicateDeclaration() {
+        assertThrows<SemanticException> {
+            testCode(
+                """
+                  void test(int value); 
+                  void test(int value);
+               """.trimIndent()
+            )
+        }
+    }
+
+    @Test
     fun testMethodValidReturnType() {
         assertDoesNotThrow {
             testCode(
@@ -305,9 +333,18 @@ class SemanticTest {
                 """
                     bool test = true;
                     test++;
-                    test--;
-                    --test;
-                    ++test;
+               """.trimIndent()
+            )
+        }
+    }
+
+    @Test
+    fun testIntIncreaseInvalidTypeFunc() {
+        assertThrows<SemanticException> {
+            testCodeInMain(
+                """
+                    bool test = true;
+                    ++main();
                """.trimIndent()
             )
         }
@@ -327,6 +364,73 @@ class SemanticTest {
         }
     }
 
+
+    @Test
+    fun testFunctionPointerParameters() {
+        assertDoesNotThrow {
+            testCode(
+                """
+                  int test(int* value) {
+                    
+                  }
+                  void main() {
+                   int *test2 = nullptr;
+                   test(test2);
+                  }
+               """.trimIndent()
+            )
+        }
+    }
+
+    @Test
+    fun testFunctionValidReturnType() {
+        assertDoesNotThrow {
+            testCode(
+                """
+                  int test() {
+                    
+                  }
+                  void main() {
+                   int test;
+                   test = test();
+                  }
+               """.trimIndent()
+            )
+        }
+    }
+
+    @Test
+    fun testFunctionInvalidReturnType() {
+        assertThrows<SemanticException> {
+            testCode(
+                """
+                  bool test() {
+                    
+                  }
+                  void main() {
+                   int test;
+                   test = test(test2);
+                  }
+               """.trimIndent()
+            )
+        }
+    }
+
+    @Test
+    fun testFunctionPointerInvalidParameter() {
+        assertThrows<SemanticException> {
+            testCode(
+                """
+                  int test(int* value) {
+                    
+                  }
+                  void main() {
+                   test(5);
+                  }
+               """.trimIndent()
+            )
+        }
+    }
 
 
 

@@ -1,4 +1,5 @@
 package org.azauner.ast.generator.visitor.func
+
 import org.azauner.ast.generator.visitor.block.BlockVisitor
 import org.azauner.ast.node.FormParListEntries
 import org.azauner.ast.node.FuncDef
@@ -11,14 +12,14 @@ class FuncDefVisitor(private val scope: Scope) : minicppBaseVisitor<FuncDef>() {
         val funHead = ctx.funcHead().accept(FuncHeadVisitor())
         val childScope = Scope(parent = scope)
         funHead.run {
-            if(!scope.functionExists(this)) {
-                scope.addFunction(
-                    ident = ident,
-                    returnType =type,
-                    formParList = formParList
-                )
-            }
-            if(formParList is FormParListEntries) {
+            scope.addFunction(
+                ident = ident,
+                returnType = type,
+                formParList = formParList,
+                definesFunction = true
+            )
+
+            if (formParList is FormParListEntries) {
                 formParList.entries.forEach { entry ->
                     childScope.addVariable(
                         ident = entry.ident,
@@ -28,7 +29,7 @@ class FuncDefVisitor(private val scope: Scope) : minicppBaseVisitor<FuncDef>() {
             }
         }
 
-        val funcDef =  FuncDef(
+        val funcDef = FuncDef(
             funHead = funHead,
             block = ctx.block().accept(BlockVisitor(childScope))
         )

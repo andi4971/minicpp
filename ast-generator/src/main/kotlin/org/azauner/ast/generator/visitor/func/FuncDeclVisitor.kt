@@ -13,7 +13,8 @@ class FuncDeclVisitor(private val scope: Scope) : minicppBaseVisitor<FuncDecl>()
             scope.addFunction(
                 ident = ident,
                 returnType = type,
-                formParList= formParList ?: VoidFormParListChild
+                formParList= formParList ?: VoidFormParListChild,
+                definesFunction = false
             )
         }
 
