@@ -5,6 +5,8 @@ import org.azauner.ast.generator.visitor.block.BlockVisitor
 import org.azauner.ast.generator.visitor.expr.ExprVisitor
 import org.azauner.ast.node.*
 import org.azauner.ast.node.scope.Scope
+import org.azauner.ast.util.getType
+import org.azauner.ast.util.requireSemantic
 import org.azauner.parser.minicppBaseVisitor
 import org.azauner.parser.minicppParser
 
@@ -27,14 +29,18 @@ class StatVisitor(private val scope: Scope) : minicppBaseVisitor<Stat>() {
             condition = ctx.expr().accept(ExprVisitor(scope)),
             thenStat = ctx.stat().accept(StatVisitor(scope)),
             elseStat = ctx.elseStat()?.stat()?.accept(StatVisitor(scope))
-        )
+        ).also {
+            requireSemantic(it.condition.getType(scope) == ExprType.BOOL) { "If condition must be of type bool" }
+        }
     }
 
     override fun visitWhileStat(ctx: minicppParser.WhileStatContext): Stat {
         return WhileStat(
             condition = ctx.expr().accept(ExprVisitor(scope)),
             whileStat = ctx.stat().accept(StatVisitor(scope))
-        )
+        ).also {
+            requireSemantic(it.condition.getType(scope) == ExprType.BOOL) { "While condition must be of type bool" }
+        }
     }
 
     override fun visitBreakStat(ctx: minicppParser.BreakStatContext): Stat {
@@ -42,9 +48,11 @@ class StatVisitor(private val scope: Scope) : minicppBaseVisitor<Stat>() {
     }
 
     override fun visitInputStat(ctx: minicppParser.InputStatContext): Stat {
-        val inputStat =  InputStat(ctx.IDENT().accept(IdentVisitor()))
+        val inputStat = InputStat(ctx.IDENT().accept(IdentVisitor()))
 
-        scope.checkVariableExists(inputStat.ident)
+        requireSemantic(scope.getVariable(inputStat.ident).type in INIT_TYPES_NOT_NULL) {
+            "Input can only be used on non-pointer types"
+        }
 
         return inputStat
     }
@@ -55,8 +63,11 @@ class StatVisitor(private val scope: Scope) : minicppBaseVisitor<Stat>() {
 
 
     override fun visitDeleteStat(ctx: minicppParser.DeleteStatContext): Stat {
-        val deleteStat =  DeleteStat(ctx.IDENT().accept(IdentVisitor()))
+        val deleteStat = DeleteStat(ctx.IDENT().accept(IdentVisitor()))
 
+        requireSemantic(scope.getVariable(deleteStat.ident).type in ARR_TYPES) {
+            "Delete can only be used on pointers"
+        }
         scope.checkVariableExists(deleteStat.ident)
 
         return deleteStat

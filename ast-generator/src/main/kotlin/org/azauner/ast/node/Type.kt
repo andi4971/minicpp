@@ -19,4 +19,5 @@ enum class ExprType {
 val ARR_TYPES = setOf(ExprType.BOOL_ARR, ExprType.INT_ARR,
     /*ExprType.BOOL_ARR_PTR, ExprType.INT_ARR_PTR*/
 )
-val NON_POINTER_INIT_TYPES = setOf(ExprType.INT, ExprType.BOOL)
+val INIT_TYPES_NOT_NULL = setOf(ExprType.INT, ExprType.BOOL)
+

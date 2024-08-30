@@ -137,7 +137,7 @@ private fun Fact.getType(scope: Scope): ExprType {
         is BoolType -> ExprType.BOOL
         is ExprFact -> expr.getType(scope)
         is NewArrayTypeFact -> {
-            requireSemantic(type in NON_POINTER_INIT_TYPES) {
+            requireSemantic(type in INIT_TYPES_NOT_NULL) {
                 "cannot create array of type $type"
             }
             type.toArrayType()
