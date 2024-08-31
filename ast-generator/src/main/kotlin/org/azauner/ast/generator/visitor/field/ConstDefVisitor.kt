@@ -3,7 +3,10 @@ import org.azauner.ast.generator.visitor.IdentVisitor
 import org.azauner.ast.generator.visitor.TypeVisitor
 import org.azauner.ast.node.ConstDef
 import org.azauner.ast.node.ConstDefEntry
+import org.azauner.ast.node.ExprType
 import org.azauner.ast.node.scope.Scope
+import org.azauner.ast.util.getExprType
+import org.azauner.ast.util.requireSemantic
 import org.azauner.parser.minicppBaseVisitor
 import org.azauner.parser.minicppParser
 class ConstDefVisitor(private val scope: Scope) : minicppBaseVisitor<ConstDef>() {
@@ -16,8 +19,16 @@ class ConstDefVisitor(private val scope: Scope) : minicppBaseVisitor<ConstDef>()
             ConstDefEntry(ident, init)
         }
         idents.forEach { node ->
+            validateNodeInit(node, type)
             scope.addVariable(node.ident, type, const = true)
         }
         return ConstDef(type, idents)
+    }
+
+    private fun validateNodeInit(node: ConstDefEntry, type: ExprType) {
+        val initType = node.value.value.getExprType()
+        requireSemantic(initType == type) {
+            "Type mismatch: $initType != $type"
+        }
     }
 }

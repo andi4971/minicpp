@@ -32,4 +32,16 @@ class ExprTest: SemanticTest() {
             )
         }
     }
+
+    @Test
+    fun testAssignToConstInvalid() {
+        assertThrows<SemanticException> {
+            testCodeInMain(
+                """
+                  const int test = 5;
+                  test = 6;  
+            """.trimIndent()
+            )
+        }
+    }
 }

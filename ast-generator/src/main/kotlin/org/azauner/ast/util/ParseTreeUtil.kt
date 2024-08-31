@@ -14,10 +14,10 @@ fun Expr.validate(scope: Scope) {
 }
 
 fun Expr.getType(scope: Scope): ExprType {
-    val firstType = firstExpr.getType(scope)
+    val firstType = firstExpr
     return if (exprEntries.isNotEmpty()) {
         val firstEntry = exprEntries.first()
-        validateExprEntry(firstType, firstEntry.assignOperator, firstEntry.orExpr.getType(scope))
+        validateExprEntry(firstExpr, firstEntry.assignOperator, firstEntry.orExpr.getType(scope), scope)
         //todo check how this should work
         exprEntries.drop(1).forEach {
             requireSemantic(it.orExpr.getType(scope) == ExprType.BOOL) {
@@ -26,12 +26,26 @@ fun Expr.getType(scope: Scope): ExprType {
         }
         ExprType.BOOL
     } else {
-        return firstType
+        return firstType.getType(scope)
     }
 }
 
-fun validateExprEntry(firstType: ExprType, operator: AssignOperator, secondType: ExprType) {
+fun OrExpr.getIdent(): Ident {
+    this.andExpressions.first().relExpressions.first().firstExpr.term.firstNotFact.fact.let {
+        return when (it) {
+            is ActionFact -> it.ident
+            else -> throw SemanticException("could not find ident")
+        }
+    }
+}
+
+fun validateExprEntry(firstExpr: OrExpr, operator: AssignOperator, secondType: ExprType, scope: Scope) {
+    val firstType = firstExpr.getType(scope)
     if (operator == AssignOperator.ASSIGN) {
+        val variable = scope.getVariable(firstExpr.getIdent())
+        requireSemantic(!variable.const) {
+            "Cannot assign to const variable"
+        }
           requireSemantic(firstType == secondType) {
                 "First and second type have to be the same"
         }
