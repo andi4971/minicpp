@@ -14,7 +14,7 @@ void main() {
 
   cout << "n > ";
   cin >> n;
-  
+
   if (n < 3) {
     cout << "error: number too small (min. 3)" << endl;
     return;
@@ -22,12 +22,12 @@ void main() {
     cout << "error: number too large (max. 46340)" << endl;
     return;
   } // if
-  
+
   Sieve(n);
-  
+
   // int dummy;
   // cin >> dummy;
-  
+
 } // main
 
 void Seas(int a, bool b) {

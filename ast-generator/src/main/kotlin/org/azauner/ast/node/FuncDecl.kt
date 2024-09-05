@@ -1,3 +1,12 @@
 package org.azauner.ast.node
 
-data class FuncDecl(val funcHead: FuncHead): MiniCppEntry
+import org.azauner.ast.SourceCodeGenerator
+
+data class FuncDecl(val funcHead: FuncHead): MiniCppEntry, SourceCodeGenerator {
+    override fun generateSourceCode(sb: StringBuilder) {
+        funcHead.generateSourceCode(sb)
+        sb.appendLine(";")
+        sb.appendLine()
+    }
+
+}

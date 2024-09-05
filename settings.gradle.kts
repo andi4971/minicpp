@@ -4,3 +4,5 @@ plugins {
 rootProject.name = "minicpp"
 include("parser")
 include("ast-generator")
+include("bytecode-generator")
+include("sourcecode-generator")

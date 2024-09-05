@@ -25,7 +25,7 @@ abstract class SemanticTest {
         val tokenStream = BufferedTokenStream(lexer)
         val parser = minicppParser(tokenStream)
 
-        MiniCppVisitor().visit(parser.miniCpp())
+        MiniCppVisitor("test").visit(parser.miniCpp())
     }
 
     companion object {
