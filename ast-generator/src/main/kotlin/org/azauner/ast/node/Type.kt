@@ -1,15 +1,16 @@
 package org.azauner.ast.node
 
+import aj.org.objectweb.asm.Type
 import org.azauner.ast.SourceCodeGenerator
 
-enum class ExprType: SourceCodeGenerator {
-    VOID,
-    BOOL,
-    INT,
+enum class ExprType(val descriptor: String = ""): SourceCodeGenerator {
+    VOID(Type.VOID_TYPE.descriptor),
+    BOOL(Type.BOOLEAN_TYPE.descriptor),
+    INT(Type.INT_TYPE.descriptor),
     NULLPTR,
     //used when an index operation on the array is performed
-    INT_ARR,
-    BOOL_ARR,
+    INT_ARR("[I"),
+    BOOL_ARR("[Z"),
 
     INT_PTR,
     BOOL_PTR;

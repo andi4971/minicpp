@@ -8,10 +8,10 @@ import org.azauner.parser.minicppLexer
 import org.azauner.parser.minicppParser
 import java.io.InputStream
 
-fun generateASTForFile(inputStream: InputStream, fileName: String): MiniCpp {
+fun generateASTForFile(inputStream: InputStream, className: String): MiniCpp {
     val charStream = CharStreams.fromStream(inputStream)
     val lexer = minicppLexer(charStream)
     val tokenStream = BufferedTokenStream(lexer)
     val parser = minicppParser(tokenStream)
-    return MiniCppVisitor(fileName).visit(parser.miniCpp())
+    return MiniCppVisitor(className).visit(parser.miniCpp())
 }

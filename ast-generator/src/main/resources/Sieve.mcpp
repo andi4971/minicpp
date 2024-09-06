@@ -5,8 +5,8 @@
 
 void Sieve(int n); // declaration
 
-const int lol = 10;
-int seppl = 0;
+const int lol = 12;
+int seppster = 15;
 
 void main() {
 

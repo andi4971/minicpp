@@ -6,13 +6,15 @@ import kotlin.io.path.Path
 fun main() {
     val fileName = "Sieve.mcpp"
     val inputStream = ClassLoader.getSystemResourceAsStream(fileName)
-
+    val className = fileName.substringBefore(".mcpp")
 
 
     //walker.walk(MiniCppListener(parser), parser.miniCpp())
-    val result = generateASTForFile(inputStream, fileName)
+    val result = generateASTForFile(inputStream, className)
     //println(result.prettyPrint())
     Files.writeString(Path("examples/output.mcpp"), result.generateSourceCode())
+
+    writeClassNodeToFile(result.generateClassNode(), Path("examples/output.class"))
 }
 
 fun Any.prettyPrint(): String {
