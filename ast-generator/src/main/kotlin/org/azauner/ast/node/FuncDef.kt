@@ -18,8 +18,9 @@ data class FuncDef(val funHead: FuncHead, val block: Block): MiniCppEntry, Sourc
             funHead.getDescriptor(),
             null,
             null
-
         )
+        //add instructions to methodNode
+        methodNode.instructions.add(block.getInstructions())
 
         return methodNode
     }
