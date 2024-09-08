@@ -1,24 +1,11 @@
 package org.azauner.ast.node
 
 import aj.org.objectweb.asm.Opcodes
-import org.azauner.ast.SourceCodeGenerator
 import org.azauner.ast.bytecode.FieldNodeProvider
 import org.objectweb.asm.tree.FieldNode
 
-data class VarDef(val type: ExprType, val entries: List<VarDefEntry>): BlockEntry, MiniCppEntry, SourceCodeGenerator,
+data class VarDef(val type: ExprType, val entries: List<VarDefEntry>): BlockEntry, MiniCppEntry,
     FieldNodeProvider {
-
-    override fun generateSourceCode(sb: StringBuilder) {
-        type.generateSourceCode(sb)
-        sb.append(" ")
-        entries.forEachIndexed { index, entry ->
-            entry.generateSourceCode(sb)
-            if (index != entries.lastIndex) {
-                sb.append(", ")
-            }
-        }
-        sb.appendLine(";")
-    }
 
     override fun getFieldNode(isStatic: Boolean): List<FieldNode> {
         return entries.map { entry ->

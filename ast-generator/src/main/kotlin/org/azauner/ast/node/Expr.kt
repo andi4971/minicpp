@@ -1,18 +1,7 @@
 package org.azauner.ast.node
 
-import org.azauner.ast.SourceCodeGenerator
 
-data class Expr(val firstExpr: OrExpr, val exprEntries: List<ExprEntry>) : OutputStatEntry, SourceCodeGenerator {
-    override fun generateSourceCode(sb: StringBuilder) {
-        firstExpr.generateSourceCode(sb)
-        exprEntries.forEach {
-            sb.append(it.assignOperator.sourceCode)
-            sb.append(" ")
-            it.orExpr.generateSourceCode(sb)
-            sb.append(" ")
-        }
-    }
-}
+data class Expr(val firstExpr: OrExpr, val exprEntries: List<ExprEntry>) : OutputStatEntry
 
 data class ExprEntry(val orExpr: OrExpr, val assignOperator: AssignOperator)
 

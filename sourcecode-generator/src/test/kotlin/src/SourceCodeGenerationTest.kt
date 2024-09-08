@@ -1,5 +1,6 @@
-package gen.src
+package src
 
+import generateSourceCode
 import org.azauner.ast.generator.generateASTForFile
 import kotlin.test.Test
 

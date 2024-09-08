@@ -1,6 +1,5 @@
 package org.azauner.ast.node
 
-import org.azauner.ast.SourceCodeGenerator
 import org.azauner.ast.bytecode.FieldNodeProvider
 import org.azauner.ast.node.scope.Scope
 import org.objectweb.asm.tree.ClassNode
@@ -10,16 +9,6 @@ data class MiniCpp(
     val globalScope: Scope,
     val entries: List<MiniCppEntry>
 ) {
-
-    fun generateSourceCode(): String {
-        val sb = StringBuilder()
-        entries.forEach {
-            when (it) {
-            is SourceCodeGenerator -> it.generateSourceCode(sb)
-            else -> sb.appendLine(";")
-        } }
-        return sb.toString()
-    }
 
     fun generateClassNode(): ClassNode {
        return ClassNode().run {

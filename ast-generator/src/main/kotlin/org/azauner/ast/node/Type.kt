@@ -1,9 +1,8 @@
 package org.azauner.ast.node
 
 import aj.org.objectweb.asm.Type
-import org.azauner.ast.SourceCodeGenerator
 
-enum class ExprType(val descriptor: String = ""): SourceCodeGenerator {
+enum class ExprType(val descriptor: String = "") {
     VOID(Type.VOID_TYPE.descriptor),
     BOOL(Type.BOOLEAN_TYPE.descriptor),
     INT(Type.INT_TYPE.descriptor),
@@ -14,19 +13,6 @@ enum class ExprType(val descriptor: String = ""): SourceCodeGenerator {
 
     INT_PTR,
     BOOL_PTR;
-
-    override fun generateSourceCode(sb: StringBuilder) {
-        when (this) {
-            VOID -> sb.append("void")
-            BOOL -> sb.append("bool")
-            INT -> sb.append("int")
-            NULLPTR -> sb.append("nullptr")
-            INT_ARR -> sb.append("int[]")
-            BOOL_ARR -> sb.append("bool[]")
-            INT_PTR -> sb.append("int*")
-            BOOL_PTR -> sb.append("bool*")
-        }
-    }
 
     /*//used when the array as a whole is used
     BOOL_ARR_PTR,
