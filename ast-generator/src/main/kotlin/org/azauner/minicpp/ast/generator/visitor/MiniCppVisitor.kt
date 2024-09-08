@@ -12,7 +12,7 @@ class MiniCppVisitor(private val className: String) : minicppBaseVisitor<MiniCpp
         return MiniCpp(
             globalScope = scope,
             entries = entries,
-            fileName = className
+            className = className
         )
     }
 }

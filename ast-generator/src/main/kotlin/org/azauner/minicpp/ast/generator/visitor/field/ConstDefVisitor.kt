@@ -16,17 +16,16 @@ class ConstDefVisitor(private val scope: Scope) : minicppBaseVisitor<ConstDef>()
         val idents = ctx.constDefEntry().map { entry ->
             val ident = entry.IDENT().accept(IdentVisitor())
             val init = entry.init().accept(InitVisitor())
-            ConstDefEntry(ident, init)
+
+            validateTypes(type, init.value.getExprType())
+            val variable = scope.addVariable(ident, type, const = true)
+            ConstDefEntry(ident, init, variable)
         }
-        idents.forEach { node ->
-            validateNodeInit(node, type)
-            scope.addVariable(node.ident, type, const = true)
-        }
+
         return ConstDef(type, idents)
     }
 
-    private fun validateNodeInit(node: ConstDefEntry, type: ExprType) {
-        val initType = node.value.value.getExprType()
+    private fun validateTypes(type: ExprType, initType: ExprType) {
         requireSemantic(initType == type) {
             "Type mismatch: $initType != $type"
         }

@@ -8,12 +8,28 @@ class Scope(private val parent: Scope?) {
     private val variables = mutableListOf<Variable>()
     private val functions: MutableList<Function> = mutableListOf()
 
-    fun addVariable(ident: Ident, type: ExprType, const: Boolean = false) {
-        val variable = Variable(ident, type, const)
-        if (variableExists(variable)) {
-            throw SemanticException("Variable ${variable.ident} already exists")
+    fun addVariable(ident: Ident, type: ExprType, const: Boolean = false): Variable {
+        if (variableExists(ident)) {
+            throw SemanticException("Variable $ident already exists")
         }
-        variables.add(variable)
+        val static = isGlobalScope
+        return Variable(ident, type, const, static, getNextAvailableIndex(static))
+            .also { variables.add(it) }
+    }
+
+    private val isGlobalScope: Boolean
+        get() = parent == null
+
+    private fun getNextAvailableIndex(static: Boolean): Int {
+        if(static) {
+            return -1
+        }
+        val nonStaticVars = variables.filterNot { it.static }
+        return if (nonStaticVars.isEmpty()) {
+            parent?.getNextAvailableIndex(static) ?: 0
+        } else {
+            nonStaticVars.maxOf { it.index } + 1
+        }
     }
 
     fun getVariable(ident: Ident): Variable {
@@ -22,13 +38,8 @@ class Scope(private val parent: Scope?) {
             ?: throw SemanticException("Variable does not exist")
     }
 
-    private fun variableExists(variable: Variable): Boolean {
-        return variables.contains(variable)
-                || parent?.variableExists(variable)
-                ?: false
-    }
 
-    fun variableExists(ident: Ident): Boolean {
+    private fun variableExists(ident: Ident): Boolean {
         return variables.any { it.ident == ident }
                 || parent?.variableExists(ident)
                 ?: false
@@ -40,7 +51,7 @@ class Scope(private val parent: Scope?) {
         }
     }
 
-    fun addFunction(ident: Ident,returnType: ExprType, formParList: FormParList?, definesFunction: Boolean) {
+    fun addFunction(ident: Ident, returnType: ExprType, formParList: FormParList?, definesFunction: Boolean) {
 
         val function = tryGetFunction(ident, formParList.toExprTypes())
 
@@ -48,12 +59,14 @@ class Scope(private val parent: Scope?) {
             function != null && function.isDefined -> {
                 throw SemanticException("Function already defined")
             }
+
             function != null -> {
                 requireSemantic(definesFunction) {
                     "Function already declared"
                 }
                 function.isDefined = true
             }
+
             else -> {
                 functions.add(Function(ident, returnType, formParList.toExprTypes(), definesFunction))
             }
@@ -85,6 +98,7 @@ class Scope(private val parent: Scope?) {
 private fun List<FormParListEntry>.toExprTypes(): List<ExprType> {
     return map { entry -> entry.type }
 }
+
 private fun FormParList?.toExprTypes(): List<ExprType> {
     return when (this) {
         is FormParListEntries -> entries.toExprTypes()
