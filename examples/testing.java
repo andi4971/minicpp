@@ -1,11 +1,14 @@
 class Test {
 
-    static int a = 500000;
-
     public static void main(String[] args) {
-        int[] arr = new int[10];
-        arr[3]= a ;
-        arr = null;
-        args = null;
+       int i = 0;
+        while(i < 10) {
+            int z = 5;
+            i++;
+            if(i== z) {
+                int res = 22;
+            }
+       }
+        int y = 8;
     }
 }

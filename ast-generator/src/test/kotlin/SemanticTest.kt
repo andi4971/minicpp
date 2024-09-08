@@ -1,7 +1,7 @@
 import org.antlr.v4.runtime.BufferedTokenStream
 import org.antlr.v4.runtime.CharStreams
-import org.azauner.ast.generator.aspect.SemanticErrorAspect
-import org.azauner.ast.generator.visitor.MiniCppVisitor
+import org.azauner.minicpp.ast.generator.aspect.SemanticErrorAspect
+import org.azauner.minicpp.ast.generator.visitor.MiniCppVisitor
 import org.azauner.parser.minicppLexer
 import org.azauner.parser.minicppParser
 import org.junit.jupiter.api.BeforeAll

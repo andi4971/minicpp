@@ -1,7 +1,7 @@
 package expr
 
 import SemanticTest
-import org.azauner.ast.generator.exception.SemanticException
+import org.azauner.minicpp.ast.generator.exception.SemanticException
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows

@@ -1,7 +1,6 @@
 package src
 
-import generateSourceCode
-import org.azauner.ast.generator.generateASTForFile
+import org.azauner.minicpp.sourcecode.generateSourceCode
 import kotlin.test.Test
 
 class SourceCodeGenerationTest {
@@ -10,9 +9,10 @@ class SourceCodeGenerationTest {
     fun testMultipleAstGenerations() {
         val filename = "Sieve.mcpp"
         val sourceCode = ClassLoader.getSystemResourceAsStream(filename)
-        val firstParse = generateASTForFile(sourceCode, filename)
+        val firstParse = org.azauner.minicpp.ast.generator.generateASTForFile(sourceCode, filename)
         val sourceCodeFromParse = firstParse.generateSourceCode()
-        val secondParse = generateASTForFile(sourceCodeFromParse.byteInputStream(), filename)
+        val secondParse =
+            org.azauner.minicpp.ast.generator.generateASTForFile(sourceCodeFromParse.byteInputStream(), filename)
         val sourceCodeFromSecondParse = secondParse.generateSourceCode()
         assert(sourceCodeFromParse == sourceCodeFromSecondParse)
     }
