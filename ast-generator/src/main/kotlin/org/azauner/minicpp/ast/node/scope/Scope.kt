@@ -5,8 +5,13 @@ import org.azauner.minicpp.ast.node.*
 import org.azauner.minicpp.ast.util.requireSemantic
 
 class Scope(private val parent: Scope?) {
+
+    init {
+        parent?.childScopes?.add(this)
+    }
     private val variables = mutableListOf<Variable>()
     private val functions: MutableList<Function> = mutableListOf()
+    private val childScopes = mutableListOf<Scope>()
 
     fun addVariable(ident: Ident, type: ExprType, const: Boolean = false): Variable {
         if (variableExists(ident)) {
@@ -45,6 +50,11 @@ class Scope(private val parent: Scope?) {
                 ?: false
     }
 
+    fun variableExistsInSelfOrChildren(ident: Ident): Boolean {
+        return variables.any { it.ident == ident }
+                || childScopes.any { it.variableExistsInSelfOrChildren(ident) }
+    }
+
     fun checkVariableExists(ident: Ident) {
         if (!variableExists(ident)) {
             throw SemanticException("Variable $ident does not exist")
@@ -71,13 +81,6 @@ class Scope(private val parent: Scope?) {
                 functions.add(Function(ident, returnType, formParList.toExprTypes(), definesFunction))
             }
         }
-    }
-
-    fun functionExists(funcHead: FuncHead): Boolean {
-        return tryGetFunction(
-            funcHead.ident,
-            (funcHead.formParList ?: VoidFormParListChild).toExprTypes()
-        ) != null
     }
 
     private fun tryGetFunction(ident: Ident, formParTypes: List<ExprType>): Function? {

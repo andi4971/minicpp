@@ -76,7 +76,6 @@ void Sieve(int n) { // defintion
   } // while
   
   delete[] sieve;
-  
 } // Sieve
 
 // End of Sieve.mcpp

@@ -48,7 +48,7 @@ class StatVisitor(private val scope: Scope) : minicppBaseVisitor<Stat>() {
     }
 
     override fun visitInputStat(ctx: minicppParser.InputStatContext): Stat {
-        val inputStat = InputStat(ctx.IDENT().accept(IdentVisitor()))
+        val inputStat = InputStat(ctx.IDENT().accept(IdentVisitor()), scope)
 
         requireSemantic(scope.getVariable(inputStat.ident).type in INIT_TYPES_NOT_NULL) {
             "Input can only be used on non-pointer types"
@@ -63,7 +63,7 @@ class StatVisitor(private val scope: Scope) : minicppBaseVisitor<Stat>() {
 
 
     override fun visitDeleteStat(ctx: minicppParser.DeleteStatContext): Stat {
-        val deleteStat = DeleteStat(ctx.IDENT().accept(IdentVisitor()))
+        val deleteStat = DeleteStat(ctx.IDENT().accept(IdentVisitor()), scope)
 
         requireSemantic(scope.getVariable(deleteStat.ident).type in ARR_TYPES) {
             "Delete can only be used on pointers"

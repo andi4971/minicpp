@@ -1,5 +1,8 @@
 package org.azauner.minicpp.ast.node
 
+import org.azauner.minicpp.ast.node.scope.Scope
+
+
 sealed interface Stat: BlockEntry
 
 data object EmptyStat : Stat
@@ -13,13 +16,13 @@ data class WhileStat(val condition: Expr, val whileStat: Stat): Stat
 
 data object BreakStat : Stat
 
-data class InputStat(val ident: Ident): Stat
+data class InputStat(val ident: Ident,val  scope: Scope): Stat
 
 class OutputStat(val entries: List<OutputStatEntry>) : Stat
 
 
 sealed interface OutputStatEntry
 
-data class DeleteStat(val ident: Ident): Stat
+data class DeleteStat(val ident: Ident,val  scope: Scope): Stat
 
 data class ReturnStat(val expr: Expr?): Stat

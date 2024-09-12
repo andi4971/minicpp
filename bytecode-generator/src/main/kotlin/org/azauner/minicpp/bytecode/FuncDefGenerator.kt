@@ -1,24 +1,41 @@
 package org.azauner.minicpp.bytecode
 
+import org.azauner.minicpp.ast.node.FormParListEntries
 import org.azauner.minicpp.ast.node.FuncDef
+import org.azauner.minicpp.ast.node.FuncHead
+import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.Opcodes
-import org.objectweb.asm.tree.MethodNode
 
-class FuncDefGenerator(private val funcDef: FuncDef) {
+class FuncDefGenerator(private val classWriter: ClassWriter, private val className: String) {
 
-    fun getMethodNode(): MethodNode {
-        val methodNode = MethodNode(
+    fun generate(funcDef: FuncDef) {
+        val methodVisitor = classWriter.visitMethod(
             Opcodes.ACC_PUBLIC or Opcodes.ACC_STATIC,
             funcDef.funHead.ident.name,
             funcDef.funHead.getDescriptor(),
             null,
             null
         )
-        //add instructions to methodNode
-/*
-        methodNode.instructions.add(funcDef.block.getInstructions())
-*/
 
-        return methodNode
+        methodVisitor.run {
+            visitCode()
+            BlockGenerator(methodVisitor, className).generate(funcDef.block)
+            visitInsn(Opcodes.RETURN)
+            visitEnd()
+        }
     }
+
+
+}
+
+fun FuncHead.getDescriptor(): String {
+    val descriptor = StringBuilder("(")
+    if (formParList != null && formParList is FormParListEntries) {
+        (formParList as FormParListEntries).entries.forEach {
+            descriptor.append(it.type.descriptor)
+        }
+    }
+    descriptor.append(")V")
+    //descriptor.append(type.descriptor)
+    return descriptor.toString()
 }
