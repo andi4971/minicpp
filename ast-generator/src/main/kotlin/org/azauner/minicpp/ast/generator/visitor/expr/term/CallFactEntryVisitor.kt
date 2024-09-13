@@ -17,13 +17,14 @@ class CallFactEntryVisitor(private val scope: Scope) : minicppBaseVisitor<Action
             prefix = ctx.preIncDec?.getTerminalNodeFromTokenList(ctx.INC_DEC())?.accept(IncDecVisitor()),
             ident = ctx.IDENT().accept(IdentVisitor()),
             suffix = ctx.postIncDec?.getTerminalNodeFromTokenList(ctx.INC_DEC())?.accept(IncDecVisitor()),
-            actionOp = ctx.callFactEntryOperation()?.accept(CallFactEntryOperationVisitor(scope))
+            actionOp = ctx.callFactEntryOperation()?.accept(CallFactEntryOperationVisitor(scope)),
+            scope = scope
         )
         //todo move to expr logic
         actionFact.run {
             when {
                 actionOp != null && actionOp is CallOperation -> {
-                    scope.getFunction(ident, actionOp.actParList.map { it.getType(scope) })
+                    scope.getFunction(ident, actionOp.actParList.map { it.getType() })
                 }
                 actionOp != null && actionOp is ArrayAccessOperation  -> {
                     //todo check if is array

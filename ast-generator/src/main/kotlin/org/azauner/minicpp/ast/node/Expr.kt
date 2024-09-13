@@ -1,7 +1,9 @@
 package org.azauner.minicpp.ast.node
 
+import org.azauner.minicpp.ast.node.scope.Scope
 
-data class Expr(val firstExpr: OrExpr, val exprEntries: List<ExprEntry>) : OutputStatEntry
+
+data class Expr(val firstExpr: OrExpr, val exprEntries: List<ExprEntry>, val scope: Scope) : OutputStatEntry
 
 data class ExprEntry(val orExpr: OrExpr, val assignOperator: AssignOperator)
 

@@ -11,9 +11,10 @@ class ExprVisitor(private val scope: Scope) : minicppBaseVisitor<Expr>() {
     override fun visitExpr(ctx: minicppParser.ExprContext): Expr {
         return Expr(
             firstExpr = ctx.orExpr().accept(OrExprVisitor(scope)),
-            exprEntries = ctx.exprEntry().map { it.accept(ExprEntryVisitor(scope)) }
+            exprEntries = ctx.exprEntry().map { it.accept(ExprEntryVisitor(scope)) },
+            scope = scope
         ).also {
-            it.validate(scope)
+            it.validate()
         }
 
     }

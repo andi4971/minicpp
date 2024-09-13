@@ -10,6 +10,8 @@ class Test {
     public static void main(String[] args) {
 
        a = in.nextInt();
+       int[] arr = new int[10];
+       arr[3] = 5;
         /*int i = 0;
        boolean x = false;
        x = true;

@@ -30,7 +30,7 @@ class StatVisitor(private val scope: Scope) : minicppBaseVisitor<Stat>() {
             thenStat = ctx.stat().accept(StatVisitor(scope)),
             elseStat = ctx.elseStat()?.stat()?.accept(StatVisitor(scope))
         ).also {
-            requireSemantic(it.condition.getType(scope) == ExprType.BOOL) { "If condition must be of type bool" }
+            requireSemantic(it.condition.getType() == ExprType.BOOL) { "If condition must be of type bool" }
         }
     }
 
@@ -39,7 +39,7 @@ class StatVisitor(private val scope: Scope) : minicppBaseVisitor<Stat>() {
             condition = ctx.expr().accept(ExprVisitor(scope)),
             whileStat = ctx.stat().accept(StatVisitor(scope))
         ).also {
-            requireSemantic(it.condition.getType(scope) == ExprType.BOOL) { "While condition must be of type bool" }
+            requireSemantic(it.condition.getType() == ExprType.BOOL) { "While condition must be of type bool" }
         }
     }
 

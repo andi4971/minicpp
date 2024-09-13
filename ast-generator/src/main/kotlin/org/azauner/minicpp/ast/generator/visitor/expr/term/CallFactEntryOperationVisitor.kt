@@ -10,14 +10,17 @@ import org.azauner.parser.minicppParser
 
 class CallFactEntryOperationVisitor(private val scope: Scope) : minicppBaseVisitor<ActionOperation>() {
     override fun visitExprFactOperation(ctx: minicppParser.ExprFactOperationContext): ActionOperation {
-        return ArrayAccessOperation(ctx.expr().accept(ExprVisitor(scope)))
+        return ArrayAccessOperation(ctx.expr().accept(ExprVisitor(scope)), scope)
     }
 
     override fun visitActParListFactOperation(ctx: minicppParser.ActParListFactOperationContext): ActionOperation {
-
-        return CallOperation(ctx.actParList()
+        val actParList = ctx.actParList()
             ?.expr()
             ?.map { it.accept(ExprVisitor(scope)) }
-            .orEmpty())
+            .orEmpty()
+        return CallOperation(
+            actParList,
+            scope
+        )
     }
 }

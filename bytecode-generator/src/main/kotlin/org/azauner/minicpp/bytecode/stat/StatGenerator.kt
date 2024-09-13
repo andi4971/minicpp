@@ -1,6 +1,7 @@
 package org.azauner.minicpp.bytecode.stat
 
 import org.azauner.minicpp.ast.node.*
+import org.azauner.minicpp.ast.util.getType
 import org.azauner.minicpp.bytecode.BlockGenerator
 import org.azauner.minicpp.bytecode.MiniCppGenerator.Companion.scannerVarName
 import org.azauner.minicpp.bytecode.field.SCANNER_DESC
@@ -17,6 +18,7 @@ class StatGenerator(val mv: MethodVisitor, private val className: String) {
             is BlockStat -> BlockGenerator(mv, className).generate(stat.block)
             is DeleteStat -> generateDeleteStat(stat)
             is ReturnStat -> generateReturnStat(stat)
+            is OutputStat -> OutputStatGenerator(mv).generate(stat)
             else -> ""
             /* is
             BreakStat -> TODO()
@@ -28,13 +30,16 @@ class StatGenerator(val mv: MethodVisitor, private val className: String) {
         }
     }
 
+
     private fun generateReturnStat(stat: ReturnStat) {
-        if (stat.expr != null) {
-            //TODO
-            /*val exprGenerator = ExprGenerator(mv, className)
-            exprGenerator.generate(stat.expr)*/
-        }
-        mv.visitInsn(Opcodes.ARETURN)
+        val returnCode = stat.expr?.let {
+            when (it.getType()) {
+                ExprType.INT, ExprType.BOOL -> Opcodes.IRETURN
+                else -> Opcodes.ARETURN
+            }
+
+        } ?: Opcodes.RETURN
+        mv.visitInsn(returnCode)
     }
 
     private fun generateDeleteStat(stat: DeleteStat) {

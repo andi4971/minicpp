@@ -9,24 +9,24 @@ import org.azauner.minicpp.ast.node.scope.Scope
 fun Token.getTerminalNodeFromTokenList(list: List<TerminalNode>): TerminalNode =
     list.first { it.symbol.tokenIndex == this.tokenIndex }
 
-fun Expr.validate(scope: Scope) {
-    this.getType(scope)
+fun Expr.validate() {
+    this.getType()
 }
 
-fun Expr.getType(scope: Scope): ExprType {
+fun Expr.getType(): ExprType {
     val firstType = firstExpr
     return if (exprEntries.isNotEmpty()) {
         val firstEntry = exprEntries.first()
-        validateExprEntry(firstExpr, firstEntry.assignOperator, firstEntry.orExpr.getType(scope), scope)
+        validateExprEntry(firstExpr, firstEntry.assignOperator, firstEntry.orExpr.getType(), scope)
         //todo check how this should work
         exprEntries.drop(1).forEach {
-            requireSemantic(it.orExpr.getType(scope) == ExprType.BOOL) {
+            requireSemantic(it.orExpr.getType() == ExprType.BOOL) {
                 "All or expressions have to be of type bool"
             }
         }
         ExprType.BOOL
     } else {
-        return firstType.getType(scope)
+        return firstType.getType()
     }
 }
 
@@ -40,7 +40,7 @@ fun OrExpr.getIdent(): Ident {
 }
 
 fun validateExprEntry(firstExpr: OrExpr, operator: AssignOperator, secondType: ExprType, scope: Scope) {
-    val firstType = firstExpr.getType(scope)
+    val firstType = firstExpr.getType()
     if (operator == AssignOperator.ASSIGN) {
         val variable = scope.getVariable(firstExpr.getIdent())
         requireSemantic(!variable.const) {
@@ -56,38 +56,38 @@ fun validateExprEntry(firstExpr: OrExpr, operator: AssignOperator, secondType: E
     }
 }
 
-fun OrExpr.getType(scope: Scope): ExprType {
+fun OrExpr.getType(): ExprType {
     return if (andExpressions.size > 1) {
         andExpressions.forEach {
-            requireSemantic(it.getType(scope) == ExprType.BOOL) {
-                "required all expressions to be type bool but found one with ${it.getType(scope)}"
+            requireSemantic(it.getType() == ExprType.BOOL) {
+                "required all expressions to be type bool but found one with ${it.getType()}"
             }
         }
 
         ExprType.BOOL
     } else {
-        andExpressions.first().getType(scope)
+        andExpressions.first().getType()
     }
 }
 
-private fun AndExpr.getType(scope: Scope): ExprType {
+private fun AndExpr.getType(): ExprType {
     return if (relExpressions.size > 1) {
-        requireSemantic(relExpressions.all { it.getType(scope) == ExprType.BOOL }) {
+        requireSemantic(relExpressions.all { it.getType() == ExprType.BOOL }) {
             "All rel expressions have to be of type bool"
         }
         ExprType.BOOL
     } else {
-        relExpressions.first().getType(scope)
+        relExpressions.first().getType()
     }
 }
 
-private fun RelExpr.getType(scope: Scope): ExprType {
-    val firstType = firstExpr.getType(scope)
+private fun RelExpr.getType(): ExprType {
+    val firstType = firstExpr.getType()
     return if (relExprEntries.isNotEmpty()) {
         val firstEntry = relExprEntries.first()
-        validateRelExpOperatorTypes(firstType, firstEntry.relOperator, firstEntry.simpleExpr.getType(scope))
+        validateRelExpOperatorTypes(firstType, firstEntry.relOperator, firstEntry.simpleExpr.getType())
         relExprEntries.drop(1).forEach {
-            requireSemantic(it.simpleExpr.getType(scope) == ExprType.BOOL) {
+            requireSemantic(it.simpleExpr.getType() == ExprType.BOOL) {
                 "All simple expressions have to be of type bool"
             }
         }
@@ -108,15 +108,15 @@ private fun validateRelExpOperatorTypes(leftType: ExprType, operator: RelOperato
     }
 }
 
-private fun SimpleExpr.getType(scope: Scope): ExprType {
-    val firstType = term.getType(scope)
+private fun SimpleExpr.getType(): ExprType {
+    val firstType = term.getType()
     if (sign != null) {
         requireSemantic(firstType == ExprType.INT) {
             "Sign can only be used with int"
         }
     }
     if (simpleExprEntries.isNotEmpty()) {
-        requireSemantic(simpleExprEntries.all { it.term.getType(scope) == ExprType.INT }) {
+        requireSemantic(simpleExprEntries.all { it.term.getType() == ExprType.INT }) {
             "All simple expr entries have to be of type int"
         }
         requireSemantic(firstType == ExprType.INT) {
@@ -126,18 +126,18 @@ private fun SimpleExpr.getType(scope: Scope): ExprType {
     return firstType
 }
 
-private fun Term.getType(scope: Scope): ExprType {
-    val firstType = firstNotFact.getType(scope)
+private fun Term.getType(): ExprType {
+    val firstType = firstNotFact.getType()
     if (termEntries.isNotEmpty()) {
-        requireSemantic(termEntries.all { it.notFact.getType(scope) == ExprType.INT }) {
+        requireSemantic(termEntries.all { it.notFact.getType() == ExprType.INT }) {
             "All term entries have to be of type int"
         }
     }
     return firstType
 }
 
-private fun NotFact.getType(scope: Scope): ExprType {
-    val type = fact.getType(scope)
+private fun NotFact.getType(): ExprType {
+    val type = fact.getType()
     if (negated) {
         requireSemantic(type == ExprType.BOOL) {
             "Negated fact has to be of type bool"
@@ -146,23 +146,23 @@ private fun NotFact.getType(scope: Scope): ExprType {
     return type
 }
 
-private fun Fact.getType(scope: Scope): ExprType {
+private fun Fact.getType(): ExprType {
     return when (this) {
         is BoolType -> ExprType.BOOL
-        is ExprFact -> expr.getType(scope)
+        is ExprFact -> expr.getType()
         is NewArrayTypeFact -> {
             requireSemantic(type in INIT_TYPES_NOT_NULL) {
                 "cannot create array of type $type"
             }
             type.toArrayType()
         }
-        is ActionFact -> this.getType(scope)
+        is ActionFact -> this.getType()
         is IntType -> ExprType.INT
         NullPtrType -> ExprType.NULLPTR
     }
 }
 
-private fun ActionFact.getType(scope: Scope): ExprType {
+private fun ActionFact.getType(): ExprType {
     if(prefix != null || suffix != null) {
         requireSemantic(actionOp == null) {
             "required variable"
@@ -172,24 +172,24 @@ private fun ActionFact.getType(scope: Scope): ExprType {
             "Variable $ident has to be of type int"
         }
     }
-    return actionOp?.getType(scope, ident) ?: scope.getVariable(ident).type
+    return actionOp?.getType(ident) ?: scope.getVariable(ident).type
 }
 
-private fun ActionOperation.getType(scope: Scope, ident: Ident): ExprType {
+private fun ActionOperation.getType(ident: Ident): ExprType {
     return when (this) {
         is ArrayAccessOperation -> {
             val variable = scope.getVariable(ident)
             requireSemantic(variable.type in ARR_TYPES) {
                 "Variable $ident is not a pointer"
             }
-            requireSemantic(expr.getType(scope) == ExprType.INT) {
+            requireSemantic(expr.getType() == ExprType.INT) {
                 "Array index has to be of type int"
             }
             variable.type.toNonArrayType()
         }
 
         is CallOperation -> {
-            val parameters = actParList.map { it.getType(scope) }
+            val parameters = actParList.map { it.getType() }
             val function = scope.getFunction(ident, parameters)
             function.returnType
         }

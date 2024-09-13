@@ -39,11 +39,12 @@ void Seas(int a, bool b) {
 void Sieve(int n) { // defintion
   Seas(5, true);
   int col, i, j;
-  int intTest = 6;
+  int intTest = 6000000;
   bool test = true;
   bool test2 = false;
   bool *sieve = nullptr;
   int *arr = nullptr;
+  arr = new int[5];
   bool testerg;
   testerg = test || test2;
   sieve = new bool[n + 1];
