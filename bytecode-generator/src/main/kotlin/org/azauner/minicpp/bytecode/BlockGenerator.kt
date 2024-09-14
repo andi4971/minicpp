@@ -16,7 +16,6 @@ class BlockGenerator(private val methodVisitor: MethodVisitor, private val class
                 is ConstDef -> null // local const/final vars get pushed directly and are not stored
                 is VarDef -> LocalVarDefGenerator(methodVisitor).generate(entry)
                 is Stat -> StatGenerator(methodVisitor, className).generate(entry)
-                else -> "TODO()"
             }
 
         }

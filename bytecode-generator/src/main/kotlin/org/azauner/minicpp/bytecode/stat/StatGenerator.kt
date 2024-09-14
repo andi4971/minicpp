@@ -4,6 +4,7 @@ import org.azauner.minicpp.ast.node.*
 import org.azauner.minicpp.ast.util.getType
 import org.azauner.minicpp.bytecode.BlockGenerator
 import org.azauner.minicpp.bytecode.MiniCppGenerator.Companion.scannerVarName
+import org.azauner.minicpp.bytecode.expr.ExprGenerator
 import org.azauner.minicpp.bytecode.field.SCANNER_DESC
 import org.azauner.minicpp.bytecode.field.SCANNER_QUAL_NAME
 import org.objectweb.asm.MethodVisitor
@@ -19,13 +20,12 @@ class StatGenerator(val mv: MethodVisitor, private val className: String) {
             is DeleteStat -> generateDeleteStat(stat)
             is ReturnStat -> generateReturnStat(stat)
             is OutputStat -> OutputStatGenerator(mv).generate(stat)
+            is ExprStat -> ExprGenerator(mv).generate(stat.expr)
             else -> ""
             /* is
             BreakStat -> TODO()
             EmptyStat -> TODO()
-            is ExprStat -> TODO()
             is IfStat -> TODO()
-            is OutputStat -> TODO()
             is WhileStat -> TODO()*/
         }
     }

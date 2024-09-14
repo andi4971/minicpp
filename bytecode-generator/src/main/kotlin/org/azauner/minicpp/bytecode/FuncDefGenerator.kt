@@ -20,6 +20,7 @@ class FuncDefGenerator(private val classWriter: ClassWriter, private val classNa
         methodVisitor.run {
             visitCode()
             BlockGenerator(methodVisitor, className).generate(funcDef.block)
+            //TODO add only when no return statement found
             visitInsn(Opcodes.RETURN)
             visitEnd()
         }
