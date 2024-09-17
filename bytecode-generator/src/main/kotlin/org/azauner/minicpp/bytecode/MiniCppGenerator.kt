@@ -15,11 +15,12 @@ class MiniCppGenerator(private val miniCpp: MiniCpp) {
     companion object {
         private const val CLASS_FILE_VERSION = 65
         var scannerVarName = "scanner"
+        lateinit var className: String
     }
 
     fun generateByteCode(): ByteArray {
         val classWriter = ClassWriter(ClassWriter.COMPUTE_FRAMES or ClassWriter.COMPUTE_MAXS)
-
+        className = miniCpp.className
         classWriter.visit(
             CLASS_FILE_VERSION,
             ACC_PUBLIC,

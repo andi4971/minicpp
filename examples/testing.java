@@ -8,11 +8,15 @@ class Test {
 
     public static void main(String[] args) {
 
+        int a = 4;
+        a+= a;
        //a = in.nextInt();
-       int a = 4;
+/*       int a = 4;
        int b = 8;
        int c = 0;
-       c = a * b;
+       c = a * b;*/
+       int[] arr = new int[10];
+       arr[6] += 5;
        //arr[3] = 5;
         /*int i = 0;
        boolean x = false;

@@ -33,9 +33,21 @@ void main() {
 
 void Seas(int a, bool b) {
   int d = 3;
+  d+= d;
   int c;
 
-  c = a * d * d;
+ c-= d;
+  //c = a * d * d /a % d ;
+
+  int* arr = nullptr;
+  arr = new int[5];
+  //c = arr[3];
+  arr[4] += 5;
+  arr[c] -= 10;
+ /* c = d+ a -( c + a * 6);
+  Sieve(d+a);*/
+
+  //c = c+ c;
 }
 
 
