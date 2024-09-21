@@ -1,7 +1,7 @@
 grammar minicpp;
 
 miniCpp:     (miniCppEntry)* EOF;
-miniCppEntry:    constDef    
+miniCppEntry:     constDef
                 | varDef
                 | funcDecl
                 | funcDef
@@ -10,9 +10,9 @@ miniCppEntry:    constDef
 constDef:    CONST type constDefEntry (',' constDefEntry)* SEM;
 constDefEntry: IDENT init;
 init:        '='  initOption;
-initOption:    BOOLEAN          #BooleanInit
-             | NULLPTR          #NullptrInit
-             | (SIGN)? INT #IntInit
+initOption:    BOOLEAN      #BooleanInit
+             | NULLPTR      #NullptrInit
+             | (SIGN)? INT  #IntInit
              ;
 
 varDef:      type varDefEntry
@@ -57,7 +57,7 @@ deleteStat:  'delete' BRACKETS IDENT SEM;
 returnStat:  'return' (expr)? SEM;
 expr:        orExpr (exprEntry)*;
 exprEntry: exprAssign orExpr;
-exprAssign: EQUAL #EqualAssign
+exprAssign:  EQUAL      #EqualAssign
            | ADD_ASSIGN #AddAssign
            | SUB_ASSIGN #SubAssign
            | MUL_ASSIGN #MulAssign
@@ -71,11 +71,11 @@ relExpr:     simpleExpr
              ( relExprEntry )*;
 relExprEntry: relOperator simpleExpr;
 relOperator: EQUAL_EQUAL #EqualEqualOperator
-            | NOT_EQUAL #NotEqualOperator
-            | LT #LessThanOperator
-            | LE #LessEqualOperator
-            | GT #GreaterThanOperator
-            | GE #GreaterEqualOperator
+            | NOT_EQUAL  #NotEqualOperator
+            | LT         #LessThanOperator
+            | LE         #LessEqualOperator
+            | GT         #GreaterThanOperator
+            | GE         #GreaterEqualOperator
             ;
 simpleExpr:  (SIGN)?
              term ( simpleExprEntry )*;
@@ -90,19 +90,19 @@ notFact:     NOT? fact;
 fact:
                BOOLEAN #BooleanFact
              | NULLPTR #NullptrFact
-             | INT #IntFact
-             | callFactEntry #CallFact
+             | INT     #IntFact
+             | callFactEntry         #CallFact
              | NEW type '[' expr ']' #NewArrayFact
-             | '(' expr ')' #ExprFact
+             | '(' expr ')'          #ExprFact
              ;
 callFactEntry:
             preIncDec=INC_DEC?
               IDENT
-                 callFactEntryOperation?
+              callFactEntryOperation?
               postIncDec=INC_DEC?
               ;
 callFactEntryOperation:
-                   ( '[' expr    ']') #ExprFactOperation
+                   ( '[' expr    ']')          #ExprFactOperation
                  | ( '(' (actParList)?    ')') #ActParListFactOperation
                  ;
 actParList:  expr (',' expr)*;

@@ -9,4 +9,4 @@ data class ExprFact(val expr: Expr): Fact
 
 data class NewArrayTypeFact(val type: ExprType, val expr: Expr): Fact
 
-data class ActionFact(val prefix: IncDec?, val ident: Ident, val actionOp: ActionOperation?, val suffix: IncDec?, val scope: Scope): Fact
+data class ActionFact(val prefix: IncDec?, val ident: Ident, val actionOp: ActionOperation?, val suffix: IncDec?, val scope: Scope, val isRightHandExpr: Boolean): Fact

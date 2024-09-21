@@ -10,8 +10,12 @@ import org.objectweb.asm.Opcodes
 class ExprGenerator(private val mv: MethodVisitor) {
 
     private fun generateArrayIndex(firstExpr: OrExpr) {
-       val fact =  firstExpr.andExpressions.first().relExpressions.first().firstExpr.term.firstNotFact.fact as ActionFact
+       val fact =  getActionFact(firstExpr)
         ExprGenerator(mv).generate((fact.actionOp!! as ArrayAccessOperation).expr)
+    }
+
+    private fun getActionFact(expr: OrExpr): ActionFact {
+        return expr.andExpressions.first().relExpressions.first().firstExpr.term.firstNotFact.fact as ActionFact
     }
 
     fun generate(expr: Expr) {

@@ -10,7 +10,7 @@ import org.azauner.minicpp.ast.util.getType
 import org.azauner.parser.minicppBaseVisitor
 import org.azauner.parser.minicppParser
 
-class CallFactEntryVisitor(private val scope: Scope) : minicppBaseVisitor<ActionFact>() {
+class CallFactEntryVisitor(private val scope: Scope, private val isRightHandExpr: Boolean) : minicppBaseVisitor<ActionFact>() {
 
     override fun visitCallFactEntry(ctx: minicppParser.CallFactEntryContext): ActionFact {
         val actionFact =  ActionFact(
@@ -18,7 +18,8 @@ class CallFactEntryVisitor(private val scope: Scope) : minicppBaseVisitor<Action
             ident = ctx.IDENT().accept(IdentVisitor()),
             suffix = ctx.postIncDec?.getTerminalNodeFromTokenList(ctx.INC_DEC())?.accept(IncDecVisitor()),
             actionOp = ctx.callFactEntryOperation()?.accept(CallFactEntryOperationVisitor(scope)),
-            scope = scope
+            scope = scope,
+            isRightHandExpr = isRightHandExpr
         )
         //todo move to expr logic
         actionFact.run {

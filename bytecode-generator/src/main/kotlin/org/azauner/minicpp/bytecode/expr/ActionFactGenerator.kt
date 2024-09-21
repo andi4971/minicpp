@@ -9,13 +9,42 @@ import org.objectweb.asm.Opcodes
 
 class ActionFactGenerator(private val mv: MethodVisitor) {
     fun generate(actionFact: ActionFact) {
-        when(actionFact.actionOp) {
+        when (actionFact.actionOp) {
             null -> {
-                val variable = actionFact.scope.getVariable(actionFact.ident)
-                mv.visitVarInsn(Opcodes.ILOAD, variable.index)
+                generateVariableAccess(actionFact)
             }
-            is ArrayAccessOperation -> generateArrayAccess(actionFact.actionOp as ArrayAccessOperation, actionFact.scope, actionFact.ident)
-            is CallOperation ->generateFunctionCall(actionFact.actionOp as CallOperation, actionFact.scope, actionFact.ident)
+
+            is ArrayAccessOperation -> generateArrayAccess(
+                actionFact
+            )
+
+            is CallOperation -> generateFunctionCall(
+                actionFact.actionOp as CallOperation,
+                actionFact.scope,
+                actionFact.ident
+            )
+        }
+    }
+
+    private fun generateVariableAccess(actionFact: ActionFact) {
+        val variable = actionFact.scope.getVariable(actionFact.ident)
+
+        actionFact.prefix?.let {
+            iInc(variable.index, it)
+        }
+
+        //todo add mechanism to omit this if it not used
+        mv.visitVarInsn(Opcodes.ILOAD, variable.index)
+
+        actionFact.suffix?.let {
+            iInc(variable.index, it)
+        }
+    }
+
+    private fun iInc(index: Int, incDec: IncDec) {
+        when (incDec) {
+            IncDec.INCREASE -> mv.visitIincInsn(index, 1)
+            IncDec.DECREASE -> mv.visitIincInsn(index, -1)
         }
     }
 
@@ -40,11 +69,17 @@ class ActionFactGenerator(private val mv: MethodVisitor) {
         return sb.toString()
     }
 
-    private fun generateArrayAccess(actionOp: ArrayAccessOperation, scope: Scope, ident: Ident) {
-        val variable = scope.getVariable(ident)
-        mv.visitVarInsn(Opcodes.ALOAD, variable.index)
-        //index
-        ExprGenerator(mv).generate(actionOp.expr)
-        mv.visitInsn(Opcodes.IALOAD)
+    private fun generateArrayAccess(actionOp: ActionFact) {
+        actionOp.run {
+            val variable = scope.getVariable(ident)
+            mv.visitVarInsn(Opcodes.ALOAD, variable.index)
+            //index
+
+            //todo ++ --
+            ExprGenerator(mv).generate((this.actionOp as ArrayAccessOperation).expr)
+
+            mv.visitInsn(Opcodes.IALOAD)
+        }
+
     }
 }

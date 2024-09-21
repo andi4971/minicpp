@@ -5,13 +5,13 @@
 
 void Sieve(int n); // declaration
 
-const int lol = 12, abc = 25;
+/*const int lol = 12, abc = 25;
 const bool isTesting = true;
-int seppster = 15, bert = 4;
+int seppster = 15, bert = 4;*/
 
 void main() {
 
-  int n;
+/*  int n;
 
   cout << "n > ";
   cin >> n;
@@ -25,25 +25,29 @@ void main() {
   } // if
   
   Sieve(n);
-  
+  */
   // int dummy;
   // cin >> dummy;
   
 } // main
 
-void Seas(int a, bool b) {
+void MyFunc(int a, bool b) {
   int d = 3;
-  d+= d;
-  int c;
+  int e = 4;
+  e++;
+  e--;
 
- c-= d;
+  /*d+= d;
+  int c;*/
+
+
   //c = a * d * d /a % d ;
 
-  int* arr = nullptr;
+  /*int* arr = nullptr;
   arr = new int[5];
   //c = arr[3];
   arr[4] += 5;
-  arr[c] -= 10;
+  arr[c] -= 10;*/
  /* c = d+ a -( c + a * 6);
   Sieve(d+a);*/
 
@@ -52,7 +56,7 @@ void Seas(int a, bool b) {
 
 
 void Sieve(int n) { // defintion
-  Seas(5, true);
+/*  MyFunc(5, true);
   int col, i, j;
   int intTest = 6000000;
   bool test = true;
@@ -91,7 +95,7 @@ void Sieve(int n) { // defintion
     i += 2;
   } // while
   
-  delete[] sieve;
+  delete[] sieve;*/
 } // Sieve
 
 // End of Sieve.mcpp

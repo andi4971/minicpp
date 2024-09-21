@@ -10,7 +10,8 @@ class NotFactVisitor(private val scope: Scope) : minicppBaseVisitor<NotFact>() {
     override fun visitNotFact(ctx: minicppParser.NotFactContext): NotFact {
         return NotFact(
             negated = ctx.NOT() != null,
-            fact = ctx.fact().accept(FactVisitor(scope))
+            //TODO
+            fact = ctx.fact().accept(FactVisitor(scope, false))
         )
     }
 }
