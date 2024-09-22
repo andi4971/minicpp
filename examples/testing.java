@@ -7,13 +7,13 @@ class Test {
 
 
     public static void main(String[] args) {
-/*        boolean a = true;
+        boolean a = true;
         boolean b = false;
-        boolean d = true;*/
-        //boolean c = a && b && d;
-        int f = 1;
-        int b = 6;
-        boolean a = f < b == f;
+        boolean d = true;
+        boolean c = a && b;
+      /*  int f = 1;*/
+      /*  int b = 6;*/
+      /*  boolean a = f < b == f;*/
         /*
         int a = 4;
         a+= a;*/

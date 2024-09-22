@@ -35,7 +35,7 @@ int GetInt(int a, bool b) {
   return a;
 }
 
-void MyFunc(int a, bool b) {
+void MyFunc(void) {
   /*int d = 3;
   int e = 4;
   e++;
@@ -43,9 +43,9 @@ void MyFunc(int a, bool b) {
 
   /*d+= d;
   int c;*/
-     int y = 6, x = 7;
-     bool c;
-     c = y < x < y == x;
+
+     bool c, a = true, b = false;
+     c = a && b;
   //c = a * d * d /a % d ;
 
 /*  int* arr = nullptr;
