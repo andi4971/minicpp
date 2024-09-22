@@ -87,8 +87,8 @@ private fun RelExpr.getType(): ExprType {
         val firstEntry = relExprEntries.first()
         validateRelExpOperatorTypes(firstType, firstEntry.relOperator, firstEntry.simpleExpr.getType())
         relExprEntries.drop(1).forEach {
-            requireSemantic(it.simpleExpr.getType() == ExprType.BOOL) {
-                "All simple expressions have to be of type bool"
+            requireSemantic(it.simpleExpr.getType() in INIT_TYPES_NOT_NULL) {
+                "All simple expressions have to be of type bool or int"
             }
         }
         ExprType.BOOL

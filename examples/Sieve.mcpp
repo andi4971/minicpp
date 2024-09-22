@@ -43,17 +43,18 @@ void MyFunc(int a, bool b) {
 
   /*d+= d;
   int c;*/
-
-
+     int y = 6, x = 7;
+     bool c;
+     c = y < x < y == x;
   //c = a * d * d /a % d ;
 
-  int* arr = nullptr;
+/*  int* arr = nullptr;
   arr = new int[10];
    ++arr[6];
    int x = 15;
    int aa = 8;
    x = x + aa;
-   Sieve(GetInt(5, true));
+   Sieve(GetInt(5, true));*/
  /* c = d+ a -( c + a * 6);
   Sieve(d+a);*/
 
