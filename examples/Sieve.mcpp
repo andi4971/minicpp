@@ -31,11 +31,15 @@ void main() {
   
 } // main
 
+int GetInt(int a, bool b) {
+  return a;
+}
+
 void MyFunc(int a, bool b) {
-  int d = 3;
+  /*int d = 3;
   int e = 4;
   e++;
-  e--;
+  e--;*/
 
   /*d+= d;
   int c;*/
@@ -43,16 +47,19 @@ void MyFunc(int a, bool b) {
 
   //c = a * d * d /a % d ;
 
-  /*int* arr = nullptr;
-  arr = new int[5];
-  //c = arr[3];
-  arr[4] += 5;
-  arr[c] -= 10;*/
+  int* arr = nullptr;
+  arr = new int[10];
+   ++arr[6];
+   int x = 15;
+   int aa = 8;
+   x = x + aa;
+   Sieve(GetInt(5, true));
  /* c = d+ a -( c + a * 6);
   Sieve(d+a);*/
 
   //c = c+ c;
 }
+
 
 
 void Sieve(int n) { // defintion

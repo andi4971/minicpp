@@ -39,6 +39,7 @@ class StatGenerator(val mv: MethodVisitor, private val className: String) {
             }
 
         } ?: Opcodes.RETURN
+        stat.expr?.let { ExprGenerator(mv).generate(it) }
         mv.visitInsn(returnCode)
     }
 

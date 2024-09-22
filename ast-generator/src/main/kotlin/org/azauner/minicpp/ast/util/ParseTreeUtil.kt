@@ -46,8 +46,8 @@ fun validateExprEntry(firstExpr: OrExpr, operator: AssignOperator, secondType: E
         requireSemantic(!variable.const) {
             "Cannot assign to const variable"
         }
-          requireSemantic(firstType == secondType) {
-                "First and second type have to be the same"
+        requireSemantic(firstType == secondType) {
+            "First and second type have to be the same"
         }
     } else {
         requireSemantic(firstType == ExprType.INT && secondType == ExprType.INT) {
@@ -156,6 +156,7 @@ private fun Fact.getType(): ExprType {
             }
             type.toArrayType()
         }
+
         is ActionFact -> this.getType()
         is IntType -> ExprType.INT
         NullPtrType -> ExprType.NULLPTR
@@ -163,13 +164,13 @@ private fun Fact.getType(): ExprType {
 }
 
 private fun ActionFact.getType(): ExprType {
-    if(prefix != null || suffix != null) {
-        requireSemantic(actionOp == null) {
-            "required variable"
+    if (prefix != null || suffix != null) {
+        requireSemantic(actionOp == null || actionOp is ArrayAccessOperation) {
+            "Cannot use prefix or suffix with function call"
         }
         val variableType = scope.getVariable(ident).type
-        requireSemantic(variableType == ExprType.INT) {
-            "Variable $ident has to be of type int"
+        requireSemantic(variableType == ExprType.INT || (variableType == ExprType.INT_ARR && actionOp is ArrayAccessOperation)) {
+            "Variable $ident has to be of type int or int array to use prefix or suffix"
         }
     }
     return actionOp?.getType(ident) ?: scope.getVariable(ident).type
@@ -197,7 +198,7 @@ private fun ActionOperation.getType(ident: Ident): ExprType {
 }
 
 fun ExprType.toArrayType(): ExprType {
-   return when (this) {
+    return when (this) {
         ExprType.INT -> ExprType.INT_ARR
         ExprType.BOOL -> ExprType.BOOL_ARR
         else -> throw SemanticException("Type $this cannot be a pointer")

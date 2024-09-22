@@ -5,7 +5,7 @@ import org.azauner.minicpp.ast.node.scope.Scope
 import org.azauner.minicpp.ast.util.getType
 import org.azauner.minicpp.bytecode.MiniCppGenerator.Companion.className
 import org.objectweb.asm.MethodVisitor
-import org.objectweb.asm.Opcodes
+import org.objectweb.asm.Opcodes.*
 
 class ActionFactGenerator(private val mv: MethodVisitor) {
     fun generate(actionFact: ActionFact) {
@@ -34,7 +34,7 @@ class ActionFactGenerator(private val mv: MethodVisitor) {
         }
 
         //todo add mechanism to omit this if it not used
-        mv.visitVarInsn(Opcodes.ILOAD, variable.index)
+        mv.visitVarInsn(ILOAD, variable.index)
 
         actionFact.suffix?.let {
             iInc(variable.index, it)
@@ -55,7 +55,7 @@ class ActionFactGenerator(private val mv: MethodVisitor) {
         }
         val func = scope.getFunction(ident, callOperation.actParList.map { it.getType() })
         val descriptor = getDescriptor(callOperation.actParList.map { it.getType() }, func.returnType)
-        mv.visitMethodInsn(Opcodes.INVOKESTATIC, className, ident.name, descriptor, false)
+        mv.visitMethodInsn(INVOKESTATIC, className, ident.name, descriptor, false)
     }
 
     private fun getDescriptor(actParTypes: List<ExprType>, returnType: ExprType): String {
@@ -69,17 +69,39 @@ class ActionFactGenerator(private val mv: MethodVisitor) {
         return sb.toString()
     }
 
-    private fun generateArrayAccess(actionOp: ActionFact) {
-        actionOp.run {
+    private fun generateArrayAccess(actionFact: ActionFact) {
+        actionFact.run {
             val variable = scope.getVariable(ident)
-            mv.visitVarInsn(Opcodes.ALOAD, variable.index)
-            //index
+            mv.visitVarInsn(ALOAD, variable.index)
 
-            //todo ++ --
-            ExprGenerator(mv).generate((this.actionOp as ArrayAccessOperation).expr)
+            val arrayAccessOp = actionOp as ArrayAccessOperation
+            ExprGenerator(mv).generate(arrayAccessOp.expr)
 
-            mv.visitInsn(Opcodes.IALOAD)
+
+            if(prefix != null || suffix != null) {
+                prefix?.let { iIncArr(it, isPrefix = true) }
+                suffix?.let { iIncArr(it, isPrefix = false) }
+            }else {
+                mv.visitInsn(IALOAD)
+            }
         }
 
+    }
+
+    private fun iIncArr(incDec: IncDec, isPrefix: Boolean) {
+        mv.visitInsn(DUP2)
+        mv.visitInsn(IALOAD)
+        if(!isPrefix) {
+            mv.visitInsn(DUP_X2)
+        }
+        when (incDec) {
+            IncDec.INCREASE -> mv.visitInsn(ICONST_1)
+            IncDec.DECREASE -> mv.visitInsn(ICONST_M1)
+        }
+        mv.visitInsn(IADD)
+        if(isPrefix) {
+            mv.visitInsn(DUP_X2)
+        }
+        mv.visitInsn(IASTORE)
     }
 }

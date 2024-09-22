@@ -7,21 +7,21 @@ class Test {
 
 
     public static void main(String[] args) {
-/*
+        boolean a = true;
+        boolean b = false;
+        boolean d = true;
+        boolean c = a && b && d;
+        /*
         int a = 4;
         a+= a;*/
-        int a = 4;
-        int b = 6;
-a--;
-a++;
 
        //a = in.nextInt();
 /*       int a = 4;
        int b = 8;
        int c = 0;
        c = a * b;*/
-       //int[] arr = new int[10];
-       //arr[6]++;
+/*       int[] arr = new int[10];
+       arr[1] = ++arr[6];*/
        //arr[3] = 5;
         /*int i = 0;
        boolean x = false;

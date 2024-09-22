@@ -9,11 +9,9 @@ class RelExprGenerator(private val mv: MethodVisitor) {
             if(relExpr.relExprEntries.isEmpty()) {
                 SimpleExprGenerator(mv).generate(relExpr.firstExpr)
             } else {
-                /*val label = mv.visitLabel()
-                relExpr.addExpressions.forEach {
-                    AddExprGenerator(mv).generate(it)
-                    mv.visitJumpInsn(IFEQ, label)
-                }*/
+                relExpr.relExprEntries.forEach { entry ->
+                    entry.relOperator
+                }
             }
         }
 }

@@ -93,7 +93,7 @@ class Scope(private val parent: Scope?) {
             listOf(ExprType.VOID)
         }
         return tryGetFunction(ident, formParTypesAmended)
-            ?: throw SemanticException("Function does not exist")
+            ?: throw SemanticException("Function $ident with parameters $formParTypes does not exist")
     }
 
 }

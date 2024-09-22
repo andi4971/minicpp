@@ -9,7 +9,8 @@ class AndExprGenerator(private val mv: MethodVisitor) {
         if(andExpr.relExpressions.size == 1) {
             RelExprGenerator(mv).generate(andExpr.relExpressions.first())
         } else {
-         /*   val label = mv.visitLabel()
+
+            /*val label = Label()
             andExpr.relExpressions.forEach {
                 RelExprGenerator(mv).generate(it)
                 mv.visitJumpInsn(IFEQ, label)

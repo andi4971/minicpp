@@ -20,8 +20,6 @@ class FuncDefGenerator(private val classWriter: ClassWriter, private val classNa
         methodVisitor.run {
             visitCode()
             BlockGenerator(methodVisitor, className).generate(funcDef.block)
-            //TODO add only when no return statement found
-            visitInsn(Opcodes.RETURN)
             visitEnd()
         }
     }
@@ -36,7 +34,7 @@ fun FuncHead.getDescriptor(): String {
             descriptor.append(it.type.descriptor)
         }
     }
-    descriptor.append(")V")
-    //descriptor.append(type.descriptor)
+    descriptor.append(")")
+    descriptor.append(type.descriptor)
     return descriptor.toString()
 }
