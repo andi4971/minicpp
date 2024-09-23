@@ -5,6 +5,7 @@ import org.azauner.minicpp.ast.node.FuncDef
 import org.azauner.minicpp.ast.node.FuncHead
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.Opcodes
+import org.objectweb.asm.Opcodes.RETURN
 
 class FuncDefGenerator(private val classWriter: ClassWriter, private val className: String) {
 
@@ -20,6 +21,8 @@ class FuncDefGenerator(private val classWriter: ClassWriter, private val classNa
         methodVisitor.run {
             visitCode()
             BlockGenerator(methodVisitor, className).generate(funcDef.block)
+            visitInsn(RETURN
+            )
             visitEnd()
         }
     }

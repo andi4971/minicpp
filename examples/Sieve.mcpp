@@ -43,9 +43,18 @@ void MyFunc(void) {
 
   /*d+= d;
   int c;*/
-
+/*
      bool c, a = true, b = false;
-     c =  a || b || c;
+     c =  a || b || c && a && b;*/
+     int a = 5;
+     if(a < 5) {
+        a = 10;
+     }else {
+        a = 15;
+     }
+     while(a < 10) {
+        cout << a << endl;
+     }
   //c = a * d * d /a % d ;
 
 /*  int* arr = nullptr;
@@ -64,16 +73,8 @@ void MyFunc(void) {
 
 
 void Sieve(int n) { // defintion
-/*  MyFunc(5, true);
   int col, i, j;
-  int intTest = 6000000;
-  bool test = true;
-  bool test2 = false;
   bool *sieve = nullptr;
-  int *arr = nullptr;
-  arr = new int[5];
-  bool testerg;
-  testerg = test || test2;
   sieve = new bool[n + 1];
   Sieve(0);
   i = 2;
@@ -103,7 +104,7 @@ void Sieve(int n) { // defintion
     i += 2;
   } // while
   
-  delete[] sieve;*/
+  delete[] sieve;
 } // Sieve
 
 // End of Sieve.mcpp

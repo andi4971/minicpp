@@ -21,13 +21,40 @@ class StatGenerator(val mv: MethodVisitor, private val className: String) {
             is ReturnStat -> generateReturnStat(stat)
             is OutputStat -> OutputStatGenerator(mv).generate(stat)
             is ExprStat -> ExprGenerator(mv).generate(stat.expr)
+            is WhileStat -> generateWhileStat(stat)
+            is IfStat -> generateIfStat(stat)
             else -> ""
             /* is
             BreakStat -> TODO()
             EmptyStat -> TODO()
             is IfStat -> TODO()
-            is WhileStat -> TODO()*/
+            */
         }
+    }
+
+    private fun generateIfStat(stat: IfStat) {
+        val elseLabel = org.objectweb.asm.Label()
+        val endLabel = org.objectweb.asm.Label()
+
+        ExprGenerator(mv).generate(stat.condition)
+        mv.visitJumpInsn(Opcodes.IFEQ, elseLabel)
+        generate(stat.thenStat)
+        mv.visitJumpInsn(Opcodes.GOTO, endLabel)
+        mv.visitLabel(elseLabel)
+        stat.elseStat?.let { generate(it) }
+        mv.visitLabel(endLabel)
+    }
+
+    private fun generateWhileStat(stat: WhileStat) {
+        val startLabel = org.objectweb.asm.Label()
+        val endLabel = org.objectweb.asm.Label()
+
+        mv.visitLabel(startLabel)
+        ExprGenerator(mv).generate(stat.condition)
+        mv.visitJumpInsn(Opcodes.IFEQ, endLabel)
+        generate(stat.whileStat)
+        mv.visitJumpInsn(Opcodes.GOTO, startLabel)
+        mv.visitLabel(endLabel)
     }
 
 
