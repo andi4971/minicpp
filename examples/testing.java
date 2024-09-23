@@ -11,6 +11,9 @@ class Test {
         boolean b = false;
         boolean d = true;
         boolean c = a || b || d;
+        while(a) {
+            break;
+        }
       /*  int f = 1;*/
       /*  int b = 6;*/
       /*  boolean a = f < b == f;*/

@@ -10,7 +10,15 @@ const bool isTesting = true;
 int seppster = 15, bert = 4;*/
 
 void main() {
-
+ bool a = true;
+ while(a) {
+     int i = 0;
+     if(i == 0) {
+     break;
+     }else {
+     i++;
+     }
+ }
 /*  int n;
 
   cout << "n > ";

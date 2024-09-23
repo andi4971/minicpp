@@ -20,7 +20,7 @@ class FuncDefGenerator(private val classWriter: ClassWriter, private val classNa
 
         methodVisitor.run {
             visitCode()
-            BlockGenerator(methodVisitor, className).generate(funcDef.block)
+            BlockGenerator(methodVisitor, className).generate(funcDef.block, null)
             visitInsn(RETURN
             )
             visitEnd()

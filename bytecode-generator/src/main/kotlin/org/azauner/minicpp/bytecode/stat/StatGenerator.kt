@@ -7,52 +7,49 @@ import org.azauner.minicpp.bytecode.MiniCppGenerator.Companion.scannerVarName
 import org.azauner.minicpp.bytecode.expr.ExprGenerator
 import org.azauner.minicpp.bytecode.field.SCANNER_DESC
 import org.azauner.minicpp.bytecode.field.SCANNER_QUAL_NAME
+import org.objectweb.asm.Label
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.Opcodes.GETSTATIC
 
 class StatGenerator(val mv: MethodVisitor, private val className: String) {
 
-    fun generate(stat: Stat) {
+
+    fun generate(stat: Stat, breakLabel: Label?) {
         when (stat) {
             is InputStat -> generateInputStat(stat)
-            is BlockStat -> BlockGenerator(mv, className).generate(stat.block)
+            is BlockStat -> BlockGenerator(mv, className).generate(stat.block, breakLabel)
             is DeleteStat -> generateDeleteStat(stat)
             is ReturnStat -> generateReturnStat(stat)
             is OutputStat -> OutputStatGenerator(mv).generate(stat)
             is ExprStat -> ExprGenerator(mv).generate(stat.expr)
             is WhileStat -> generateWhileStat(stat)
-            is IfStat -> generateIfStat(stat)
+            is IfStat -> generateIfStat(stat, breakLabel)
+            is BreakStat -> mv.visitJumpInsn(Opcodes.GOTO, breakLabel!!)
             else -> ""
-            /* is
-            BreakStat -> TODO()
-            EmptyStat -> TODO()
-            is IfStat -> TODO()
-            */
         }
     }
 
-    private fun generateIfStat(stat: IfStat) {
-        val elseLabel = org.objectweb.asm.Label()
-        val endLabel = org.objectweb.asm.Label()
+    private fun generateIfStat(stat: IfStat, breakLabel: Label?) {
+        val elseLabel =Label()
+        val endLabel =Label()
 
         ExprGenerator(mv).generate(stat.condition)
         mv.visitJumpInsn(Opcodes.IFEQ, elseLabel)
-        generate(stat.thenStat)
+        generate(stat.thenStat, breakLabel)
         mv.visitJumpInsn(Opcodes.GOTO, endLabel)
         mv.visitLabel(elseLabel)
-        stat.elseStat?.let { generate(it) }
+        stat.elseStat?.let { generate(it, breakLabel) }
         mv.visitLabel(endLabel)
     }
 
     private fun generateWhileStat(stat: WhileStat) {
-        val startLabel = org.objectweb.asm.Label()
-        val endLabel = org.objectweb.asm.Label()
-
+        val startLabel = Label()
+        val endLabel = Label()
         mv.visitLabel(startLabel)
         ExprGenerator(mv).generate(stat.condition)
         mv.visitJumpInsn(Opcodes.IFEQ, endLabel)
-        generate(stat.whileStat)
+        generate(stat.whileStat, endLabel)
         mv.visitJumpInsn(Opcodes.GOTO, startLabel)
         mv.visitLabel(endLabel)
     }
