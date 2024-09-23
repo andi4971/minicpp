@@ -10,7 +10,7 @@ class Test {
         boolean a = true;
         boolean b = false;
         boolean d = true;
-        boolean c = a && b;
+        boolean c = a || b || d;
       /*  int f = 1;*/
       /*  int b = 6;*/
       /*  boolean a = f < b == f;*/

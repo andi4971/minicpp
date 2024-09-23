@@ -45,7 +45,7 @@ void MyFunc(void) {
   int c;*/
 
      bool c, a = true, b = false;
-     c = a && b;
+     c =  a || b || c;
   //c = a * d * d /a % d ;
 
 /*  int* arr = nullptr;
