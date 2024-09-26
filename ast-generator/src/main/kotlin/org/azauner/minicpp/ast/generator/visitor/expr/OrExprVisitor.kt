@@ -8,7 +8,10 @@ import org.azauner.parser.minicppParser
 class OrExprVisitor(private val scope: Scope) : minicppBaseVisitor<OrExpr>() {
 
     override fun visitOrExpr(ctx: minicppParser.OrExprContext): OrExpr {
-        val orExpr =  OrExpr(andExpressions = ctx.andExpr().map { it.accept(AndExprVisitor(scope)) })
+        val orExpr = OrExpr(
+            andExpressions = ctx.andExpr().map { it.accept(AndExprVisitor(scope)) },
+            scope = scope
+        )
         return orExpr
     }
 }

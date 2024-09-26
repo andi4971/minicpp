@@ -2,18 +2,17 @@ import java.util.Scanner;
 
 class Test {
 
-    static Scanner in = new Scanner(System.in);
-
-
-
     public static void main(String[] args) {
-        boolean a = true;
-        boolean b = false;
-        boolean d = true;
-        boolean c = a || b || d;
-        while(a) {
-            break;
-        }
+/*       int x = 0;
+       int y = 5;
+        int z = 10;
+        int v = 15;
+         z -= y = 18 += v = 25;*/
+        int[] arr = new int[10];
+        int[] arr2 = new int[10];
+
+        arr2[1] += arr[2] += arr [4] += 15;
+
       /*  int f = 1;*/
       /*  int b = 6;*/
       /*  boolean a = f < b == f;*/

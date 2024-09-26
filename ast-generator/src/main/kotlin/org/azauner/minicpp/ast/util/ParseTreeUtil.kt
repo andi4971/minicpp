@@ -17,13 +17,13 @@ fun Expr.getType(): ExprType {
     val firstType = firstExpr
     return if (exprEntries.isNotEmpty()) {
         val firstEntry = exprEntries.first()
-        validateExprEntry(firstExpr, firstEntry.assignOperator, firstEntry.orExpr.getType(), scope)
-        //todo check how this should work
+        //todo implement validation
+        /*validateExprEntry(firstExpr, firstEntry.assignOperator, firstEntry.orExpr.getType(), scope)
         exprEntries.drop(1).forEach {
             requireSemantic(it.orExpr.getType() == ExprType.BOOL) {
                 "All or expressions have to be of type bool"
             }
-        }
+        }*/
         ExprType.BOOL
     } else {
         return firstType.getType()

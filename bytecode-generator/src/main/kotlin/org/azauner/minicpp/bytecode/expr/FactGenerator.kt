@@ -18,7 +18,6 @@ class FactGenerator(private val mv: MethodVisitor) {
             is ExprFact -> ExprGenerator(mv).generate(fact.expr)
             is NewArrayTypeFact -> generateNewArray(fact)
         }
-
     }
 
     private fun generateNewArray(fact: NewArrayTypeFact) {

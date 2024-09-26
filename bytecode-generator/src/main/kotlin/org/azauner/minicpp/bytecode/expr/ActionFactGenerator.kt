@@ -8,6 +8,11 @@ import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes.*
 
 class ActionFactGenerator(private val mv: MethodVisitor) {
+
+    companion object {
+        var duplicateNextArrayIndex = false
+    }
+
     fun generate(actionFact: ActionFact) {
         when (actionFact.actionOp) {
             null -> {
@@ -33,7 +38,6 @@ class ActionFactGenerator(private val mv: MethodVisitor) {
             iInc(variable.index, it)
         }
 
-        //todo add mechanism to omit this if it not used
         mv.visitVarInsn(ILOAD, variable.index)
 
         actionFact.suffix?.let {
@@ -76,7 +80,10 @@ class ActionFactGenerator(private val mv: MethodVisitor) {
 
             val arrayAccessOp = actionOp as ArrayAccessOperation
             ExprGenerator(mv).generate(arrayAccessOp.expr)
-
+            if(duplicateNextArrayIndex){
+                mv.visitInsn(DUP2)
+                duplicateNextArrayIndex = false
+            }
 
             if(prefix != null || suffix != null) {
                 prefix?.let { iIncArr(it, isPrefix = true) }
