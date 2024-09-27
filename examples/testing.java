@@ -10,8 +10,9 @@ class Test {
          z -= y = 18 += v = 25;*/
         int[] arr = new int[10];
         int[] arr2 = new int[10];
-
-        arr2[1] += arr[2] += arr [4] += 15;
+        int z = 0;
+        arr2[1] += arr[2] = z += 15;
+        //arr2[1] = 15;
 
       /*  int f = 1;*/
       /*  int b = 6;*/

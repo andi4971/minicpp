@@ -11,6 +11,7 @@ class ActionFactGenerator(private val mv: MethodVisitor) {
 
     companion object {
         var duplicateNextArrayIndex = false
+        var skipLoadOfNextArray = false
     }
 
     fun generate(actionFact: ActionFact) {
@@ -89,7 +90,11 @@ class ActionFactGenerator(private val mv: MethodVisitor) {
                 prefix?.let { iIncArr(it, isPrefix = true) }
                 suffix?.let { iIncArr(it, isPrefix = false) }
             }else {
-                mv.visitInsn(IALOAD)
+                if(skipLoadOfNextArray) {
+                    skipLoadOfNextArray = false
+                }else {
+                    mv.visitInsn(IALOAD)
+                }
             }
         }
 

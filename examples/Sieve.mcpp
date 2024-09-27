@@ -5,16 +5,16 @@
 
 void Sieve(int n); // declaration
 
-/*const int lol = 12, abc = 25;
+const int lol = 12, abcd = 25;
 const bool isTesting = true;
-int seppster = 15, bert = 4;*/
+int seppster = 15, bert = 4;
 
 void main(int input) {
-/*    int x = 0;
+    int x = 0;
     int y = 5;
     int z = 10;
     int v = 15;
-    z = y = x = v = 25;*/
+    z = y = x = v = 25;
 
     int* arr = nullptr;
     int* arr2 = nullptr;
@@ -22,9 +22,9 @@ void main(int input) {
     arr2 = new int[10];
 
     arr2 = arr =  nullptr;
-    //arr2[1] += arr[2] += arr [4] += 15;
+    arr2[1] += arr[2] += z += 15;
 
-/*  int n;
+  int n;
 
   cout << "n > ";
   cin >> n;
@@ -38,65 +38,66 @@ void main(int input) {
   } // if
   
   Sieve(n);
-  */
+  
   // int dummy;
   // cin >> dummy;
   
 } // main
 
-/*
+
 int GetInt(int a, bool b) {
   return a;
 }
 
 void MyFunc(void) {
-*/
-/*  *//*
-*/
+
+   int* arr2 = nullptr;
+   arr2 = new int[10];
+   arr2[1] = 15;
 /*int d = 3;
   int e = 4;
   e++;
-  e--;*//*
-*/
-/*
+  e--;
 
-  *//*
-*/
-/*d+= d;
-  int c;*//*
-*/
-/*
-*//*
-*/
-/*
-     bool c, a = true, b = false;
-     c =  a || b || c && a && b;*//*
-*/
-/*
-     int a = 5;
-     if(a < 5) {
-        a = 10;
+
+
+  
+
+d+= d;
+  int c;
+
+
+
+
+
+     bool bb, a = true, b = false;
+     b =  a || b || c && a && b;
+
+
+     int abc = 5;
+     if(abc < 5) {
+        abc = 10;
      }else {
-        a = 15;
+        abc = 15;
      }
-     while(a < 10) {
-        cout << a << endl;
-     }*//*
+     while(abc < 10) {
+        cout << abc << endl;
+     }
 
   //c = a * d * d /a % d ;
 
-*/
-/*  int* arr = nullptr;
+
+  int* arr = nullptr;
   arr = new int[10];
    ++arr[6];
    int x = 15;
    int aa = 8;
    x = x + aa;
-   Sieve(GetInt(5, true));*//*
+   Sieve(GetInt(5, true));
 
- */
-/* c = d+ a -( c + a * 6);
-  Sieve(d+a);*//*
+ 
+  x = d+ abc -( x + abc * 6);
+  Sieve(d+abc);*/
 
 
   //c = c+ c;
@@ -105,8 +106,8 @@ void MyFunc(void) {
 
 
 void Sieve(int n) { // defintion
-  */
-/*int col, i, j;
+  
+  int col, i, j;
   bool *sieve = nullptr;
   sieve = new bool[n + 1];
   Sieve(0);
@@ -115,7 +116,7 @@ void Sieve(int n) { // defintion
     sieve[i] = true;
     i++;
   } // while
-  
+
   cout << 2 << "\t";
   
   col = 1;
@@ -137,10 +138,10 @@ void Sieve(int n) { // defintion
     i += 2;
   } // while
   
-  delete[] sieve;*//*
+  delete[] sieve;
 
 } // Sieve
-*/
+
 
 // End of Sieve.mcpp
 //=====================================|====================

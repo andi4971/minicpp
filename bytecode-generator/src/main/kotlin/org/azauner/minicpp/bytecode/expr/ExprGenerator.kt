@@ -30,17 +30,24 @@ class ExprGenerator(private val mv: MethodVisitor) {
 
 
             exprEntries.filter { entry ->
-                entry.second != null && entry.second != AssignOperator.ASSIGN
+                entry.second != null
             }.forEach {
-                if(it.first.isArrayAccess()) {
-                    ActionFactGenerator.duplicateNextArrayIndex = true
-                }
+                if (it.first.isArrayAccess()) {
+                    if (it.second == AssignOperator.ASSIGN) {
+                        ActionFactGenerator.skipLoadOfNextArray = true
+                    } else {
+                        ActionFactGenerator.duplicateNextArrayIndex = true
+                    }
                     generator.generate(it.first)
+                } else {
+                    if (it.second != AssignOperator.ASSIGN) {
+                        generator.generate(it.first)
+                    }
 
                 }
-
+            }
             val entriesReversed = exprEntries.reversed()
-            entriesReversed.forEachIndexed {index, exprEntry ->
+            entriesReversed.forEachIndexed { index, exprEntry ->
                 if (exprEntry.second == null) {
                     //no assign just generate value
                     generator.generate(exprEntry.first)
@@ -48,9 +55,9 @@ class ExprGenerator(private val mv: MethodVisitor) {
                     val assignOperator = exprEntry.second!!
                     generateCalculation(assignOperator)
                     if (index != entriesReversed.lastIndex) {
-                        if(exprEntry.first.isArrayAccess()) {
+                        if (exprEntry.first.isArrayAccess()) {
                             mv.visitInsn(Opcodes.DUP_X2)
-                        }else{
+                        } else {
                             mv.visitInsn(Opcodes.DUP)
 
                         }
