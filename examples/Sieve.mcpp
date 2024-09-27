@@ -22,7 +22,7 @@ void main(int input) {
     arr2 = new int[10];
 
     arr2 = arr =  nullptr;
-    arr2[1] += arr[2] += z += 15;
+     x = arr[2] += z += 15;
 
   int n;
 

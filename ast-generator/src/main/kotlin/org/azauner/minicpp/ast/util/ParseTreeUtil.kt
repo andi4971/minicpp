@@ -4,7 +4,6 @@ import org.antlr.v4.runtime.Token
 import org.antlr.v4.runtime.tree.TerminalNode
 import org.azauner.minicpp.ast.generator.exception.SemanticException
 import org.azauner.minicpp.ast.node.*
-import org.azauner.minicpp.ast.node.scope.Scope
 
 fun Token.getTerminalNodeFromTokenList(list: List<TerminalNode>): TerminalNode =
     list.first { it.symbol.tokenIndex == this.tokenIndex }
@@ -14,20 +13,42 @@ fun Expr.validate() {
 }
 
 fun Expr.getType(): ExprType {
-    val firstType = firstExpr
-    return if (exprEntries.isNotEmpty()) {
-        val firstEntry = exprEntries.first()
-        //todo implement validation
-        /*validateExprEntry(firstExpr, firstEntry.assignOperator, firstEntry.orExpr.getType(), scope)
-        exprEntries.drop(1).forEach {
-            requireSemantic(it.orExpr.getType() == ExprType.BOOL) {
-                "All or expressions have to be of type bool"
+    val firstType = firstExpr.getType()
+    if (exprEntries.isNotEmpty()) {
+        if (firstType in ARR_TYPES) {
+            requireSemantic(exprEntries.dropLast(1).all { it.orExpr.getType() in ARR_TYPES }) {
+                "All expressions have to be of type array"
             }
-        }*/
-        ExprType.BOOL
-    } else {
-        return firstType.getType()
+            exprEntries.last().let {
+                val type = it.orExpr.getType()
+                requireSemantic(type in ARR_TYPES || type == ExprType.NULLPTR) {
+                    "Last expression has to be array or nullptr"
+                }
+            }
+        }else {
+            requireSemantic(exprEntries.all { it.orExpr.getType() == firstType }) {
+                "All expressions have to be of type $firstType"
+            }
+        }
+        val entries = this.mapToAssignPairs()
+        entries.forEach { (orExpr, assignOperator) ->
+            if(assignOperator != null) {
+                val variable = scope.getVariable(orExpr.getIdent())
+                requireSemantic(!variable.const){
+                    "Cannot assign to const variable"
+                }
+            }
+        }
     }
+    return firstType
+}
+
+fun Expr.mapToAssignPairs(): List<Pair<OrExpr, AssignOperator?>> {
+    return (listOf(firstExpr) + exprEntries.map { it.orExpr })
+        .mapIndexed { index, entry ->
+            entry to exprEntries.getOrNull(index)?.assignOperator
+        }
+
 }
 
 fun OrExpr.getIdent(): Ident {
@@ -35,23 +56,6 @@ fun OrExpr.getIdent(): Ident {
         return when (it) {
             is ActionFact -> it.ident
             else -> throw SemanticException("could not find ident")
-        }
-    }
-}
-
-fun validateExprEntry(firstExpr: OrExpr, operator: AssignOperator, secondType: ExprType, scope: Scope) {
-    val firstType = firstExpr.getType()
-    if (operator == AssignOperator.ASSIGN) {
-        val variable = scope.getVariable(firstExpr.getIdent())
-        requireSemantic(!variable.const) {
-            "Cannot assign to const variable"
-        }
-        requireSemantic(firstType == secondType) {
-            "First and second type have to be the same"
-        }
-    } else {
-        requireSemantic(firstType == ExprType.INT && secondType == ExprType.INT) {
-            "First and second type have to be int"
         }
     }
 }

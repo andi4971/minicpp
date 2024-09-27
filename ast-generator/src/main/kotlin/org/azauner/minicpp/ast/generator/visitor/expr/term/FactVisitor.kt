@@ -11,7 +11,7 @@ import org.azauner.minicpp.ast.node.scope.Scope
 import org.azauner.parser.minicppBaseVisitor
 import org.azauner.parser.minicppParser
 
-class FactVisitor(private val scope: Scope, private val isRightHandExpr: Boolean) : minicppBaseVisitor<Fact>() {
+class FactVisitor(private val scope: Scope) : minicppBaseVisitor<Fact>() {
 
     override fun visitBooleanFact(ctx: minicppParser.BooleanFactContext): Fact {
         return ctx.BOOLEAN().accept(BooleanVisitor())
@@ -26,7 +26,7 @@ class FactVisitor(private val scope: Scope, private val isRightHandExpr: Boolean
     }
 
     override fun visitCallFact(ctx: minicppParser.CallFactContext): Fact {
-        return ctx.callFactEntry().accept(CallFactEntryVisitor(scope, isRightHandExpr))
+        return ctx.callFactEntry().accept(CallFactEntryVisitor(scope))
     }
 
 

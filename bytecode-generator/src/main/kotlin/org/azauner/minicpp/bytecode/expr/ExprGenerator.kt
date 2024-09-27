@@ -2,6 +2,7 @@ package org.azauner.minicpp.bytecode.expr
 
 import org.azauner.minicpp.ast.node.*
 import org.azauner.minicpp.ast.util.getIdent
+import org.azauner.minicpp.ast.util.mapToAssignPairs
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.Opcodes.IASTORE
@@ -23,48 +24,56 @@ class ExprGenerator(private val mv: MethodVisitor) {
             generator.generate(expr.firstExpr)
         } else {
 
-            val exprEntries = (listOf(expr.firstExpr) + expr.exprEntries.map { it.orExpr })
-                .mapIndexed { index, entry ->
-                    entry to expr.exprEntries.getOrNull(index)?.assignOperator
-                }
+            val exprEntries = expr.mapToAssignPairs()
 
+            generator.putExprValuesOnStack(exprEntries)
 
-            exprEntries.filter { entry ->
-                entry.second != null
-            }.forEach {
-                if (it.first.isArrayAccess()) {
-                    if (it.second == AssignOperator.ASSIGN) {
-                        ActionFactGenerator.skipLoadOfNextArray = true
+            generator.generateAssignCode(exprEntries)
+
+        }
+    }
+
+    private fun OrExprGenerator.generateAssignCode(exprEntries: List<Pair<OrExpr, AssignOperator?>>) {
+        val entriesReversed = exprEntries.reversed()
+        entriesReversed.forEachIndexed { index, exprEntry ->
+            if (exprEntry.second == null) {
+                //no assign just generate value
+                this.generate(exprEntry.first)
+            } else {
+                val assignOperator = exprEntry.second!!
+                generateCalculation(assignOperator)
+                if (index != entriesReversed.lastIndex) {
+                    if (exprEntry.first.isArrayAccess()) {
+                        mv.visitInsn(Opcodes.DUP_X2)
                     } else {
-                        ActionFactGenerator.duplicateNextArrayIndex = true
-                    }
-                    generator.generate(it.first)
-                } else {
-                    if (it.second != AssignOperator.ASSIGN) {
-                        generator.generate(it.first)
-                    }
+                        mv.visitInsn(Opcodes.DUP)
 
+                    }
                 }
+                //assign value from stack to variable
+                generateVariableStore(exprEntry.first)
             }
-            val entriesReversed = exprEntries.reversed()
-            entriesReversed.forEachIndexed { index, exprEntry ->
-                if (exprEntry.second == null) {
-                    //no assign just generate value
-                    generator.generate(exprEntry.first)
-                } else {
-                    val assignOperator = exprEntry.second!!
-                    generateCalculation(assignOperator)
-                    if (index != entriesReversed.lastIndex) {
-                        if (exprEntry.first.isArrayAccess()) {
-                            mv.visitInsn(Opcodes.DUP_X2)
-                        } else {
-                            mv.visitInsn(Opcodes.DUP)
+        }
+    }
 
-                        }
-                    }
-                    //assign value from stack to variable
-                    generateVariableStore(exprEntry.first)
+
+    private fun OrExprGenerator.putExprValuesOnStack(exprEntries: List<Pair<OrExpr, AssignOperator?>>) {
+
+        exprEntries.filter { entry ->
+            entry.second != null
+        }.forEach {
+            if (it.first.isArrayAccess()) {
+                if (it.second == AssignOperator.ASSIGN) {
+                    ActionFactGenerator.skipLoadOfNextArray = true
+                } else {
+                    ActionFactGenerator.duplicateNextArrayIndex = true
                 }
+                this.generate(it.first)
+            } else {
+                if (it.second != AssignOperator.ASSIGN) {
+                    this.generate(it.first)
+                }
+
             }
         }
     }
