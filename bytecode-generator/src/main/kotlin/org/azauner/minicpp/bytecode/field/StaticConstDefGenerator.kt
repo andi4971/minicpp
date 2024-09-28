@@ -11,18 +11,5 @@ class StaticConstDefGenerator(private val cw: ClassWriter) {
             entry.variable.index = index
         }
     }
-
-    /*   fun getFieldNode(isStatic: Boolean): List<FieldNode> {
-           return constDef.entries.map { entry ->
-               FieldNode(
-                   Opcodes.ACC_PUBLIC
-                           or( if(isStatic) Opcodes.ACC_STATIC else 0)
-                           or Opcodes.ACC_FINAL,
-                   entry.ident.name,
-                   constDef.type.descriptor,
-                   null,
-                   entry.value.value.getValue()
-               )
-           }*/
 }
 

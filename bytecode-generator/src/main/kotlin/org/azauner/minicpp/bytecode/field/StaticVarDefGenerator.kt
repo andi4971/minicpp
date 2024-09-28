@@ -53,6 +53,7 @@ class StaticVarDefGenerator(private val cw: ClassWriter) {
             visitScannerInit(miniCpp)
 
             visitInsn(RETURN)
+            visitMaxs(0, 0)
             visitEnd()
         }
     }

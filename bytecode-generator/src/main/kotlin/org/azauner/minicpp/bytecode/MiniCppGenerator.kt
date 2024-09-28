@@ -19,7 +19,7 @@ class MiniCppGenerator(private val miniCpp: MiniCpp) {
     }
 
     fun generateByteCode(): ByteArray {
-        val classWriter = ClassWriter(ClassWriter.COMPUTE_FRAMES or ClassWriter.COMPUTE_MAXS)
+        val classWriter = ClassWriter(ClassWriter.COMPUTE_FRAMES + ClassWriter.COMPUTE_MAXS)
         className = miniCpp.className
         classWriter.visit(
             CLASS_FILE_VERSION,
@@ -40,15 +40,14 @@ class MiniCppGenerator(private val miniCpp: MiniCpp) {
             }
         }
         staticVarDefGenerator.generateStaticInitBlock(miniCpp)
-        addStaticScannerInstance(classWriter)
+        addStaticScannerField(classWriter)
 
         classWriter.visitEnd()
-
 
         return classWriter.toByteArray()
     }
 
-    private fun addStaticScannerInstance(classWriter: ClassWriter) {
+    private fun addStaticScannerField(classWriter: ClassWriter) {
         classWriter.visitField(
             ACC_PUBLIC or ACC_STATIC,
             "scanner",

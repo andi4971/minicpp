@@ -8,10 +8,16 @@ class Test {
         int z = 10;
         int v = 15;
          z -= y = 18 += v = 25;*/
-        int[] arr = new int[10];
+       /* int[] arr = new int[10];
         int[] arr2 = new int[10];
         int z = 0;
-        arr2[1] += arr[2] = z += 15;
+        arr2[1] += arr[2] = z += 15;*/
+
+        int a = 5;
+        while(a < 10) {
+            int b = 0;
+
+        }
         //arr2[1] = 15;
 
       /*  int f = 1;*/

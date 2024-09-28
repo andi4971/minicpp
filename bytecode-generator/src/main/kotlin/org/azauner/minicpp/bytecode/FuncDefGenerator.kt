@@ -11,7 +11,7 @@ class FuncDefGenerator(private val classWriter: ClassWriter, private val classNa
 
     fun generate(funcDef: FuncDef) {
         val methodVisitor = classWriter.visitMethod(
-            Opcodes.ACC_PUBLIC or Opcodes.ACC_STATIC,
+            Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC,
             funcDef.funHead.ident.name,
             funcDef.funHead.getDescriptor(),
             null,
@@ -21,8 +21,8 @@ class FuncDefGenerator(private val classWriter: ClassWriter, private val classNa
         methodVisitor.run {
             visitCode()
             BlockGenerator(methodVisitor, className).generate(funcDef.block, null)
-            visitInsn(RETURN
-            )
+            visitInsn(RETURN)
+            visitMaxs(0, 0)
             visitEnd()
         }
     }
