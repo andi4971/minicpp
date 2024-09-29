@@ -7,8 +7,8 @@ import org.objectweb.asm.Opcodes.*
 
 class AndExprGenerator(private val mv: MethodVisitor) {
 
-    fun generate(andExpr: AndExpr) {
-        RelExprGenerator(mv).generate(andExpr.relExpressions.first())
+    fun generate(andExpr: AndExpr, shouldEmitValue:Boolean = true) {
+        RelExprGenerator(mv).generate(andExpr.relExpressions.first(), shouldEmitValue)
 
         if (andExpr.relExpressions.size > 1) {
 

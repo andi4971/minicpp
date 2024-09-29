@@ -9,14 +9,15 @@ import org.objectweb.asm.Opcodes.*
 
 class FactGenerator(private val mv: MethodVisitor) {
 
-    fun generate(fact: Fact) {
-        when(fact) {
-            is ActionFact -> ActionFactGenerator(mv).generate(fact)
-            is BoolType -> mv.pushBoolValue(fact.value)
-            is IntType -> mv.pushIntValue(fact.value)
-            NullPtrType -> mv.pushNullValue()
-            is ExprFact -> ExprGenerator(mv).generate(fact.expr)
-            is NewArrayTypeFact -> generateNewArray(fact)
+    fun generate(fact: Fact, shouldEmitValue: Boolean = true) {
+        when {
+            fact is ActionFact -> ActionFactGenerator(mv).generate(fact, shouldEmitValue)
+            fact is BoolType && shouldEmitValue -> mv.pushBoolValue(fact.value)
+            fact is IntType && shouldEmitValue -> mv.pushIntValue(fact.value)
+            fact is NullPtrType && shouldEmitValue -> mv.pushNullValue()
+            fact is ExprFact -> ExprGenerator(mv).generate(fact.expr, true)
+            fact is NewArrayTypeFact -> generateNewArray(fact)
+            else -> null
         }
     }
 

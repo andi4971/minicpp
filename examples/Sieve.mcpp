@@ -9,7 +9,7 @@ const int lol = 12, abcd = 25;
 const bool isTesting = true;
 int seppster = 15, bert = 4;
 
-void main(int input) {
+void main() {
     int x = 0;
     int y = 5;
     int z = 10;
@@ -21,13 +21,11 @@ void main(int input) {
     arr = new int[10];
     arr2 = new int[10];
 
-    arr2 = arr =  nullptr;
-     x = arr[2] += z += 15;
-
   int n;
 
   cout << "n > ";
   cin >> n;
+  cout << "n is: "<<  n << endl;
   
   if (n < 3) {
     cout << "error: number too small (min. 3)" << endl;
@@ -51,9 +49,9 @@ int GetInt(int a, bool b) {
 
 void MyFunc(void) {
     int a = 5;
-   /* while(a < 10) {
+    while(++a < 10) {
         a++;
-    }*/
+    }
 
 
    /*int* arr2 = nullptr;
@@ -114,13 +112,14 @@ void Sieve(int n) { // defintion
   int col, i, j;
   bool *sieve = nullptr;
   sieve = new bool[n + 1];
-  Sieve(0);
   i = 2;
+  cout << "Sieve of Erathostenes up to " << n << endl;
   while (i <= n) {
     sieve[i] = true;
     i++;
   } // while
 
+    cout << endl;
   cout << 2 << "\t";
   
   col = 1;

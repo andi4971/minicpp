@@ -7,8 +7,8 @@ import org.objectweb.asm.Opcodes.IXOR
 
 class NotFactGenerator(private val mv: MethodVisitor) {
 
-    fun generate(notFact: NotFact) {
-       FactGenerator(mv).generate(notFact.fact)
+    fun generate(notFact: NotFact, shouldEmitValue: Boolean = true) {
+       FactGenerator(mv).generate(notFact.fact, shouldEmitValue)
 
         if(notFact.negated) {
             mv.visitInsn(ICONST_1)

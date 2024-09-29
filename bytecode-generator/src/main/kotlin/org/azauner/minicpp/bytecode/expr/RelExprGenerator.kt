@@ -9,9 +9,9 @@ import org.objectweb.asm.Opcodes.*
 
 class RelExprGenerator(private val mv: MethodVisitor) {
 
-    fun generate(relExpr: RelExpr) {
+    fun generate(relExpr: RelExpr, shouldEmitValue: Boolean = true) {
         val generator = SimpleExprGenerator(mv)
-        generator.generate(relExpr.firstExpr)
+        generator.generate(relExpr.firstExpr, shouldEmitValue)
 
         relExpr.relExprEntries.forEach { entry ->
             generator.generate(entry.simpleExpr)

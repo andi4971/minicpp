@@ -12,16 +12,27 @@ class ActionFactGenerator(private val mv: MethodVisitor) {
     companion object {
         var duplicateNextArrayIndex = false
         var skipLoadOfNextArray = false
+
+        fun getDescriptor(actParTypes: List<ExprType>, returnType: ExprType): String {
+            val sb = StringBuilder()
+            sb.append("(")
+            actParTypes.forEach {
+                sb.append(it.descriptor)
+            }
+            sb.append(")")
+            sb.append(returnType.descriptor)
+            return sb.toString()
+        }
     }
 
-    fun generate(actionFact: ActionFact) {
+    fun generate(actionFact: ActionFact, shouldEmitValue: Boolean = true) {
         when (actionFact.actionOp) {
             null -> {
-                generateVariableAccess(actionFact)
+                generateVariableAccess(actionFact, shouldEmitValue)
             }
 
             is ArrayAccessOperation -> generateArrayAccess(
-                actionFact
+                actionFact, shouldEmitValue
             )
 
             is CallOperation -> generateFunctionCall(
@@ -32,14 +43,16 @@ class ActionFactGenerator(private val mv: MethodVisitor) {
         }
     }
 
-    private fun generateVariableAccess(actionFact: ActionFact) {
+    private fun generateVariableAccess(actionFact: ActionFact, shouldEmitValue: Boolean) {
         val variable = actionFact.scope.getVariable(actionFact.ident)
 
         actionFact.prefix?.let {
             iInc(variable.index, it)
         }
 
-        mv.visitVarInsn(ILOAD, variable.index)
+        if (shouldEmitValue) {
+            mv.visitVarInsn(ILOAD, variable.index)
+        }
 
         actionFact.suffix?.let {
             iInc(variable.index, it)
@@ -63,37 +76,35 @@ class ActionFactGenerator(private val mv: MethodVisitor) {
         mv.visitMethodInsn(INVOKESTATIC, className, ident.name, descriptor, false)
     }
 
-    private fun getDescriptor(actParTypes: List<ExprType>, returnType: ExprType): String {
-        val sb = StringBuilder()
-        sb.append("(")
-        actParTypes.forEach {
-            sb.append(it.descriptor)
-        }
-        sb.append(")")
-        sb.append(returnType.descriptor)
-        return sb.toString()
-    }
 
-    private fun generateArrayAccess(actionFact: ActionFact) {
+
+    private fun generateArrayAccess(actionFact: ActionFact, shouldEmitValue: Boolean) {
         actionFact.run {
             val variable = scope.getVariable(ident)
             mv.visitVarInsn(ALOAD, variable.index)
 
             val arrayAccessOp = actionOp as ArrayAccessOperation
-            ExprGenerator(mv).generate(arrayAccessOp.expr)
-            if(duplicateNextArrayIndex){
+            ExprGenerator(mv).generate(arrayAccessOp.expr, true)
+            if (duplicateNextArrayIndex) {
                 mv.visitInsn(DUP2)
                 duplicateNextArrayIndex = false
             }
 
-            if(prefix != null || suffix != null) {
+            if (prefix != null || suffix != null) {
                 prefix?.let { iIncArr(it, isPrefix = true) }
                 suffix?.let { iIncArr(it, isPrefix = false) }
-            }else {
-                if(skipLoadOfNextArray) {
+            } else {
+                if (skipLoadOfNextArray) {
                     skipLoadOfNextArray = false
-                }else {
-                    mv.visitInsn(IALOAD)
+                } else {
+                    if (shouldEmitValue) {
+                        if(variable.type == ExprType.INT_ARR) {
+                            mv.visitInsn(IALOAD)
+                        } else {
+                            mv.visitInsn(BALOAD)
+                        }
+                    }
+                    Unit
                 }
             }
         }
@@ -103,7 +114,7 @@ class ActionFactGenerator(private val mv: MethodVisitor) {
     private fun iIncArr(incDec: IncDec, isPrefix: Boolean) {
         mv.visitInsn(DUP2)
         mv.visitInsn(IALOAD)
-        if(!isPrefix) {
+        if (!isPrefix) {
             mv.visitInsn(DUP_X2)
         }
         when (incDec) {
@@ -111,7 +122,7 @@ class ActionFactGenerator(private val mv: MethodVisitor) {
             IncDec.DECREASE -> mv.visitInsn(ICONST_M1)
         }
         mv.visitInsn(IADD)
-        if(isPrefix) {
+        if (isPrefix) {
             mv.visitInsn(DUP_X2)
         }
         mv.visitInsn(IASTORE)

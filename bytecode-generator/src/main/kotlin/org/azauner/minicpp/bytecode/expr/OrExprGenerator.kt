@@ -7,9 +7,9 @@ import org.objectweb.asm.Opcodes.*
 
 class OrExprGenerator(private val mv: MethodVisitor) {
 
-    fun generate(orExpr: OrExpr) {
+    fun generate(orExpr: OrExpr, shouldEmitValue: Boolean = true) {
 
-        AndExprGenerator(mv).generate(orExpr.andExpressions.first())
+        AndExprGenerator(mv).generate(orExpr.andExpressions.first(), shouldEmitValue)
 
         if (orExpr.andExpressions.size > 1) {
             val trueLabel = Label()

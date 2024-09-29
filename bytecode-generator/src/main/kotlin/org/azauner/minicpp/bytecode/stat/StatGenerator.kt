@@ -22,7 +22,7 @@ class StatGenerator(val mv: MethodVisitor, private val className: String) {
             is DeleteStat -> generateDeleteStat(stat)
             is ReturnStat -> generateReturnStat(stat)
             is OutputStat -> OutputStatGenerator(mv).generate(stat)
-            is ExprStat -> ExprGenerator(mv).generate(stat.expr)
+            is ExprStat -> ExprGenerator(mv).generate(stat.expr, false)
             is WhileStat -> generateWhileStat(stat)
             is IfStat -> generateIfStat(stat, breakLabel)
             is BreakStat -> mv.visitJumpInsn(Opcodes.GOTO, breakLabel!!)

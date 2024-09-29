@@ -7,9 +7,9 @@ import org.objectweb.asm.Opcodes.INEG
 
 class SimpleExprGenerator(private val mv: MethodVisitor) {
 
-    fun generate(simpleExpr: SimpleExpr) {
+    fun generate(simpleExpr: SimpleExpr, shouldEmitValue: Boolean = true) {
         val generator = TermGenerator(mv)
-        generator.generate(simpleExpr.term)
+        generator.generate(simpleExpr.term, shouldEmitValue)
         simpleExpr.sign?.let {
             if (it == Sign.MINUS) {
                 mv.visitInsn(INEG)

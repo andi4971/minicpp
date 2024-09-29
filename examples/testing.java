@@ -13,11 +13,8 @@ class Test {
         int z = 0;
         arr2[1] += arr[2] = z += 15;*/
 
-        int a = 5;
-        while(a < 10) {
-            int b = 0;
-
-        }
+        boolean[] arr = new boolean[10];
+        arr[2] = true;
         //arr2[1] = 15;
 
       /*  int f = 1;*/

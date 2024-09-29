@@ -5,6 +5,7 @@ import org.azauner.minicpp.ast.util.getIdent
 import org.azauner.minicpp.ast.util.mapToAssignPairs
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
+import org.objectweb.asm.Opcodes.BASTORE
 import org.objectweb.asm.Opcodes.IASTORE
 
 class ExprGenerator(private val mv: MethodVisitor) {
@@ -18,10 +19,10 @@ class ExprGenerator(private val mv: MethodVisitor) {
         return fact is ActionFact && fact.actionOp is ArrayAccessOperation
     }
 
-    fun generate(expr: Expr) {
+    fun generate(expr: Expr, shouldEmitValue: Boolean = true) {
         val generator = OrExprGenerator(mv)
         if (expr.exprEntries.isEmpty()) {
-            generator.generate(expr.firstExpr)
+            generator.generate(expr.firstExpr, shouldEmitValue)
         } else {
 
             val exprEntries = expr.mapToAssignPairs()
@@ -38,7 +39,7 @@ class ExprGenerator(private val mv: MethodVisitor) {
         entriesReversed.forEachIndexed { index, exprEntry ->
             if (exprEntry.second == null) {
                 //no assign just generate value
-                this.generate(exprEntry.first)
+                this.generate(exprEntry.first, true)
             } else {
                 val assignOperator = exprEntry.second!!
                 generateCalculation(assignOperator)
@@ -80,7 +81,12 @@ class ExprGenerator(private val mv: MethodVisitor) {
 
     private fun generateVariableStore(orExpr: OrExpr) {
         if (orExpr.isArrayAccess()) {
-            mv.visitInsn(IASTORE)
+            val variable = orExpr.scope.getVariable(orExpr.getIdent())
+            if(variable.type == ExprType.INT_ARR) {
+                mv.visitInsn(IASTORE)
+            } else {
+                mv.visitInsn(BASTORE)
+            }
         } else {
             storeValue(orExpr)
         }

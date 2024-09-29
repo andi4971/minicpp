@@ -7,9 +7,9 @@ import org.objectweb.asm.Opcodes.*
 
 class TermGenerator(private val mv: MethodVisitor) {
 
-    fun generate(term: Term) {
+    fun generate(term: Term, shouldEmitValue: Boolean = true) {
         val generator = NotFactGenerator(mv)
-        generator.generate(term.firstNotFact)
+        generator.generate(term.firstNotFact, shouldEmitValue)
         term.termEntries.forEach { termEntry ->
             generator.generate(termEntry.notFact)
             val operator = when(termEntry.termOperator) {
