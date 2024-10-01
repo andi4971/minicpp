@@ -31,8 +31,8 @@ class StatGenerator(val mv: MethodVisitor, private val className: String) {
     }
 
     private fun generateIfStat(stat: IfStat, breakLabel: Label?) {
-        val elseLabel =Label()
-        val endLabel =Label()
+        val elseLabel = Label()
+        val endLabel = Label()
 
         ExprGenerator(mv).generate(stat.condition)
         mv.visitJumpInsn(Opcodes.IFEQ, elseLabel)

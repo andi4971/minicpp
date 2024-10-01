@@ -14,7 +14,12 @@ class OutputStatEntryVisitor(private val scope: Scope) : minicppBaseVisitor<Outp
     }
 
     override fun visitStringOutputStatEntry(ctx: minicppParser.StringOutputStatEntryContext): OutputStatEntry {
-        return Text(ctx.STRING().text.drop(1).dropLast(1))
+        return Text(ctx.STRING().text.trim('"')
+            .replace("\\\\", "\\")
+            .replace("\\t", "\t")
+            .replace("\\n", "\n")
+            .replace("\\r", "\r")
+            .replace("\\\"", "\""))
     }
 
     override fun visitEndlOutputStatEntry(ctx: minicppParser.EndlOutputStatEntryContext): OutputStatEntry {
