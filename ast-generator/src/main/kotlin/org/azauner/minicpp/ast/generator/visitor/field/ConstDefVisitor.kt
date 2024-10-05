@@ -18,7 +18,8 @@ class ConstDefVisitor(private val scope: Scope) : minicppBaseVisitor<ConstDef>()
             val init = entry.init().accept(InitVisitor())
 
             validateTypes(type, init.value.getExprType())
-            val variable = scope.addVariable(ident, type, const = true)
+
+            val variable = scope.addVariable(ident, type, const = true, constValue = init.value.getValue())
             ConstDefEntry(ident, init, variable)
         }
 

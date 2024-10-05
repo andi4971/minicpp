@@ -26,7 +26,7 @@ class StatGenerator(val mv: MethodVisitor, private val className: String) {
             is WhileStat -> generateWhileStat(stat)
             is IfStat -> generateIfStat(stat, breakLabel)
             is BreakStat -> mv.visitJumpInsn(Opcodes.GOTO, breakLabel!!)
-            else -> ""
+            is EmptyStat -> ""
         }
     }
 
@@ -94,6 +94,15 @@ class StatGenerator(val mv: MethodVisitor, private val className: String) {
                 false
             )
         }
-        mv.visitVarInsn(Opcodes.ISTORE, variable.index)
+        if(variable.static) {
+            mv.visitFieldInsn(
+                Opcodes.PUTSTATIC,
+                className,
+                variable.ident.name,
+                variable.type.descriptor
+            )
+        } else {
+            mv.visitVarInsn(Opcodes.ISTORE, variable.index)
+        }
     }
 }

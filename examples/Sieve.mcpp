@@ -10,6 +10,7 @@ const bool isTesting = true;
 int seppster = 15, bert = 4;
 
 void main() {
+    seppster++;
     int x = 0;
     int y = 5;
     int z = 10;

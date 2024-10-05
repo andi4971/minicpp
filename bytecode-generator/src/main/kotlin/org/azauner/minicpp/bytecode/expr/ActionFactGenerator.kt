@@ -2,6 +2,7 @@ package org.azauner.minicpp.bytecode.expr
 
 import org.azauner.minicpp.ast.node.*
 import org.azauner.minicpp.ast.node.scope.Scope
+import org.azauner.minicpp.ast.node.scope.Variable
 import org.azauner.minicpp.ast.util.getType
 import org.azauner.minicpp.bytecode.MiniCppGenerator.Companion.className
 import org.objectweb.asm.MethodVisitor
@@ -45,25 +46,51 @@ class ActionFactGenerator(private val mv: MethodVisitor) {
 
     private fun generateVariableAccess(actionFact: ActionFact, shouldEmitValue: Boolean) {
         val variable = actionFact.scope.getVariable(actionFact.ident)
-
         actionFact.prefix?.let {
-            iInc(variable.index, it)
+            iInc(variable, it)
         }
 
         if (shouldEmitValue) {
-            mv.visitVarInsn(ILOAD, variable.index)
+            when {
+                variable.static && !variable.const -> mv.visitFieldInsn(GETSTATIC, className, variable.ident.name, variable.type.descriptor)
+                variable.const -> mv.visitLdcInsn(variable.constValue)
+                variable.type in ARR_TYPES -> mv.visitVarInsn(ALOAD, variable.index)
+                else -> mv.visitVarInsn(ILOAD, variable.index)
+            }
+
+            /*if (variable.static && !variable.const) {
+                mv.visitFieldInsn(GETSTATIC, className, variable.ident.name, variable.type.descriptor)
+            } else {
+                when {
+                    variable.type in ARR_TYPES -> mv.visitVarInsn(ALOAD, variable.index)
+                    else -> mv.visitVarInsn(ILOAD, variable.index)
+
+                }
+            }*/
         }
 
         actionFact.suffix?.let {
-            iInc(variable.index, it)
+            iInc(variable, it)
         }
+
     }
 
-    private fun iInc(index: Int, incDec: IncDec) {
-        when (incDec) {
-            IncDec.INCREASE -> mv.visitIincInsn(index, 1)
-            IncDec.DECREASE -> mv.visitIincInsn(index, -1)
+    private fun iInc(variable: Variable, incDec: IncDec) {
+        if (variable.static) {
+            mv.visitFieldInsn(GETSTATIC, className, variable.ident.name, variable.type.descriptor)
+            when (incDec) {
+                IncDec.INCREASE -> mv.visitInsn(ICONST_1)
+                IncDec.DECREASE -> mv.visitInsn(ICONST_M1)
+            }
+            mv.visitInsn(IADD)
+            mv.visitFieldInsn(PUTSTATIC, className, variable.ident.name, variable.type.descriptor)
+        } else {
+            when (incDec) {
+                IncDec.INCREASE -> mv.visitIincInsn(variable.index, 1)
+                IncDec.DECREASE -> mv.visitIincInsn(variable.index, -1)
+            }
         }
+
     }
 
     private fun generateFunctionCall(callOperation: CallOperation, scope: Scope, ident: Ident) {
@@ -77,11 +104,15 @@ class ActionFactGenerator(private val mv: MethodVisitor) {
     }
 
 
-
     private fun generateArrayAccess(actionFact: ActionFact, shouldEmitValue: Boolean) {
         actionFact.run {
             val variable = scope.getVariable(ident)
-            mv.visitVarInsn(ALOAD, variable.index)
+            if (variable.static) {
+                mv.visitFieldInsn(GETSTATIC, className, variable.ident.name, variable.type.descriptor)
+            } else {
+                mv.visitVarInsn(ALOAD, variable.index)
+
+            }
 
             val arrayAccessOp = actionOp as ArrayAccessOperation
             ExprGenerator(mv).generate(arrayAccessOp.expr, true)
@@ -98,7 +129,7 @@ class ActionFactGenerator(private val mv: MethodVisitor) {
                     skipLoadOfNextArray = false
                 } else {
                     if (shouldEmitValue) {
-                        if(variable.type == ExprType.INT_ARR) {
+                        if (variable.type == ExprType.INT_ARR) {
                             mv.visitInsn(IALOAD)
                         } else {
                             mv.visitInsn(BALOAD)

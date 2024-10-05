@@ -4,7 +4,8 @@ import kotlin.io.path.Path
 import kotlin.io.path.inputStream
 
 fun main() {
-    val fileName = "Sieve.mcpp"
+    //val fileName = "Sieve.mcpp"
+    val fileName = "GoLife.mcpp"
     val inputStream = Path("examples/$fileName").inputStream()
     val className = fileName.substringBefore(".mcpp")
 

@@ -1,8 +1,10 @@
 package org.azauner.minicpp.bytecode.expr
 
 import org.azauner.minicpp.ast.node.*
+import org.azauner.minicpp.ast.node.scope.Variable
 import org.azauner.minicpp.ast.util.getIdent
 import org.azauner.minicpp.ast.util.mapToAssignPairs
+import org.azauner.minicpp.bytecode.MiniCppGenerator.Companion.className
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.Opcodes.BASTORE
@@ -99,7 +101,7 @@ class ExprGenerator(private val mv: MethodVisitor) {
             AssignOperator.MUL_ASSIGN -> mv.visitInsn(Opcodes.IMUL)
             AssignOperator.DIV_ASSIGN -> mv.visitInsn(Opcodes.IDIV)
             AssignOperator.MOD_ASSIGN -> mv.visitInsn(Opcodes.IREM)
-            else -> ""
+            AssignOperator.ASSIGN -> ""
         }
     }
 
@@ -108,7 +110,20 @@ class ExprGenerator(private val mv: MethodVisitor) {
         val variable = orExpr.scope.getVariable(ident)
         val type = variable.type
         val index = variable.index
-        storeAssignValue(type, index)
+        if(variable.static) {
+            storeStatic(variable)
+        }else {
+            storeAssignValue(type, index)
+        }
+    }
+
+    private fun storeStatic(variable: Variable) {
+        mv.visitFieldInsn(
+            Opcodes.PUTSTATIC,
+            className,
+            variable.ident.name,
+            variable.type.descriptor
+        )
     }
 
     private fun storeAssignValue(varType: ExprType, index: Int) {

@@ -13,12 +13,12 @@ class Scope(private val parent: Scope?) {
     private val functions: MutableList<Function> = mutableListOf()
     private val childScopes = mutableListOf<Scope>()
 
-    fun addVariable(ident: Ident, type: ExprType, const: Boolean = false): Variable {
-        if (variableExists(ident)) {
+    fun addVariable(ident: Ident, type: ExprType, const: Boolean = false, constValue: Any? = null): Variable {
+        if (variableExistsInSelf(ident)) {
             throw SemanticException("Variable $ident already exists")
         }
         val static = isGlobalScope
-        return Variable(ident, type, const, static, getNextAvailableIndex(static))
+        return Variable(ident, type, const, static, getNextAvailableIndex(static), constValue)
             .also { variables.add(it) }
     }
 
@@ -48,6 +48,10 @@ class Scope(private val parent: Scope?) {
         return variables.any { it.ident == ident }
                 || parent?.variableExists(ident)
                 ?: false
+    }
+
+    private fun variableExistsInSelf(ident: Ident): Boolean {
+        return variables.any { it.ident == ident }
     }
 
     fun variableExistsInSelfOrChildren(ident: Ident): Boolean {
