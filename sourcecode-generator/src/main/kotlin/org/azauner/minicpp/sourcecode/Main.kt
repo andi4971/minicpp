@@ -10,7 +10,7 @@ fun main() {
 
 
     //walker.walk(MiniCppListener(parser), parser.miniCpp())
-    val result = org.azauner.minicpp.ast.generator.generateASTForFile(inputStream, className)
+    val result = org.azauner.minicpp.ast.generator.generateASTForFileVisitor(inputStream, className)
     //println(result.prettyPrint())
     Files.writeString(Path("examples/output.mcpp"), result.generateSourceCode())
 

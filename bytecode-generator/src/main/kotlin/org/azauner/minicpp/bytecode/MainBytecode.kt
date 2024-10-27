@@ -12,7 +12,7 @@ fun main() {
 
 
     //walker.walk(MiniCppListener(parser), parser.miniCpp())
-    val result = org.azauner.minicpp.ast.generator.generateASTForFile(inputStream, className)
+    val result = org.azauner.minicpp.ast.generator.generateASTForFileVisitor(inputStream, className)
     val bytes = MiniCppGenerator(result).generateByteCode()
     Path("examples/${result.className}.class").toFile().writeBytes(bytes)
 }

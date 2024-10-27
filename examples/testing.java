@@ -2,7 +2,6 @@ import java.util.Scanner;
 
 class Test {
 
-    static int x;
 
     public static void main(String[] args) {
 /*       int x = 0;
@@ -14,11 +13,9 @@ class Test {
         int[] arr2 = new int[10];
         int z = 0;
         arr2[1] += arr[2] = z += 15;*/
-        x = 15;
-        x++;
-        x--;
-
-        System.out.println("\t");
+        int a = 6;
+        int b = 10;
+        int c = a + b;
 
         //arr2[1] = 15;
 
