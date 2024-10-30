@@ -9,21 +9,27 @@ const int lol = 12;
 int seppster = 15;
 
 void main() {
-
   int n;
 
-  cout << "n > ";
-  cin >> n;
+    if(n > 0) {
+        cout << "n > 0";
+    } else {
+        cout << "n <= 0";
+    }
+
+    n;
+  /*cout << "n > ";
+  cin >> n;*/
   
-  if (n < 3) {
-    cout << "error: number too small (min. 3)" << endl;
+  /*if (n < 3) {
+   *//* cout << "error: number too small (min. 3)" << endl;
     return;
   } else if (n > 46340) {
     cout << "error: number too large (max. 46340)" << endl;
-    return;
+    return;*//*
   } // if
-  
-  Sieve(n);
+  */
+  /*Sieve(n);*/
   
   // int dummy;
   // cin >> dummy;

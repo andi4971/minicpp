@@ -3,13 +3,14 @@ package org.azauner.minicpp.ast.generator.listener.expr.term
 import org.azauner.minicpp.ast.node.TermEntry
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
+import java.util.*
 
 class TermEntryListener(
     private val notFactListener: NotFactListener,
     private val termOperatorListener: TermOperatorListener
 ) : minicppBaseListener() {
 
-    private var termEntries = mutableListOf<TermEntry>()
+    private var termEntries = Collections.synchronizedList(mutableListOf<TermEntry>())
 
     override fun exitTermEntry(ctx: minicppParser.TermEntryContext) {
         termEntries.add(
@@ -22,11 +23,5 @@ class TermEntryListener(
 
     fun getTermEntry(): TermEntry {
         return termEntries.removeLast()
-    }
-
-    fun getTermEntry(n: Int): List<TermEntry> {
-        return termEntries.subList(termEntries.size - n, termEntries.size).also {
-            termEntries.dropLast(n)
-        }
     }
 }

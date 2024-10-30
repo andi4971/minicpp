@@ -3,10 +3,11 @@ package org.azauner.minicpp.ast.generator.listener.expr.term
 import org.azauner.minicpp.ast.node.TermOperator
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
+import java.util.*
 
 class TermOperatorListener: minicppBaseListener() {
 
-    private var termOperators = mutableListOf<TermOperator>()
+    private var termOperators = Collections.synchronizedList(mutableListOf<TermOperator>())
 
     override fun exitStarOperator(ctx: minicppParser.StarOperatorContext?) {
         termOperators.add(TermOperator.MUL)

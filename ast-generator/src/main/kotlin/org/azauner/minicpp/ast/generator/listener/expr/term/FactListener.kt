@@ -5,6 +5,7 @@ import org.azauner.minicpp.ast.generator.listener.field.TypeListener
 import org.azauner.minicpp.ast.node.*
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
+import java.util.*
 
 class FactListener(
     private val callFactEntryListener: CallFactEntryListener,
@@ -13,7 +14,7 @@ class FactListener(
 ) :
     minicppBaseListener() {
 
-    private var facts = mutableListOf<Fact>()
+    private var facts = Collections.synchronizedList(mutableListOf<Fact>())
 
     override fun exitBooleanFact(ctx: minicppParser.BooleanFactContext) {
         facts.add(BoolType(ctx.BOOLEAN().text == "true"))

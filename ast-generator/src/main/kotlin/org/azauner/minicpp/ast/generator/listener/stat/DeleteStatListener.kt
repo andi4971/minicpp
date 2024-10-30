@@ -5,10 +5,11 @@ import org.azauner.minicpp.ast.node.Ident
 import org.azauner.minicpp.ast.node.scope.Scope
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
+import java.util.*
 
 class DeleteStatListener: minicppBaseListener() {
 
-    private var deleteStats = mutableListOf<DeleteStat>()
+    private var deleteStats = Collections.synchronizedList(mutableListOf<DeleteStat>())
 
     override fun exitDeleteStat(ctx: minicppParser.DeleteStatContext) {
         val scope = Scope(null)

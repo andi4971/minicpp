@@ -5,10 +5,11 @@ import org.azauner.minicpp.ast.node.Sign
 import org.azauner.minicpp.ast.node.SimpleExprEntry
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
+import java.util.*
 
 class SimpleExprEntryListener(private val termListener: TermListener): minicppBaseListener() {
 
-    private val simpleExprEntries = mutableListOf<SimpleExprEntry>()
+    private val simpleExprEntries = Collections.synchronizedList(mutableListOf<SimpleExprEntry>())
 
     override fun exitSimpleExprEntry(ctx: minicppParser.SimpleExprEntryContext) {
         val sign  = ctx.SIGN().let {
@@ -27,10 +28,5 @@ class SimpleExprEntryListener(private val termListener: TermListener): minicppBa
 
     fun getSimpleExprEntry(): SimpleExprEntry {
         return simpleExprEntries.removeLast()
-    }
-    fun getSimpleExprEntry(n: Int): List<SimpleExprEntry> {
-        return simpleExprEntries.subList(simpleExprEntries.size - n, simpleExprEntries.size).also {
-            simpleExprEntries.dropLast(n)
-        }
     }
 }

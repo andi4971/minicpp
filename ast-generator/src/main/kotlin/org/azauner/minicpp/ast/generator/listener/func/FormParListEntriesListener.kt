@@ -6,10 +6,11 @@ import org.azauner.minicpp.ast.node.FormParListEntry
 import org.azauner.minicpp.ast.node.Ident
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
+import java.util.*
 
 class FormParListEntriesListener(private val typeListener: TypeListener) : minicppBaseListener() {
 
-    private val formParListEntries = mutableListOf<FormParListEntry>()
+    private val formParListEntries = Collections.synchronizedList(mutableListOf<FormParListEntry>())
 
     override fun exitFormParListEntry(ctx: minicppParser.FormParListEntryContext) {
         formParListEntries.add(

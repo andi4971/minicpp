@@ -5,11 +5,12 @@ import org.azauner.minicpp.ast.node.FuncHead
 import org.azauner.minicpp.ast.node.Ident
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
+import java.util.*
 
 class FuncHeadListener(private val typeListener: TypeListener, private val formParListListener: FormParListListener) :
     minicppBaseListener() {
 
-    private val funcHeads = mutableListOf<FuncHead>()
+    private val funcHeads = Collections.synchronizedList(mutableListOf<FuncHead>())
 
     override fun exitFuncHead(ctx: minicppParser.FuncHeadContext) {
         funcHeads.add(

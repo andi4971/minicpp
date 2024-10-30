@@ -12,6 +12,7 @@ fun main() {
     println(result.prettyPrint())
 }
 
+
 fun Any.prettyPrint(): String {
 
     var indentLevel = 0
@@ -49,3 +50,4 @@ fun Any.prettyPrint(): String {
 
     return stringBuilder.toString()
 }
+
