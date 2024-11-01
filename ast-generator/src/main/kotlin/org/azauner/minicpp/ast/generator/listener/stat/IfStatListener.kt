@@ -13,7 +13,6 @@ class IfStatListener(private val exprListener: ExprListener, private val statLis
 
     override fun exitIfStat(ctx: minicppParser.IfStatContext) {
         val elseStat = ctx.elseStat()?.let { statListener.getStat() }
-        //TODO check if order of stats needs to be switchd
         ifStats.add(IfStat(condition = exprListener.getExpr(), thenStat = statListener.getStat(), elseStat = elseStat))
     }
 

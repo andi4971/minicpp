@@ -1,19 +1,18 @@
 package org.azauner.minicpp.ast.generator.listener.stat
 
+import org.azauner.minicpp.ast.generator.listener.ScopeHandler
 import org.azauner.minicpp.ast.node.DeleteStat
 import org.azauner.minicpp.ast.node.Ident
-import org.azauner.minicpp.ast.node.scope.Scope
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
 import java.util.*
 
-class DeleteStatListener: minicppBaseListener() {
+class DeleteStatListener(private val scopeHandler: ScopeHandler): minicppBaseListener() {
 
     private var deleteStats = Collections.synchronizedList(mutableListOf<DeleteStat>())
 
     override fun exitDeleteStat(ctx: minicppParser.DeleteStatContext) {
-        val scope = Scope(null)
-        //TODO
+        val scope =scopeHandler.getScope()
         deleteStats.add(DeleteStat(Ident(ctx.IDENT().text), scope))
     }
 

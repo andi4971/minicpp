@@ -5,6 +5,7 @@ import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.tree.ParseTreeListener
 import org.azauner.minicpp.ast.generator.listener.MiniCppEntryListener
 import org.azauner.minicpp.ast.generator.listener.MiniCppListener
+import org.azauner.minicpp.ast.generator.listener.ScopeHandler
 import org.azauner.minicpp.ast.generator.listener.block.BlockEntryListener
 import org.azauner.minicpp.ast.generator.listener.block.BlockListener
 import org.azauner.minicpp.ast.generator.listener.expr.*
@@ -44,23 +45,23 @@ fun generateAstForFileListener(inputStream: InputStream, className: String): Min
 private fun createListeners(): List<ParseTreeListener> {
     val typeListener = TypeListener()
     val initListener = InitListener()
-
+    val scopeHandler  = ScopeHandler()
     val constDefEntryListener = ConstDefEntryListener(initListener)
-    val constDefListener = ConstDefListener(typeListener, constDefEntryListener)
+    val constDefListener = ConstDefListener(typeListener, constDefEntryListener, scopeHandler)
 
     val varDefEntryListener = VarDefEntryListener(initListener)
-    val varDefListener = VarDefListener(typeListener, varDefEntryListener)
+    val varDefListener = VarDefListener(typeListener, varDefEntryListener, scopeHandler)
 
     val formParListEntryListener = FormParListEntriesListener(typeListener)
     val formParListListener = FormParListListener(formParListEntryListener)
     val funcHeadListener = FuncHeadListener(typeListener, formParListListener)
     val funcDeclListener = FuncDeclListener(funcHeadListener)
 
-    val exprListener = ExprListener()
+    val exprListener = ExprListener(scopeHandler)
 
     val actParListListener = ActParListListener(exprListener)
-    val callFactEntryOperationListener = CallFactEntryOperationListener(exprListener, actParListListener)
-    val callFactEntryListener = CallFactEntryListener(callFactEntryOperationListener)
+    val callFactEntryOperationListener = CallFactEntryOperationListener(exprListener, actParListListener, scopeHandler)
+    val callFactEntryListener = CallFactEntryListener(callFactEntryOperationListener, scopeHandler)
     val factListener = FactListener(callFactEntryListener, typeListener, exprListener)
     val notFactListener = NotFactListener(factListener)
     val termOperatorListener = TermOperatorListener()
@@ -72,7 +73,7 @@ private fun createListeners(): List<ParseTreeListener> {
     val relExprEntryListener = RelExprEntryListener(simpleExprListener, relOperatorListener)
     val relExprListener = RelExprListener(simpleExprListener, relExprEntryListener)
     val andExprListener = AndExprListener(relExprListener)
-    val orExprListener = OrExprListener(andExprListener)
+    val orExprListener = OrExprListener(andExprListener, scopeHandler)
     val assignOperatorListener = AssignOperatorListener()
     val exprEntryListener = ExprEntryListener(orExprListener, assignOperatorListener)
     exprListener.initListeners(orExprListener, exprEntryListener)
@@ -80,14 +81,14 @@ private fun createListeners(): List<ParseTreeListener> {
     val statListener = StatListener()
 
     val blockEntryListener = BlockEntryListener(statListener, varDefListener, constDefListener)
-    val blockListener = BlockListener(blockEntryListener)
-    val funcDefListener = FuncDefListener(funcHeadListener, blockListener)
+    val blockListener = BlockListener(blockEntryListener, scopeHandler)
+    val funcDefListener = FuncDefListener(funcHeadListener, blockListener, scopeHandler)
 
     val whileStatListener = WhileStatListener(exprListener, statListener)
     val outputStatListener = OutputStatListener(exprListener)
     val breakStatListener = BreakStatListener()
-    val inputStatListener = InputStatListener()
-    val deleteStatListener = DeleteStatListener()
+    val inputStatListener = InputStatListener(scopeHandler)
+    val deleteStatListener = DeleteStatListener(scopeHandler)
     val emptyStatListener = EmptyStatListener()
     val blockStatListener = BlockStatListener(blockListener)
     val returnStatListener = ReturnStatListener(exprListener)
@@ -104,7 +105,7 @@ private fun createListeners(): List<ParseTreeListener> {
 
 
     val miniCppEntryListener = MiniCppEntryListener(constDefListener, varDefListener, funcDeclListener, funcDefListener)
-    val miniCppListener = MiniCppListener(miniCppEntryListener)
+    val miniCppListener = MiniCppListener(miniCppEntryListener, scopeHandler)
     return listOf(
         typeListener,
         initListener,
