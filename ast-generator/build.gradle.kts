@@ -13,6 +13,7 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
     api(project(":parser"))
+    implementation(project(":ast"))
     implementation("org.aspectj:aspectjrt:1.9.21")
     implementation("org.aspectj:aspectjweaver:1.9.21")
 }

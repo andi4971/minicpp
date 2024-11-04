@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":ast-generator"))
+    api(project(":ast-generator"))
     testImplementation(kotlin("test"))
 }
 
