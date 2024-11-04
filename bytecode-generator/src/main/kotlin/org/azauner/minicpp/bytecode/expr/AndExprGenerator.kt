@@ -1,13 +1,12 @@
 package org.azauner.minicpp.bytecode.expr
 
-import org.azauner.minicpp.ast.node.AndExpr
 import org.objectweb.asm.Label
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes.*
 
 class AndExprGenerator(private val mv: MethodVisitor) {
 
-    fun generate(andExpr: AndExpr, shouldEmitValue:Boolean = true) {
+    fun generate(andExpr: org.azauner.minicpp.ast.node.AndExpr, shouldEmitValue: Boolean = true) {
         RelExprGenerator(mv).generate(andExpr.relExpressions.first(), shouldEmitValue)
 
         if (andExpr.relExpressions.size > 1) {

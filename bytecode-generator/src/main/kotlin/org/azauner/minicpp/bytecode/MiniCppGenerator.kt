@@ -1,13 +1,12 @@
 package org.azauner.minicpp.bytecode
 
-import org.azauner.minicpp.ast.node.*
 import org.azauner.minicpp.bytecode.expr.ActionFactGenerator
 import org.azauner.minicpp.bytecode.field.StaticConstDefGenerator
 import org.azauner.minicpp.bytecode.field.StaticVarDefGenerator
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.Opcodes.*
 
-class MiniCppGenerator(private val miniCpp: MiniCpp) {
+class MiniCppGenerator(private val miniCpp: org.azauner.minicpp.ast.node.MiniCpp) {
 
     companion object {
         private const val CLASS_FILE_VERSION = 65
@@ -30,9 +29,9 @@ class MiniCppGenerator(private val miniCpp: MiniCpp) {
         val staticVarDefGenerator = StaticVarDefGenerator(classWriter)
         miniCpp.entries.forEach {
             when (it) {
-                is VarDef -> staticVarDefGenerator.generateStatic(it)
-                is ConstDef -> StaticConstDefGenerator(classWriter).generateStatic(it)
-                is FuncDef -> FuncDefGenerator(classWriter, miniCpp.className).generate(it)
+                is org.azauner.minicpp.ast.node.VarDef -> staticVarDefGenerator.generateStatic(it)
+                is org.azauner.minicpp.ast.node.ConstDef -> StaticConstDefGenerator(classWriter).generateStatic(it)
+                is org.azauner.minicpp.ast.node.FuncDef -> FuncDefGenerator(classWriter, miniCpp.className).generate(it)
                 else -> ""
             }
         }
@@ -45,8 +44,8 @@ class MiniCppGenerator(private val miniCpp: MiniCpp) {
     }
 
     private fun addMainMethod(classWriter: ClassWriter) {
-        val mainIdent = Ident("main")
-        miniCpp.globalScope.getFunction(mainIdent, listOf(ExprType.VOID))
+        val mainIdent = org.azauner.minicpp.ast.node.Ident("main")
+        miniCpp.globalScope.getFunction(mainIdent, listOf(org.azauner.minicpp.ast.node.ExprType.VOID))
 
         classWriter.visitMethod(
             ACC_PUBLIC or ACC_STATIC,
@@ -56,7 +55,7 @@ class MiniCppGenerator(private val miniCpp: MiniCpp) {
             null
         ).apply {
             visitCode()
-            val descriptor = ActionFactGenerator.getDescriptor(listOf(), ExprType.VOID)
+            val descriptor = ActionFactGenerator.getDescriptor(listOf(), org.azauner.minicpp.ast.node.ExprType.VOID)
             visitMethodInsn(INVOKESTATIC, className, mainIdent.name, descriptor, false)
             visitInsn(RETURN)
             visitMaxs(0, 0)

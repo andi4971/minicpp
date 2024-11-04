@@ -1,9 +1,6 @@
 package org.azauner.minicpp.ast.generator.listener.expr
 
 import org.azauner.minicpp.ast.generator.listener.expr.term.TermListener
-import org.azauner.minicpp.ast.node.Sign
-import org.azauner.minicpp.ast.node.SimpleExpr
-import org.azauner.minicpp.ast.node.SimpleExprEntry
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
 import java.util.*
@@ -13,23 +10,23 @@ class SimpleExprListener(
     private val simpleExprEntryListener: SimpleExprEntryListener
 ) : minicppBaseListener() {
 
-    private var simpleExprs = Collections.synchronizedList(mutableListOf<SimpleExpr>())
+    private var simpleExprs = Collections.synchronizedList(mutableListOf<org.azauner.minicpp.ast.node.SimpleExpr>())
 
     override fun exitSimpleExpr(ctx: minicppParser.SimpleExprContext) {
         val sign = ctx.SIGN()?.let {
             if (it.text == "-") {
-                Sign.MINUS
+                org.azauner.minicpp.ast.node.Sign.MINUS
             } else {
-                Sign.PLUS
+                org.azauner.minicpp.ast.node.Sign.PLUS
             }
         }
 
-        val entries = mutableListOf<SimpleExprEntry>()
+        val entries = mutableListOf<org.azauner.minicpp.ast.node.SimpleExprEntry>()
         repeat(ctx.simpleExprEntry().size) {
             entries.add(simpleExprEntryListener.getSimpleExprEntry())
         }
         simpleExprs.add(
-            SimpleExpr(
+            org.azauner.minicpp.ast.node.SimpleExpr(
                 sign = sign,
                 term = termListener.getTerm(),
                 simpleExprEntries = entries
@@ -37,7 +34,7 @@ class SimpleExprListener(
         )
     }
 
-    fun getSimpleExpr(): SimpleExpr {
+    fun getSimpleExpr(): org.azauner.minicpp.ast.node.SimpleExpr {
         return simpleExprs.removeLast()
     }
 }

@@ -1,7 +1,5 @@
 package org.azauner.minicpp.bytecode.expr
 
-import org.azauner.minicpp.ast.node.*
-import org.azauner.minicpp.ast.node.scope.Scope
 import org.azauner.minicpp.ast.node.scope.Variable
 import org.azauner.minicpp.ast.util.getType
 import org.azauner.minicpp.bytecode.MiniCppGenerator.Companion.className
@@ -14,7 +12,10 @@ class ActionFactGenerator(private val mv: MethodVisitor) {
         var duplicateNextArrayIndex = false
         var skipLoadOfNextArray = false
 
-        fun getDescriptor(actParTypes: List<ExprType>, returnType: ExprType): String {
+        fun getDescriptor(
+            actParTypes: List<org.azauner.minicpp.ast.node.ExprType>,
+            returnType: org.azauner.minicpp.ast.node.ExprType
+        ): String {
             val sb = StringBuilder()
             sb.append("(")
             actParTypes.forEach {
@@ -26,25 +27,25 @@ class ActionFactGenerator(private val mv: MethodVisitor) {
         }
     }
 
-    fun generate(actionFact: ActionFact, shouldEmitValue: Boolean = true) {
+    fun generate(actionFact: org.azauner.minicpp.ast.node.ActionFact, shouldEmitValue: Boolean = true) {
         when (actionFact.actionOp) {
             null -> {
                 generateVariableAccess(actionFact, shouldEmitValue)
             }
 
-            is ArrayAccessOperation -> generateArrayAccess(
+            is org.azauner.minicpp.ast.node.ArrayAccessOperation -> generateArrayAccess(
                 actionFact, shouldEmitValue
             )
 
-            is CallOperation -> generateFunctionCall(
-                actionFact.actionOp as CallOperation,
+            is org.azauner.minicpp.ast.node.CallOperation -> generateFunctionCall(
+                actionFact.actionOp as org.azauner.minicpp.ast.node.CallOperation,
                 actionFact.scope,
                 actionFact.ident
             )
         }
     }
 
-    private fun generateVariableAccess(actionFact: ActionFact, shouldEmitValue: Boolean) {
+    private fun generateVariableAccess(actionFact: org.azauner.minicpp.ast.node.ActionFact, shouldEmitValue: Boolean) {
         val variable = actionFact.scope.getVariable(actionFact.ident)
         actionFact.prefix?.let {
             iInc(variable, it)
@@ -54,7 +55,7 @@ class ActionFactGenerator(private val mv: MethodVisitor) {
             when {
                 variable.static && !variable.const -> mv.visitFieldInsn(GETSTATIC, className, variable.ident.name, variable.type.descriptor)
                 variable.const -> mv.visitLdcInsn(variable.constValue)
-                variable.type in ARR_TYPES -> mv.visitVarInsn(ALOAD, variable.index)
+                variable.type in org.azauner.minicpp.ast.node.ARR_TYPES -> mv.visitVarInsn(ALOAD, variable.index)
                 else -> mv.visitVarInsn(ILOAD, variable.index)
             }
 
@@ -75,25 +76,29 @@ class ActionFactGenerator(private val mv: MethodVisitor) {
 
     }
 
-    private fun iInc(variable: Variable, incDec: IncDec) {
+    private fun iInc(variable: Variable, incDec: org.azauner.minicpp.ast.node.IncDec) {
         if (variable.static) {
             mv.visitFieldInsn(GETSTATIC, className, variable.ident.name, variable.type.descriptor)
             when (incDec) {
-                IncDec.INCREASE -> mv.visitInsn(ICONST_1)
-                IncDec.DECREASE -> mv.visitInsn(ICONST_M1)
+                org.azauner.minicpp.ast.node.IncDec.INCREASE -> mv.visitInsn(ICONST_1)
+                org.azauner.minicpp.ast.node.IncDec.DECREASE -> mv.visitInsn(ICONST_M1)
             }
             mv.visitInsn(IADD)
             mv.visitFieldInsn(PUTSTATIC, className, variable.ident.name, variable.type.descriptor)
         } else {
             when (incDec) {
-                IncDec.INCREASE -> mv.visitIincInsn(variable.index, 1)
-                IncDec.DECREASE -> mv.visitIincInsn(variable.index, -1)
+                org.azauner.minicpp.ast.node.IncDec.INCREASE -> mv.visitIincInsn(variable.index, 1)
+                org.azauner.minicpp.ast.node.IncDec.DECREASE -> mv.visitIincInsn(variable.index, -1)
             }
         }
 
     }
 
-    private fun generateFunctionCall(callOperation: CallOperation, scope: Scope, ident: Ident) {
+    private fun generateFunctionCall(
+        callOperation: org.azauner.minicpp.ast.node.CallOperation,
+        scope: org.azauner.minicpp.ast.node.scope.Scope,
+        ident: org.azauner.minicpp.ast.node.Ident
+    ) {
         val exprGenerator = ExprGenerator(mv)
         callOperation.actParList.forEach {
             exprGenerator.generate(it)
@@ -104,7 +109,7 @@ class ActionFactGenerator(private val mv: MethodVisitor) {
     }
 
 
-    private fun generateArrayAccess(actionFact: ActionFact, shouldEmitValue: Boolean) {
+    private fun generateArrayAccess(actionFact: org.azauner.minicpp.ast.node.ActionFact, shouldEmitValue: Boolean) {
         actionFact.run {
             val variable = scope.getVariable(ident)
             if (variable.static) {
@@ -114,7 +119,7 @@ class ActionFactGenerator(private val mv: MethodVisitor) {
 
             }
 
-            val arrayAccessOp = actionOp as ArrayAccessOperation
+            val arrayAccessOp = actionOp as org.azauner.minicpp.ast.node.ArrayAccessOperation
             ExprGenerator(mv).generate(arrayAccessOp.expr, true)
             if (duplicateNextArrayIndex) {
                 mv.visitInsn(DUP2)
@@ -129,7 +134,7 @@ class ActionFactGenerator(private val mv: MethodVisitor) {
                     skipLoadOfNextArray = false
                 } else {
                     if (shouldEmitValue) {
-                        if (variable.type == ExprType.INT_ARR) {
+                        if (variable.type == org.azauner.minicpp.ast.node.ExprType.INT_ARR) {
                             mv.visitInsn(IALOAD)
                         } else {
                             mv.visitInsn(BALOAD)
@@ -142,15 +147,15 @@ class ActionFactGenerator(private val mv: MethodVisitor) {
 
     }
 
-    private fun iIncArr(incDec: IncDec, isPrefix: Boolean) {
+    private fun iIncArr(incDec: org.azauner.minicpp.ast.node.IncDec, isPrefix: Boolean) {
         mv.visitInsn(DUP2)
         mv.visitInsn(IALOAD)
         if (!isPrefix) {
             mv.visitInsn(DUP_X2)
         }
         when (incDec) {
-            IncDec.INCREASE -> mv.visitInsn(ICONST_1)
-            IncDec.DECREASE -> mv.visitInsn(ICONST_M1)
+            org.azauner.minicpp.ast.node.IncDec.INCREASE -> mv.visitInsn(ICONST_1)
+            org.azauner.minicpp.ast.node.IncDec.DECREASE -> mv.visitInsn(ICONST_M1)
         }
         mv.visitInsn(IADD)
         if (isPrefix) {

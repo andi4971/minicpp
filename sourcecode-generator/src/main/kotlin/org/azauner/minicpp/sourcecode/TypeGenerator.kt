@@ -1,9 +1,8 @@
 package org.azauner.minicpp.sourcecode
 
-import org.azauner.minicpp.ast.node.ExprType
 import org.azauner.minicpp.ast.node.ExprType.*
 
-fun ExprType.generateSourceCode(sb: StringBuilder) {
+fun org.azauner.minicpp.ast.node.ExprType.generateSourceCode(sb: StringBuilder) {
     when (this) {
         VOID -> sb.append("void")
         BOOL -> sb.append("bool")

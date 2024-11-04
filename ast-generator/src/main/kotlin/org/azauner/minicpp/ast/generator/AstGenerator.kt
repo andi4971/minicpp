@@ -14,12 +14,11 @@ import org.azauner.minicpp.ast.generator.listener.field.*
 import org.azauner.minicpp.ast.generator.listener.func.*
 import org.azauner.minicpp.ast.generator.listener.stat.*
 import org.azauner.minicpp.ast.generator.visitor.MiniCppVisitor
-import org.azauner.minicpp.ast.node.MiniCpp
 import org.azauner.parser.minicppLexer
 import org.azauner.parser.minicppParser
 import java.io.InputStream
 
-fun generateASTForFileVisitor(inputStream: InputStream, className: String): MiniCpp {
+fun generateASTForFileVisitor(inputStream: InputStream, className: String): org.azauner.minicpp.ast.node.MiniCpp {
     val charStream = CharStreams.fromStream(inputStream)
     val lexer = minicppLexer(charStream)
     val tokenStream = BufferedTokenStream(lexer)
@@ -27,7 +26,7 @@ fun generateASTForFileVisitor(inputStream: InputStream, className: String): Mini
     return MiniCppVisitor(className).visit(parser.miniCpp())
 }
 
-fun generateAstForFileListener(inputStream: InputStream, className: String): MiniCpp {
+fun generateAstForFileListener(inputStream: InputStream, className: String): org.azauner.minicpp.ast.node.MiniCpp {
     val charStream = CharStreams.fromStream(inputStream)
     val lexer = minicppLexer(charStream)
     val tokenStream = BufferedTokenStream(lexer)

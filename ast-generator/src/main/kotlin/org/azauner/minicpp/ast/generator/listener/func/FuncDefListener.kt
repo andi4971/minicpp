@@ -2,7 +2,6 @@ package org.azauner.minicpp.ast.generator.listener.func
 
 import org.azauner.minicpp.ast.generator.listener.ScopeHandler
 import org.azauner.minicpp.ast.generator.listener.block.BlockListener
-import org.azauner.minicpp.ast.node.FuncDef
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
 import java.util.*
@@ -12,18 +11,18 @@ class FuncDefListener(
     private val scopeHandler: ScopeHandler
 ) : minicppBaseListener() {
 
-    private val funcDefs = Collections.synchronizedList(mutableListOf<FuncDef>())
+    private val funcDefs = Collections.synchronizedList(mutableListOf<org.azauner.minicpp.ast.node.FuncDef>())
 
     override fun enterFuncDef(ctx: minicppParser.FuncDefContext?) {
         scopeHandler.pushChildScope()
     }
 
     override fun exitFuncDef(ctx: minicppParser.FuncDefContext) {
-        funcDefs.add(FuncDef(funcHeadListener.getFuncHead(), blockListener.getBlock()))
+        funcDefs.add(org.azauner.minicpp.ast.node.FuncDef(funcHeadListener.getFuncHead(), blockListener.getBlock()))
         scopeHandler.popScope()
     }
 
-    fun getFuncDef(): FuncDef {
+    fun getFuncDef(): org.azauner.minicpp.ast.node.FuncDef {
         return funcDefs.removeLast()
     }
 }

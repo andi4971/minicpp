@@ -4,7 +4,6 @@ import org.azauner.minicpp.ast.generator.listener.field.ConstDefListener
 import org.azauner.minicpp.ast.generator.listener.field.VarDefListener
 import org.azauner.minicpp.ast.generator.listener.func.FuncDeclListener
 import org.azauner.minicpp.ast.generator.listener.func.FuncDefListener
-import org.azauner.minicpp.ast.node.MiniCppEntry
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
 import java.util.*
@@ -14,7 +13,7 @@ class MiniCppEntryListener(private val constDefListener: ConstDefListener, priva
     private val funcDefListener: FuncDefListener) :
     minicppBaseListener() {
 
-    private val entries = Collections.synchronizedList(mutableListOf<MiniCppEntry>())
+    private val entries = Collections.synchronizedList(mutableListOf<org.azauner.minicpp.ast.node.MiniCppEntry>())
 
     override fun exitMiniCppEntry(ctx: minicppParser.MiniCppEntryContext) {
         val entry = when {
@@ -27,11 +26,11 @@ class MiniCppEntryListener(private val constDefListener: ConstDefListener, priva
         entry?.let { entries.add(it) }
     }
 
-    fun getEntry(): MiniCppEntry {
+    fun getEntry(): org.azauner.minicpp.ast.node.MiniCppEntry {
         return entries.removeLast()
     }
 
-    fun getAllEntries(): List<MiniCppEntry> {
+    fun getAllEntries(): List<org.azauner.minicpp.ast.node.MiniCppEntry> {
         return entries
     }
 }

@@ -1,9 +1,6 @@
 package org.azauner.minicpp.ast.generator.listener.expr.term
 
 import org.azauner.minicpp.ast.generator.listener.ScopeHandler
-import org.azauner.minicpp.ast.node.ActionFact
-import org.azauner.minicpp.ast.node.Ident
-import org.azauner.minicpp.ast.node.IncDec
 import org.azauner.minicpp.ast.util.getTerminalNodeFromTokenList
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
@@ -15,16 +12,16 @@ class CallFactEntryListener(
 ) :
     minicppBaseListener() {
 
-    private var callFactEntries = Collections.synchronizedList(mutableListOf<ActionFact>())
+    private var callFactEntries = Collections.synchronizedList(mutableListOf<org.azauner.minicpp.ast.node.ActionFact>())
 
     override fun exitCallFactEntry(ctx: minicppParser.CallFactEntryContext) {
         val prefix = ctx.preIncDec?.getTerminalNodeFromTokenList(ctx.INC_DEC())?.text?.getIncDec()
         val suffix = ctx.postIncDec?.getTerminalNodeFromTokenList(ctx.INC_DEC())?.text?.getIncDec()
         val scope = scopeHandler.getScope()
         callFactEntries.add(
-            ActionFact(
+            org.azauner.minicpp.ast.node.ActionFact(
                 prefix = prefix,
-                ident = Ident(ctx.IDENT().text),
+                ident = org.azauner.minicpp.ast.node.Ident(ctx.IDENT().text),
                 actionOp = ctx.callFactEntryOperation()
                     ?.let { callFactEntryOperationListener.getCallFactEntryOperation() },
                 suffix = suffix,
@@ -33,15 +30,15 @@ class CallFactEntryListener(
         )
     }
 
-    private fun String.getIncDec(): IncDec {
+    private fun String.getIncDec(): org.azauner.minicpp.ast.node.IncDec {
         return if (this == "++") {
-            IncDec.INCREASE
+            org.azauner.minicpp.ast.node.IncDec.INCREASE
         } else {
-            IncDec.DECREASE
+            org.azauner.minicpp.ast.node.IncDec.DECREASE
         }
     }
 
-    fun getCallFactEntry(): ActionFact {
+    fun getCallFactEntry(): org.azauner.minicpp.ast.node.ActionFact {
         return callFactEntries.removeLast()
     }
 }

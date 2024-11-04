@@ -3,7 +3,6 @@ package org.azauner.minicpp.ast.generator.listener.block
 import org.azauner.minicpp.ast.generator.listener.field.ConstDefListener
 import org.azauner.minicpp.ast.generator.listener.field.VarDefListener
 import org.azauner.minicpp.ast.generator.listener.stat.StatListener
-import org.azauner.minicpp.ast.node.BlockEntry
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
 import java.util.*
@@ -14,7 +13,7 @@ class BlockEntryListener(
     private val constDefListener: ConstDefListener
 ) : minicppBaseListener() {
 
-    private val blockEntries = Collections.synchronizedList(mutableListOf<BlockEntry>())
+    private val blockEntries = Collections.synchronizedList(mutableListOf<org.azauner.minicpp.ast.node.BlockEntry>())
 
 
     override fun exitBlockEntry(ctx: minicppParser.BlockEntryContext) {
@@ -27,7 +26,7 @@ class BlockEntryListener(
         blockEntries.add(entry)
     }
 
-    fun getBlockEntry(): BlockEntry {
+    fun getBlockEntry(): org.azauner.minicpp.ast.node.BlockEntry {
         return blockEntries.removeLast()
     }
 }

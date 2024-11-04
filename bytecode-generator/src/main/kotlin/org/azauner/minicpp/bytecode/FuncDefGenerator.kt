@@ -1,15 +1,12 @@
 package org.azauner.minicpp.bytecode
 
-import org.azauner.minicpp.ast.node.FormParListEntries
-import org.azauner.minicpp.ast.node.FuncDef
-import org.azauner.minicpp.ast.node.FuncHead
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.Opcodes.RETURN
 
 class FuncDefGenerator(private val classWriter: ClassWriter, private val className: String) {
 
-    fun generate(funcDef: FuncDef) {
+    fun generate(funcDef: org.azauner.minicpp.ast.node.FuncDef) {
         val methodVisitor = classWriter.visitMethod(
             Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC,
             funcDef.funHead.ident.name,
@@ -30,10 +27,10 @@ class FuncDefGenerator(private val classWriter: ClassWriter, private val classNa
 
 }
 
-fun FuncHead.getDescriptor(): String {
+fun org.azauner.minicpp.ast.node.FuncHead.getDescriptor(): String {
     val descriptor = StringBuilder("(")
-    if (formParList != null && formParList is FormParListEntries) {
-        (formParList as FormParListEntries).entries.forEach {
+    if (formParList != null && formParList is org.azauner.minicpp.ast.node.FormParListEntries) {
+        (formParList as org.azauner.minicpp.ast.node.FormParListEntries).entries.forEach {
             descriptor.append(it.type.descriptor)
         }
     }

@@ -1,10 +1,6 @@
 package org.azauner.minicpp.sourcecode
 
-import org.azauner.minicpp.ast.node.ConstDef
-import org.azauner.minicpp.ast.node.Init
-import org.azauner.minicpp.ast.node.VarDef
-
-fun ConstDef.generateSourceCode(sb: StringBuilder) {
+fun org.azauner.minicpp.ast.node.ConstDef.generateSourceCode(sb: StringBuilder) {
     sb.append("const ")
     type.generateSourceCode(sb)
     sb.append(" ")
@@ -20,7 +16,7 @@ fun ConstDef.generateSourceCode(sb: StringBuilder) {
 }
 
 
-fun VarDef.generateSourceCode(sb: StringBuilder) {
+fun org.azauner.minicpp.ast.node.VarDef.generateSourceCode(sb: StringBuilder) {
     type.generateSourceCode(sb)
     sb.append(" ")
     entries.forEachIndexed { index, entry ->
@@ -39,6 +35,6 @@ fun VarDef.generateSourceCode(sb: StringBuilder) {
     sb.appendLine(";")
 }
 
-fun Init.generateSourceCode(sb: StringBuilder) {
+fun org.azauner.minicpp.ast.node.Init.generateSourceCode(sb: StringBuilder) {
     this.value.generateSourceCode(sb)
 }

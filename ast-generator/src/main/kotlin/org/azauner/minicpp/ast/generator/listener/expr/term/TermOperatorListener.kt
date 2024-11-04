@@ -1,27 +1,26 @@
 package org.azauner.minicpp.ast.generator.listener.expr.term
 
-import org.azauner.minicpp.ast.node.TermOperator
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
 import java.util.*
 
 class TermOperatorListener: minicppBaseListener() {
 
-    private var termOperators = Collections.synchronizedList(mutableListOf<TermOperator>())
+    private var termOperators = Collections.synchronizedList(mutableListOf<org.azauner.minicpp.ast.node.TermOperator>())
 
     override fun exitStarOperator(ctx: minicppParser.StarOperatorContext?) {
-        termOperators.add(TermOperator.MUL)
+        termOperators.add(org.azauner.minicpp.ast.node.TermOperator.MUL)
     }
 
     override fun exitDivOperator(ctx: minicppParser.DivOperatorContext?) {
-        termOperators.add(TermOperator.DIV)
+        termOperators.add(org.azauner.minicpp.ast.node.TermOperator.DIV)
     }
 
     override fun exitModOperator(ctx: minicppParser.ModOperatorContext?) {
-        termOperators.add(TermOperator.MOD)
+        termOperators.add(org.azauner.minicpp.ast.node.TermOperator.MOD)
     }
 
-    fun getTermOperator(): TermOperator {
+    fun getTermOperator(): org.azauner.minicpp.ast.node.TermOperator {
         return termOperators.removeLast()
     }
 }

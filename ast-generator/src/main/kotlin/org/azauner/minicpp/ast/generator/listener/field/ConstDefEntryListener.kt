@@ -1,11 +1,12 @@
 package org.azauner.minicpp.ast.generator.listener.field
 
-import org.azauner.minicpp.ast.node.Ident
-import org.azauner.minicpp.ast.node.Init
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
 
-data class ConstDefEntryData(val ident: Ident, val value: Init)
+data class ConstDefEntryData(
+    val ident: org.azauner.minicpp.ast.node.Ident,
+    val value: org.azauner.minicpp.ast.node.Init
+)
 
 class ConstDefEntryListener(private val initListener: InitListener): minicppBaseListener() {
 
@@ -14,7 +15,7 @@ class ConstDefEntryListener(private val initListener: InitListener): minicppBase
     override fun exitConstDefEntry(ctx: minicppParser.ConstDefEntryContext) {
         constDefEntries.add(
             ConstDefEntryData(
-                ident = Ident(ctx.IDENT().text),
+                ident = org.azauner.minicpp.ast.node.Ident(ctx.IDENT().text),
                 value = initListener.getInit(),
             )
         )

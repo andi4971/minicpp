@@ -1,17 +1,15 @@
 package org.azauner.minicpp.ast.generator.listener
 
-import org.azauner.minicpp.ast.node.scope.Scope
-
 class ScopeHandler {
 
-    private val scopes = mutableListOf<Scope>()
+    private val scopes = mutableListOf<org.azauner.minicpp.ast.node.scope.Scope>()
 
     init {
-        scopes.add(Scope(null))
+        scopes.add(org.azauner.minicpp.ast.node.scope.Scope(null))
     }
 
 
-    fun getScope(): Scope {
+    fun getScope(): org.azauner.minicpp.ast.node.scope.Scope {
         return scopes.last()
     }
 
@@ -20,6 +18,6 @@ class ScopeHandler {
     }
 
     fun pushChildScope() {
-        scopes.add(Scope(getScope()))
+        scopes.add(org.azauner.minicpp.ast.node.scope.Scope(getScope()))
     }
 }

@@ -1,13 +1,12 @@
 package org.azauner.minicpp.bytecode.expr
 
-import org.azauner.minicpp.ast.node.OrExpr
 import org.objectweb.asm.Label
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes.*
 
 class OrExprGenerator(private val mv: MethodVisitor) {
 
-    fun generate(orExpr: OrExpr, shouldEmitValue: Boolean = true) {
+    fun generate(orExpr: org.azauner.minicpp.ast.node.OrExpr, shouldEmitValue: Boolean = true) {
 
         AndExprGenerator(mv).generate(orExpr.andExpressions.first(), shouldEmitValue)
 

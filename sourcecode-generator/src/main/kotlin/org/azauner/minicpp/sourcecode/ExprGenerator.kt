@@ -1,8 +1,6 @@
 package org.azauner.minicpp.sourcecode
 
-import org.azauner.minicpp.ast.node.*
-
-fun Expr.generateSourceCode(sb: StringBuilder) {
+fun org.azauner.minicpp.ast.node.Expr.generateSourceCode(sb: StringBuilder) {
     firstExpr.generateSourceCode(sb)
     exprEntries.forEach {
         sb.append(it.assignOperator.sourceCode)
@@ -12,7 +10,7 @@ fun Expr.generateSourceCode(sb: StringBuilder) {
     }
 }
 
-fun OrExpr.generateSourceCode(sb: StringBuilder) {
+fun org.azauner.minicpp.ast.node.OrExpr.generateSourceCode(sb: StringBuilder) {
     andExpressions.first().generateSourceCode(sb)
     andExpressions.drop(1).forEach {
         sb.append(" || ")
@@ -20,7 +18,7 @@ fun OrExpr.generateSourceCode(sb: StringBuilder) {
     }
 }
 
-fun AndExpr. generateSourceCode(sb: StringBuilder) {
+fun org.azauner.minicpp.ast.node.AndExpr.generateSourceCode(sb: StringBuilder) {
     relExpressions.first().generateSourceCode(sb)
     relExpressions.drop(1).forEach {
         sb.append(" && ")
@@ -28,7 +26,7 @@ fun AndExpr. generateSourceCode(sb: StringBuilder) {
     }
 }
 
-fun RelExpr.generateSourceCode(sb: StringBuilder) {
+fun org.azauner.minicpp.ast.node.RelExpr.generateSourceCode(sb: StringBuilder) {
     firstExpr.generateSourceCode(sb)
     relExprEntries.forEach {
         sb.append(" ")
@@ -38,7 +36,7 @@ fun RelExpr.generateSourceCode(sb: StringBuilder) {
     }
 }
 
-fun SimpleExpr.generateSourceCode(sb: StringBuilder) {
+fun org.azauner.minicpp.ast.node.SimpleExpr.generateSourceCode(sb: StringBuilder) {
     sign?.let {
         sb.append(it.sourceCode)
     }
@@ -51,7 +49,7 @@ fun SimpleExpr.generateSourceCode(sb: StringBuilder) {
     }
 }
 
-fun Term.generateSourceCode(sb: StringBuilder) {
+fun org.azauner.minicpp.ast.node.Term.generateSourceCode(sb: StringBuilder) {
     firstNotFact.generateSourceCode(sb)
     termEntries.forEach {
         sb.append(" ")
@@ -61,36 +59,36 @@ fun Term.generateSourceCode(sb: StringBuilder) {
     }
 }
 
-fun NotFact.generateSourceCode(sb: StringBuilder) {
+fun org.azauner.minicpp.ast.node.NotFact.generateSourceCode(sb: StringBuilder) {
     if (negated) {
         sb.append("!")
     }
     fact.generateSourceCode(sb)
 }
 
-fun Fact.generateSourceCode(sb: StringBuilder) {
+fun org.azauner.minicpp.ast.node.Fact.generateSourceCode(sb: StringBuilder) {
     when (this) {
-        is ExprFact -> generateSourceCode(sb)
-        is NewArrayTypeFact -> generateSourceCode(sb)
-        is ActionFact -> generateSourceCode(sb)
-        is DataType -> generateSourceCode(sb)
+        is org.azauner.minicpp.ast.node.ExprFact -> generateSourceCode(sb)
+        is org.azauner.minicpp.ast.node.NewArrayTypeFact -> generateSourceCode(sb)
+        is org.azauner.minicpp.ast.node.ActionFact -> generateSourceCode(sb)
+        is org.azauner.minicpp.ast.node.DataType -> generateSourceCode(sb)
     }
 }
 
-fun DataType.generateSourceCode(sb: StringBuilder) {
+fun org.azauner.minicpp.ast.node.DataType.generateSourceCode(sb: StringBuilder) {
     when(this) {
-        NullPtrType -> sb.append("nullptr")
+        org.azauner.minicpp.ast.node.NullPtrType -> sb.append("nullptr")
         else -> sb.append(this.getValue()!!.toString())
     }
 }
 
-fun ExprFact.generateSourceCode(sb: StringBuilder) {
+fun org.azauner.minicpp.ast.node.ExprFact.generateSourceCode(sb: StringBuilder) {
     sb.append("(")
     expr.generateSourceCode(sb)
     sb.append(")")
 }
 
-fun NewArrayTypeFact.generateSourceCode(sb: StringBuilder) {
+fun org.azauner.minicpp.ast.node.NewArrayTypeFact.generateSourceCode(sb: StringBuilder) {
     sb.append("new ")
     type.generateSourceCode(sb)
     sb.append("[")
@@ -98,7 +96,7 @@ fun NewArrayTypeFact.generateSourceCode(sb: StringBuilder) {
     sb.append("]")
 }
 
-fun ActionFact.generateSourceCode(sb: StringBuilder) {
+fun org.azauner.minicpp.ast.node.ActionFact.generateSourceCode(sb: StringBuilder) {
     prefix?.let {
         sb.append(it.sourceCode)
     }
@@ -109,20 +107,20 @@ fun ActionFact.generateSourceCode(sb: StringBuilder) {
     }
 }
 
-fun ActionOperation.generateSourceCode(sb: StringBuilder) {
+fun org.azauner.minicpp.ast.node.ActionOperation.generateSourceCode(sb: StringBuilder) {
     when (this) {
-        is ArrayAccessOperation -> generateSourceCode(sb)
-        is CallOperation -> generateSourceCode(sb)
+        is org.azauner.minicpp.ast.node.ArrayAccessOperation -> generateSourceCode(sb)
+        is org.azauner.minicpp.ast.node.CallOperation -> generateSourceCode(sb)
     }
 }
 
-fun ArrayAccessOperation.generateSourceCode(sb: StringBuilder) {
+fun org.azauner.minicpp.ast.node.ArrayAccessOperation.generateSourceCode(sb: StringBuilder) {
     sb.append("[")
     expr.generateSourceCode(sb)
     sb.append("]")
 }
 
-fun CallOperation.generateSourceCode(sb: StringBuilder) {
+fun org.azauner.minicpp.ast.node.CallOperation.generateSourceCode(sb: StringBuilder) {
     sb.append("(")
     actParList.forEachIndexed { index, expr ->
         expr.generateSourceCode(sb)

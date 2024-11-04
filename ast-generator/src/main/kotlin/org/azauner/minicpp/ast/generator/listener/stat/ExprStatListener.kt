@@ -1,20 +1,19 @@
 package org.azauner.minicpp.ast.generator.listener.stat
 
 import org.azauner.minicpp.ast.generator.listener.expr.ExprListener
-import org.azauner.minicpp.ast.node.ExprStat
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
 import java.util.*
 
 class ExprStatListener(private val exprListener: ExprListener): minicppBaseListener() {
 
-    private var exprStats = Collections.synchronizedList(mutableListOf<ExprStat>())
+    private var exprStats = Collections.synchronizedList(mutableListOf<org.azauner.minicpp.ast.node.ExprStat>())
 
     override fun exitExprStat(ctx: minicppParser.ExprStatContext) {
-        exprStats.add(ExprStat(ctx.expr().let { exprListener.getExpr() }))
+        exprStats.add(org.azauner.minicpp.ast.node.ExprStat(ctx.expr().let { exprListener.getExpr() }))
     }
 
-    fun getExprStat(): ExprStat {
+    fun getExprStat(): org.azauner.minicpp.ast.node.ExprStat {
         return exprStats.removeLast()
     }
 }

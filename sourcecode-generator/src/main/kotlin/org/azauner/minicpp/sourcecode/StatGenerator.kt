@@ -1,34 +1,32 @@
 package org.azauner.minicpp.sourcecode
 
-import org.azauner.minicpp.ast.node.*
-
-fun Stat.generateSourceCode(sb: StringBuilder) {
+fun org.azauner.minicpp.ast.node.Stat.generateSourceCode(sb: StringBuilder) {
     when (this) {
-        is BlockStat -> block.generateSourceCode(sb)
-        BreakStat -> sb.appendLine("break;")
-        is DeleteStat -> sb.appendLine("delete[] ${ident.name};")
-        EmptyStat -> sb.appendLine(";")
-        is ExprStat -> generateSourceCode(sb)
-        is IfStat -> generateSourceCode(sb)
-        is InputStat -> sb.appendLine("cin >> ${ident.name};")
-        is OutputStat -> generateSourceCode(sb)
-        is ReturnStat -> generateSourceCode(sb)
-        is WhileStat -> generateSourceCode(sb)
+        is org.azauner.minicpp.ast.node.BlockStat -> block.generateSourceCode(sb)
+        org.azauner.minicpp.ast.node.BreakStat -> sb.appendLine("break;")
+        is org.azauner.minicpp.ast.node.DeleteStat -> sb.appendLine("delete[] ${ident.name};")
+        org.azauner.minicpp.ast.node.EmptyStat -> sb.appendLine(";")
+        is org.azauner.minicpp.ast.node.ExprStat -> generateSourceCode(sb)
+        is org.azauner.minicpp.ast.node.IfStat -> generateSourceCode(sb)
+        is org.azauner.minicpp.ast.node.InputStat -> sb.appendLine("cin >> ${ident.name};")
+        is org.azauner.minicpp.ast.node.OutputStat -> generateSourceCode(sb)
+        is org.azauner.minicpp.ast.node.ReturnStat -> generateSourceCode(sb)
+        is org.azauner.minicpp.ast.node.WhileStat -> generateSourceCode(sb)
     }
 }
 
-fun ExprStat.generateSourceCode(sb: StringBuilder) {
+fun org.azauner.minicpp.ast.node.ExprStat.generateSourceCode(sb: StringBuilder) {
     expr.generateSourceCode(sb)
     sb.appendLine(";")
 }
 
-fun ReturnStat.generateSourceCode(sb: StringBuilder) {
+fun org.azauner.minicpp.ast.node.ReturnStat.generateSourceCode(sb: StringBuilder) {
     sb.append("return ")
     expr?.generateSourceCode(sb)
     sb.appendLine(";")
 }
 
-fun OutputStat.generateSourceCode(sb: StringBuilder) {
+fun org.azauner.minicpp.ast.node.OutputStat.generateSourceCode(sb: StringBuilder) {
     sb.append("cout")
     entries.forEach {
         sb.append(" << ")
@@ -37,22 +35,22 @@ fun OutputStat.generateSourceCode(sb: StringBuilder) {
     sb.appendLine(";")
 }
 
-fun OutputStatEntry.generateSourceCode(sb: StringBuilder) {
+fun org.azauner.minicpp.ast.node.OutputStatEntry.generateSourceCode(sb: StringBuilder) {
     when (this) {
-        Endl -> sb.append("endl")
-        is Expr -> generateSourceCode(sb)
-        is Text -> sb.append(this.text)
+        org.azauner.minicpp.ast.node.Endl -> sb.append("endl")
+        is org.azauner.minicpp.ast.node.Expr -> generateSourceCode(sb)
+        is org.azauner.minicpp.ast.node.Text -> sb.append(this.text)
     }
 }
 
-fun WhileStat.generateSourceCode(sb: StringBuilder) {
+fun org.azauner.minicpp.ast.node.WhileStat.generateSourceCode(sb: StringBuilder) {
     sb.append("while (")
     condition.generateSourceCode(sb)
     sb.append(") ")
     whileStat.generateSourceCode(sb)
 }
 
-fun IfStat.generateSourceCode(sb: StringBuilder) {
+fun org.azauner.minicpp.ast.node.IfStat.generateSourceCode(sb: StringBuilder) {
     sb.append("if (")
     condition.generateSourceCode(sb)
     sb.append(") ")

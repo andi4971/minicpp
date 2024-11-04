@@ -3,29 +3,33 @@ package org.azauner.minicpp.ast.generator.visitor.stat
 import org.azauner.minicpp.ast.generator.visitor.IdentVisitor
 import org.azauner.minicpp.ast.generator.visitor.block.BlockVisitor
 import org.azauner.minicpp.ast.generator.visitor.expr.ExprVisitor
-import org.azauner.minicpp.ast.node.*
-import org.azauner.minicpp.ast.node.scope.Scope
+import org.azauner.minicpp.ast.node.ARR_TYPES
+import org.azauner.minicpp.ast.node.ExprType
+import org.azauner.minicpp.ast.node.INIT_TYPES_NOT_NULL
 import org.azauner.minicpp.ast.util.getType
 import org.azauner.minicpp.ast.util.requireSemantic
 import org.azauner.parser.minicppBaseVisitor
 import org.azauner.parser.minicppParser
 
-class StatVisitor(private val scope: Scope) : minicppBaseVisitor<Stat>() {
+class StatVisitor(private val scope: org.azauner.minicpp.ast.node.scope.Scope) :
+    minicppBaseVisitor<org.azauner.minicpp.ast.node.Stat>() {
 
-    override fun visitEmptyStat(ctx: minicppParser.EmptyStatContext): Stat {
-        return EmptyStat
+    override fun visitEmptyStat(ctx: minicppParser.EmptyStatContext): org.azauner.minicpp.ast.node.Stat {
+        return org.azauner.minicpp.ast.node.EmptyStat
     }
 
-    override fun visitBlockStat(ctx: minicppParser.BlockStatContext): Stat {
-        return BlockStat(ctx.block().accept(BlockVisitor(Scope(parent = scope))))
+    override fun visitBlockStat(ctx: minicppParser.BlockStatContext): org.azauner.minicpp.ast.node.Stat {
+        return org.azauner.minicpp.ast.node.BlockStat(
+            ctx.block().accept(BlockVisitor(org.azauner.minicpp.ast.node.scope.Scope(parent = scope)))
+        )
     }
 
-    override fun visitExprStat(ctx: minicppParser.ExprStatContext): Stat {
-        return ExprStat(ctx.expr().accept(ExprVisitor(scope)))
+    override fun visitExprStat(ctx: minicppParser.ExprStatContext): org.azauner.minicpp.ast.node.Stat {
+        return org.azauner.minicpp.ast.node.ExprStat(ctx.expr().accept(ExprVisitor(scope)))
     }
 
-    override fun visitIfStat(ctx: minicppParser.IfStatContext): Stat {
-        return IfStat(
+    override fun visitIfStat(ctx: minicppParser.IfStatContext): org.azauner.minicpp.ast.node.Stat {
+        return org.azauner.minicpp.ast.node.IfStat(
             condition = ctx.expr().accept(ExprVisitor(scope)),
             thenStat = ctx.stat().accept(StatVisitor(scope)),
             elseStat = ctx.elseStat()?.stat()?.accept(StatVisitor(scope))
@@ -34,8 +38,8 @@ class StatVisitor(private val scope: Scope) : minicppBaseVisitor<Stat>() {
         }
     }
 
-    override fun visitWhileStat(ctx: minicppParser.WhileStatContext): Stat {
-        return WhileStat(
+    override fun visitWhileStat(ctx: minicppParser.WhileStatContext): org.azauner.minicpp.ast.node.Stat {
+        return org.azauner.minicpp.ast.node.WhileStat(
             condition = ctx.expr().accept(ExprVisitor(scope)),
             whileStat = ctx.stat().accept(StatVisitor(scope))
         ).also {
@@ -43,12 +47,12 @@ class StatVisitor(private val scope: Scope) : minicppBaseVisitor<Stat>() {
         }
     }
 
-    override fun visitBreakStat(ctx: minicppParser.BreakStatContext): Stat {
-        return BreakStat
+    override fun visitBreakStat(ctx: minicppParser.BreakStatContext): org.azauner.minicpp.ast.node.Stat {
+        return org.azauner.minicpp.ast.node.BreakStat
     }
 
-    override fun visitInputStat(ctx: minicppParser.InputStatContext): Stat {
-        val inputStat = InputStat(ctx.IDENT().accept(IdentVisitor()), scope)
+    override fun visitInputStat(ctx: minicppParser.InputStatContext): org.azauner.minicpp.ast.node.Stat {
+        val inputStat = org.azauner.minicpp.ast.node.InputStat(ctx.IDENT().accept(IdentVisitor()), scope)
 
         requireSemantic(scope.getVariable(inputStat.ident).type in INIT_TYPES_NOT_NULL) {
             "Input can only be used on non-pointer types"
@@ -57,13 +61,14 @@ class StatVisitor(private val scope: Scope) : minicppBaseVisitor<Stat>() {
         return inputStat
     }
 
-    override fun visitOutputStat(ctx: minicppParser.OutputStatContext): Stat {
-        return OutputStat(ctx.outputStatEntry().map { it.accept(OutputStatEntryVisitor(scope)) })
+    override fun visitOutputStat(ctx: minicppParser.OutputStatContext): org.azauner.minicpp.ast.node.Stat {
+        return org.azauner.minicpp.ast.node.OutputStat(
+            ctx.outputStatEntry().map { it.accept(OutputStatEntryVisitor(scope)) })
     }
 
 
-    override fun visitDeleteStat(ctx: minicppParser.DeleteStatContext): Stat {
-        val deleteStat = DeleteStat(ctx.IDENT().accept(IdentVisitor()), scope)
+    override fun visitDeleteStat(ctx: minicppParser.DeleteStatContext): org.azauner.minicpp.ast.node.Stat {
+        val deleteStat = org.azauner.minicpp.ast.node.DeleteStat(ctx.IDENT().accept(IdentVisitor()), scope)
 
         requireSemantic(scope.getVariable(deleteStat.ident).type in ARR_TYPES) {
             "Delete can only be used on pointers"
@@ -73,7 +78,7 @@ class StatVisitor(private val scope: Scope) : minicppBaseVisitor<Stat>() {
         return deleteStat
     }
 
-    override fun visitReturnStat(ctx: minicppParser.ReturnStatContext): Stat {
-        return ReturnStat(ctx.expr()?.accept(ExprVisitor(scope)))
+    override fun visitReturnStat(ctx: minicppParser.ReturnStatContext): org.azauner.minicpp.ast.node.Stat {
+        return org.azauner.minicpp.ast.node.ReturnStat(ctx.expr()?.accept(ExprVisitor(scope)))
     }
 }

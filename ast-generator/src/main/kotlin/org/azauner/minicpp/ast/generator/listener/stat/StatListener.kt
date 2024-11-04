@@ -1,6 +1,5 @@
 package org.azauner.minicpp.ast.generator.listener.stat
 
-import org.azauner.minicpp.ast.node.Stat
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
 import java.util.*
@@ -43,7 +42,7 @@ class StatListener(
     private lateinit var ifStatListener: IfStatListener
     private lateinit var outputStatListener: OutputStatListener
 
-    private val stats = Collections.synchronizedList(mutableListOf<Stat>())
+    private val stats = Collections.synchronizedList(mutableListOf<org.azauner.minicpp.ast.node.Stat>())
 
     override fun exitStat(ctx: minicppParser.StatContext) {
         val stat = when {
@@ -62,7 +61,7 @@ class StatListener(
         stats.add(stat)
     }
 
-    fun getStat(): Stat {
+    fun getStat(): org.azauner.minicpp.ast.node.Stat {
         return stats.removeLast()
     }
 }

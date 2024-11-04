@@ -1,14 +1,13 @@
 package org.azauner.minicpp.ast.generator.visitor.expr
 
-import org.azauner.minicpp.ast.node.OrExpr
-import org.azauner.minicpp.ast.node.scope.Scope
 import org.azauner.parser.minicppBaseVisitor
 import org.azauner.parser.minicppParser
 
-class OrExprVisitor(private val scope: Scope) : minicppBaseVisitor<OrExpr>() {
+class OrExprVisitor(private val scope: org.azauner.minicpp.ast.node.scope.Scope) :
+    minicppBaseVisitor<org.azauner.minicpp.ast.node.OrExpr>() {
 
-    override fun visitOrExpr(ctx: minicppParser.OrExprContext): OrExpr {
-        val orExpr = OrExpr(
+    override fun visitOrExpr(ctx: minicppParser.OrExprContext): org.azauner.minicpp.ast.node.OrExpr {
+        val orExpr = org.azauner.minicpp.ast.node.OrExpr(
             andExpressions = ctx.andExpr().map { it.accept(AndExprVisitor(scope)) },
             scope = scope
         )

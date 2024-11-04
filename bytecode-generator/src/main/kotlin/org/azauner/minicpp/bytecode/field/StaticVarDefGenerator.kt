@@ -1,8 +1,5 @@
 package org.azauner.minicpp.bytecode.field
 
-import org.azauner.minicpp.ast.node.Ident
-import org.azauner.minicpp.ast.node.MiniCpp
-import org.azauner.minicpp.ast.node.VarDef
 import org.azauner.minicpp.ast.util.toPointerTypeOptional
 import org.azauner.minicpp.bytecode.MiniCppGenerator.Companion.scannerVarName
 import org.objectweb.asm.ClassWriter
@@ -11,9 +8,9 @@ import org.objectweb.asm.Opcodes.*
 
 class StaticVarDefGenerator(private val cw: ClassWriter) {
 
-    private val generatedVarDefs = mutableListOf<VarDef>()
+    private val generatedVarDefs = mutableListOf<org.azauner.minicpp.ast.node.VarDef>()
 
-    fun generateStatic(varDef: VarDef) {
+    fun generateStatic(varDef: org.azauner.minicpp.ast.node.VarDef) {
         varDef.entries.forEach { entry ->
             cw.visitField(
                 ACC_PUBLIC
@@ -27,7 +24,7 @@ class StaticVarDefGenerator(private val cw: ClassWriter) {
         generatedVarDefs.add(varDef)
     }
 
-    fun generateStaticInitBlock(miniCpp: MiniCpp) {
+    fun generateStaticInitBlock(miniCpp: org.azauner.minicpp.ast.node.MiniCpp) {
         cw.visitMethod(
             ACC_STATIC,
             "<clinit>",
@@ -59,7 +56,7 @@ class StaticVarDefGenerator(private val cw: ClassWriter) {
     }
 }
 
-private fun MethodVisitor.visitScannerInit(miniCpp: MiniCpp) {
+private fun MethodVisitor.visitScannerInit(miniCpp: org.azauner.minicpp.ast.node.MiniCpp) {
     ensureScannerNameNotTaken(miniCpp)
 
     visitTypeInsn(NEW, SCANNER_QUAL_NAME)
@@ -69,8 +66,8 @@ private fun MethodVisitor.visitScannerInit(miniCpp: MiniCpp) {
     visitFieldInsn(PUTSTATIC, miniCpp.className, scannerVarName, SCANNER_DESC)
 }
 
-fun ensureScannerNameNotTaken(miniCpp: MiniCpp) {
-    while(miniCpp.globalScope.variableExistsInSelfOrChildren(Ident(scannerVarName))) {
+fun ensureScannerNameNotTaken(miniCpp: org.azauner.minicpp.ast.node.MiniCpp) {
+    while (miniCpp.globalScope.variableExistsInSelfOrChildren(org.azauner.minicpp.ast.node.Ident(scannerVarName))) {
         scannerVarName = "_$scannerVarName"
     }
 }

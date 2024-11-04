@@ -1,7 +1,6 @@
 package org.azauner.minicpp.ast.generator.listener.expr
 
 import org.azauner.minicpp.ast.generator.listener.ScopeHandler
-import org.azauner.minicpp.ast.node.Expr
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
 import java.util.*
@@ -17,7 +16,7 @@ class ExprListener(private val scopeHandler: ScopeHandler) :
     private lateinit var orExprListener: OrExprListener
     private lateinit var exprEntryListener: ExprEntryListener
 
-    private val exprs = Collections.synchronizedList(mutableListOf<Expr>())
+    private val exprs = Collections.synchronizedList(mutableListOf<org.azauner.minicpp.ast.node.Expr>())
 
     private var addedExpr = 0
     private var removedExpr = 0
@@ -27,7 +26,7 @@ class ExprListener(private val scopeHandler: ScopeHandler) :
         val scope = scopeHandler.getScope()
         addedExpr++
         exprs.add(
-            Expr(
+            org.azauner.minicpp.ast.node.Expr(
                 firstExpr = orExprListener.getOrExpr(),
                 exprEntries = entries,
                 scope = scope
@@ -37,7 +36,7 @@ class ExprListener(private val scopeHandler: ScopeHandler) :
 
     }
 
-    fun getExpr(): Expr {
+    fun getExpr(): org.azauner.minicpp.ast.node.Expr {
         removedExpr++
         return exprs.removeLast()
     }
