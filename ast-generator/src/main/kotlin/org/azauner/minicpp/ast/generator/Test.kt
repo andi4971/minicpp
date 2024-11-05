@@ -8,7 +8,8 @@ fun main() {
 
     //walker.walk(MiniCppListener(parser), parser.miniCpp())
     //val result = generateASTForFileVisitor(inputStream, className)
-    val result = generateAstForFileListener(inputStream, className)
+    //val result = generateAstForFileListener(inputStream, className)
+    val result = generateAstForATG(inputStream, className)
     println(result.prettyPrint())
 }
 

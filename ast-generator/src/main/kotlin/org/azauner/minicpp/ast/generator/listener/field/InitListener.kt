@@ -8,7 +8,11 @@ class InitListener : minicppBaseListener() {
     private val inits = mutableListOf<org.azauner.minicpp.ast.node.Init>()
 
     override fun exitIntInit(ctx: minicppParser.IntInitContext) {
-        inits.add(org.azauner.minicpp.ast.node.Init(org.azauner.minicpp.ast.node.IntType(ctx.INT().text.toInt())))
+        var int = ctx.INT().text.toInt()
+        if (ctx.SIGN() != null && ctx.SIGN().text == "-") {
+            int = -int
+        }
+        inits.add(org.azauner.minicpp.ast.node.Init(org.azauner.minicpp.ast.node.IntType(int)))
     }
 
     override fun exitBooleanInit(ctx: minicppParser.BooleanInitContext) {

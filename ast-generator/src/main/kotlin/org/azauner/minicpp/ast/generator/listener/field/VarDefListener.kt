@@ -1,6 +1,7 @@
 package org.azauner.minicpp.ast.generator.listener.field
 
 import org.azauner.minicpp.ast.generator.listener.ScopeHandler
+import org.azauner.minicpp.ast.util.toPointerTypeOptional
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
 
@@ -21,7 +22,7 @@ class VarDefListener(private val typeListener: TypeListener, private val varDefE
                     value = it.value,
                     variable = scope.addVariable(
                         it.ident,
-                        type,
+                        type.toPointerTypeOptional(it.pointer),
                         const = false,
                         constValue = it.value?.value?.getValue()
                     )

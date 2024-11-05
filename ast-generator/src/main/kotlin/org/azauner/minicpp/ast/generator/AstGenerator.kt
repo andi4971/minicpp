@@ -3,6 +3,8 @@ package org.azauner.minicpp.ast.generator
 import org.antlr.v4.runtime.BufferedTokenStream
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.tree.ParseTreeListener
+import org.azauner.atg.parser.minicppAtgLexer
+import org.azauner.atg.parser.minicppAtgParser
 import org.azauner.minicpp.ast.generator.listener.MiniCppEntryListener
 import org.azauner.minicpp.ast.generator.listener.MiniCppListener
 import org.azauner.minicpp.ast.generator.listener.ScopeHandler
@@ -14,6 +16,7 @@ import org.azauner.minicpp.ast.generator.listener.field.*
 import org.azauner.minicpp.ast.generator.listener.func.*
 import org.azauner.minicpp.ast.generator.listener.stat.*
 import org.azauner.minicpp.ast.generator.visitor.MiniCppVisitor
+import org.azauner.minicpp.ast.node.MiniCpp
 import org.azauner.parser.minicppLexer
 import org.azauner.parser.minicppParser
 import java.io.InputStream
@@ -32,7 +35,7 @@ fun generateAstForFileListener(inputStream: InputStream, className: String): org
     val tokenStream = BufferedTokenStream(lexer)
     val parser = minicppParser(tokenStream)
 
-    val listeners = createListeners()
+    val listeners = createListeners(className)
     listeners.forEach {
         parser.addParseListener(it)
     }
@@ -41,7 +44,18 @@ fun generateAstForFileListener(inputStream: InputStream, className: String): org
     return miniCppListener.result
 }
 
-private fun createListeners(): List<ParseTreeListener> {
+fun generateAstForATG(inputStream: InputStream, className: String): MiniCpp {
+    val charStream = CharStreams.fromStream(inputStream)
+    val lexer = minicppAtgLexer(charStream)
+    val tokenStream = BufferedTokenStream(lexer)
+    val parser = minicppAtgParser(tokenStream)
+    parser.className = className
+    parser.miniCpp()
+    val ast = parser.result
+    return ast
+}
+
+private fun createListeners(className: String): List<ParseTreeListener> {
     val typeListener = TypeListener()
     val initListener = InitListener()
     val scopeHandler  = ScopeHandler()
@@ -104,7 +118,7 @@ private fun createListeners(): List<ParseTreeListener> {
 
 
     val miniCppEntryListener = MiniCppEntryListener(constDefListener, varDefListener, funcDeclListener, funcDefListener)
-    val miniCppListener = MiniCppListener(miniCppEntryListener, scopeHandler)
+    val miniCppListener = MiniCppListener(miniCppEntryListener, scopeHandler, className)
     return listOf(
         typeListener,
         initListener,

@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/ast" />
             <option value="$PROJECT_DIR$/ast-generator" />
+            <option value="$PROJECT_DIR$/atg-parser" />
             <option value="$PROJECT_DIR$/bytecode-generator" />
             <option value="$PROJECT_DIR$/parser" />
             <option value="$PROJECT_DIR$/sourcecode-generator" />
