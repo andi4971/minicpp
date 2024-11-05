@@ -1,12 +1,13 @@
 package org.azauner.minicpp.ast.generator.listener.block
 
-import org.azauner.minicpp.ast.generator.listener.ScopeHandler
+import org.azauner.minicpp.ast.util.ScopeHandler
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
 import java.util.*
 
 class BlockListener(private val blockEntryListener: BlockEntryListener,
-    private val scopeHandler: ScopeHandler) : minicppBaseListener() {
+                    private val scopeHandler: ScopeHandler
+) : minicppBaseListener() {
 
     private val blocks = Collections.synchronizedList(mutableListOf<org.azauner.minicpp.ast.node.Block>())
 

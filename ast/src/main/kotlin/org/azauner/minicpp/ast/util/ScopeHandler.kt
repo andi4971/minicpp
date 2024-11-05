@@ -1,4 +1,4 @@
-package org.azauner.minicpp.ast.generator.listener
+package org.azauner.minicpp.ast.util
 
 class ScopeHandler {
 

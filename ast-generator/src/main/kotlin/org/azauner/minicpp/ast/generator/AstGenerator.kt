@@ -7,7 +7,6 @@ import org.azauner.atg.parser.minicppAtgLexer
 import org.azauner.atg.parser.minicppAtgParser
 import org.azauner.minicpp.ast.generator.listener.MiniCppEntryListener
 import org.azauner.minicpp.ast.generator.listener.MiniCppListener
-import org.azauner.minicpp.ast.generator.listener.ScopeHandler
 import org.azauner.minicpp.ast.generator.listener.block.BlockEntryListener
 import org.azauner.minicpp.ast.generator.listener.block.BlockListener
 import org.azauner.minicpp.ast.generator.listener.expr.*
@@ -17,6 +16,7 @@ import org.azauner.minicpp.ast.generator.listener.func.*
 import org.azauner.minicpp.ast.generator.listener.stat.*
 import org.azauner.minicpp.ast.generator.visitor.MiniCppVisitor
 import org.azauner.minicpp.ast.node.MiniCpp
+import org.azauner.minicpp.ast.util.ScopeHandler
 import org.azauner.parser.minicppLexer
 import org.azauner.parser.minicppParser
 import java.io.InputStream

@@ -1,5 +1,6 @@
 package org.azauner.minicpp.ast.generator.listener
 
+import org.azauner.minicpp.ast.util.ScopeHandler
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
 

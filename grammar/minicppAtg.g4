@@ -7,6 +7,7 @@ import java.util.*;
 import org.azauner.minicpp.ast.node.*;
 import org.azauner.minicpp.ast.node.scope.Scope;
 import org.azauner.minicpp.ast.generator.exception.SemanticException;
+import org.azauner.minicpp.ast.util.ScopeHandler;
 
 }
 
@@ -15,6 +16,7 @@ import org.azauner.minicpp.ast.generator.exception.SemanticException;
  public MiniCpp result;
     public String className;
  //stacks
+    private ScopeHandler scopeHandler = new ScopeHandler();
 
  	private Stack<MiniCppEntry> miniCppEntries = new Stack<MiniCppEntry>();
 
@@ -82,7 +84,7 @@ import org.azauner.minicpp.ast.generator.exception.SemanticException;
 }
 
 
-miniCpp: (miniCppEntry)* EOF { result = new MiniCpp(className, new Scope(null), miniCppEntries.stream().toList()); }
+miniCpp: (miniCppEntry)* EOF { result = new MiniCpp(className, scopeHandler.getScope(), miniCppEntries.stream().toList()); }
                 ;
 miniCppEntry:     constDef { miniCppEntries.push(constDefs.pop()); }
                 | varDef { miniCppEntries.push(varDefs.pop()); }
@@ -95,7 +97,7 @@ constDef:    CONST type constDefEntry { var entries = List.of(constDefEntries.po
                 { constDefs.push(new ConstDef(types.pop(), entries)); };
 constDefEntry: IDENT init {
         //TODO Variable!!!!
-        constDefEntries.push(new ConstDefEntry($IDENT.text, inits.pop(), null)); }
+        constDefEntries.push(new ConstDefEntry(new Ident($IDENT.text), inits.pop(), null)); }
                 ;
 init:        '='  initOption;
 initOption:    BOOLEAN     { inits.push(new Init(new BoolType(Boolean.parseBoolean($BOOLEAN.text)))); }  #BooleanInit
@@ -114,11 +116,16 @@ varDef:      type varDefEntry {var entries = List.of(varDefEntries.pop()); }
              ;
 varDefEntry: STAR? IDENT (init)? {
     //TODO Variable!!
-    varDefEntries.push(new VarDefEntry($IDENT.text, $STAR != null, ($init.text != null ? inits.pop(): null), null)); }
+    varDefEntries.push(new VarDefEntry(new Ident($IDENT.text), $STAR != null, ($init.text != null ? inits.pop(): null), null)); }
             ;
 funcDecl:    funcHead SEM { funcDecls.push(new FuncDecl(funcHeads.pop())); };
-funcDef:     funcHead block { funcDefs.push(new FuncDef(funcHeads.pop(), blocks.pop())); };
-funcHead:    type STAR? IDENT '(' formParList? ')' { funcHeads.push(new FuncHead(types.pop(), $IDENT.text, $formParList.text != null ? formParLists.pop(): null)); };
+funcDef:     funcHead
+            {scopeHandler.pushChildScope();}
+            block  {
+            funcDefs.push(new FuncDef(funcHeads.pop(), blocks.pop()));
+            scopeHandler.popScope();
+            };
+funcHead:    type STAR? IDENT '(' formParList? ')' { funcHeads.push(new FuncHead(types.pop(), new Ident($IDENT.text), $formParList.text != null ? formParLists.pop(): null)); };
 formParList: (VOID {formParLists.push(VoidFormParListChild.INSTANCE); }
               |     formParListEntry { var entries = List.of(formParListEntries.pop()); }
                (',' formParListEntry { entries.add(formParListEntries.pop()); })*
@@ -126,18 +133,23 @@ formParList: (VOID {formParLists.push(VoidFormParListChild.INSTANCE); }
               );
 formParListEntry: type STAR? IDENT (BRACKETS)? {
                     var type = toArrayTypeOptional(types.pop(), $STAR != null || $BRACKETS != null);
-                    formParListEntries.push(new FormParListEntry(type, $IDENT.text)); }
+                    formParListEntries.push(new FormParListEntry(type, new Ident($IDENT.text))); }
                 ;
 
 type:        VOID  { types.push(ExprType.VOID);  } #VoidType
             | BOOL { types.push(ExprType.BOOL);  } #BoolType
             | INT_LIT { types.push(ExprType.INT);  } #IntType
             ;
-block:      {var entries = new ArrayList<BlockEntry>();}
+block:      {
+                var entries = new ArrayList<BlockEntry>();
+                scopeHandler.pushChildScope();
+            }
         '{' (blockEntry { entries.add(blockEntries.pop()); })* '}'
             {
-            //TODO SCOPE
-            blocks.push(new Block(entries, null)); }
+
+            blocks.push(new Block(entries, scopeHandler.getScope()));
+            scopeHandler.popScope();
+            }
         ;
 blockEntry:   constDef { blockEntries.push(constDefs.pop()); }
             | varDef   { blockEntries.push(varDefs.pop()); }
@@ -164,8 +176,7 @@ elseStat:    'else' stat;
 whileStat:   'while' '(' expr ')' stat  { stats.push(new WhileStat(exprs.pop(), stats.pop())); };
 breakStat:   'break' SEM;
 inputStat:   'cin' '>>' IDENT SEM {
-//TODO scope
-stats.add(new InputStat($IDENT.text, null)); };
+stats.add(new InputStat(new Ident($IDENT.text), scopeHandler.getScope())); };
 outputStat:  'cout' '<<' outputStatEntry { var entries = List.of(outputStatEntries.pop()); }
                     ('<<' outputStatEntry { entries.add(outputStatEntries.pop());} )* SEM
                     { stats.push(new OutputStat(entries)); }
@@ -175,14 +186,12 @@ outputStatEntry: expr   {outputStatEntries.push(exprs.pop());} #ExprOutputStatEn
                 | 'endl' {outputStatEntries.push(Endl.INSTANCE);} #EndlOutputStatEntry
                 ;
 deleteStat:  'delete' BRACKETS IDENT SEM {
-//TODO scope
-stats.add(new DeleteStat($IDENT.text,null));};
+stats.add(new DeleteStat(new Ident($IDENT.text),scopeHandler.getScope()));};
 returnStat:  'return' (expr)? SEM { stats.push(new ReturnStat($expr.text != null ? exprs.pop(): null)); };
 expr:   {var entries = new ArrayList<ExprEntry>();}
         orExpr (exprEntry { entries.add(exprEntries.pop());})*
         {
-        //TODO scope
-        exprs.push(new Expr(orExprs.pop(), entries, null));}
+        exprs.push(new Expr(orExprs.pop(), entries, scopeHandler.getScope()));}
         ;
 exprEntry: exprAssign orExpr { exprEntries.push(new ExprEntry(orExprs.pop(), assignOperators.pop())); }
             ;
@@ -196,8 +205,7 @@ exprAssign:  EQUAL      { assignOperators.push(AssignOperator.ASSIGN);}     #Equ
 orExpr:     andExpr {var entries = List.of(andExprs.pop());}
             ( '||' andExpr {entries.add(andExprs.pop());} )*
             {
-            //TODO scope
-            orExprs.push(new OrExpr(entries, null)); }
+            orExprs.push(new OrExpr(entries, scopeHandler.getScope())); }
             ;
 andExpr:     relExpr { var entries = List.of(relExprs.pop()); }
             ( '&&' relExpr  { entries.add(relExprs.pop()); })*
@@ -269,14 +277,12 @@ callFactEntry:
                 if ($callFactEntryOperation.text != null) {
                     actionOperation = actionOperations.pop();
                 }
-                //TODO scope
-                actionFacts.push(new ActionFact(preIncDec, $IDENT.text, actionOperation, postIncDec, null));
+                actionFacts.push(new ActionFact(preIncDec, new Ident($IDENT.text), actionOperation, postIncDec,scopeHandler.getScope()));
               }
               ;
 callFactEntryOperation:
                    ( '[' expr    ']')   {
-                   //TODO scope
-                   actionOperations.push(new ArrayAccessOperation(exprs.pop(), null)); }       #ExprFactOperation
+                   actionOperations.push(new ArrayAccessOperation(exprs.pop(), scopeHandler.getScope())); }       #ExprFactOperation
                  | ( '(' (actParList)?    ')') {
                    var actParList = new ArrayList<Expr>();
                    if($actParList.text != null) {

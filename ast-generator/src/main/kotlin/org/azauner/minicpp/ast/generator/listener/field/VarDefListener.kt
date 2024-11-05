@@ -1,12 +1,13 @@
 package org.azauner.minicpp.ast.generator.listener.field
 
-import org.azauner.minicpp.ast.generator.listener.ScopeHandler
+import org.azauner.minicpp.ast.util.ScopeHandler
 import org.azauner.minicpp.ast.util.toPointerTypeOptional
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
 
 class VarDefListener(private val typeListener: TypeListener, private val varDefEntryListener: VarDefEntryListener,
-    private val scopeHandler: ScopeHandler) :
+                     private val scopeHandler: ScopeHandler
+) :
     minicppBaseListener() {
 
     private val varDefs = mutableListOf<org.azauner.minicpp.ast.node.VarDef>()
