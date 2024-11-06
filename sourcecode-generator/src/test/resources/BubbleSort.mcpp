@@ -1,0 +1,109 @@
+// BubbleSort.mcpp                           HDO, 2017-30-31
+// ---------------
+// Random number generator and bubble sort in MiniCpp.
+//=====================================|====================
+
+
+// --- random number generator ---
+
+const int a =  3421;  // 2 <= a < m
+const int k =     1;  // 0 <= k < m
+const int m = 32768;  // = 2^15 
+
+int x;
+
+int Random() {
+  x = (a * x + k) % m;
+  return x;
+} // Random
+
+
+// --- bubble sort ---
+
+
+void BubbleSort(int n, int a[]) {
+ int i, j, h;
+ i = n - 1;
+ while (i >= 1) {
+   j = 0;
+   while (j <= i - 1) {
+     if (a[j] > a[j + 1]) {
+        h        = a[j    ];
+        a[j    ] = a[j + 1];
+        a[j + 1] = h;
+     } // if
+     j++;
+   } // while
+   i--;
+ } // while
+} // BubbleSort
+
+
+// --- support funcions ---
+
+void PrintArray(int n, int a[]) {
+  int i = 0;
+  while (i < n) {
+    cout << a[i] << " ";
+    i++;
+  } // while
+  cout << endl;
+} // PrintArray
+
+bool Sorted(int n, int a[]) {
+  int i = 0;
+  while (i < n - 1) {
+    if (a[i] > a[i + 1])
+      return false;
+    i++;
+  } // while
+  return true;
+} // Sorted
+
+
+// --- main function ---
+
+void main() {
+
+  int n, *a, i;
+  bool print = true;
+
+  cout << "n > ";
+  cin >> n;
+  if (n <= 2)
+    return;
+  
+  a = new int[n + 1];
+  i = 0;
+  while (i < n) {
+    a[i] = Random();
+    i++;
+  } // while
+  
+if (print) {
+  cout << endl;
+  cout << "unsorted:" << endl;
+  PrintArray(n, a);
+  cout << endl;
+} // if
+
+  BubbleSort(n, a);
+  
+  if (Sorted(n, a))
+    cout << "done";
+  else
+    cout << "not sorted";
+  cout << endl;
+  
+if (print) {
+  cout << endl;
+  cout << "sorted:" << endl;
+  PrintArray(n, a);
+} // if
+  
+  delete[] a;
+  
+} // main
+
+// End of RandSort.mcpp
+//=====================================|====================

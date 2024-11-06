@@ -16,7 +16,7 @@ class CallFactEntryOperationListener(
         Collections.synchronizedList(mutableListOf<org.azauner.minicpp.ast.node.ActionOperation>())
 
     override fun exitActParListFactOperation(ctx: minicppParser.ActParListFactOperationContext) {
-        val actParList = ctx.actParList()?.let { actParListListener.getActParList() }.orEmpty()
+        val actParList = ctx.actParList()?.let { actParListListener.getActParList().reversed() }.orEmpty()
         val scope = scopeHandler.getScope()
         actionOperations.add(org.azauner.minicpp.ast.node.CallOperation(actParList, scope))
     }

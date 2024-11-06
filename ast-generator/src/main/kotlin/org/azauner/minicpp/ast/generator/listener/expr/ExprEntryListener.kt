@@ -25,6 +25,6 @@ class ExprEntryListener(
         repeat(size) {
             entries.add(exprEntries.removeLast())
         }
-        return entries
+        return entries.reversed()
     }
 }

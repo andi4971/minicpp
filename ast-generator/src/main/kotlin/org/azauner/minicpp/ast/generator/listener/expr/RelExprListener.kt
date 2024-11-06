@@ -17,7 +17,7 @@ class RelExprListener(private val simpleExprListener: SimpleExprListener,
         relExprs.add(
             org.azauner.minicpp.ast.node.RelExpr(
                 firstExpr = simpleExprListener.getSimpleExpr(),
-                relExprEntries = entries
+                relExprEntries = entries.reversed()
             )
         )
     }

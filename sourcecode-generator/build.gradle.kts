@@ -12,6 +12,7 @@ repositories {
 dependencies {
     api(project(":ast-generator"))
     testImplementation(kotlin("test"))
+    implementation("org.junit.jupiter:junit-jupiter-params:5.0.0")
 }
 
 tasks.test {

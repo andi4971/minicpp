@@ -13,7 +13,7 @@ class AndExprListener(private val relExprListener: RelExprListener): minicppBase
         repeat(ctx.relExpr().size) {
             entries.add(relExprListener.getRelExpr())
         }
-        andExprs.add(org.azauner.minicpp.ast.node.AndExpr(entries))
+        andExprs.add(org.azauner.minicpp.ast.node.AndExpr(entries.reversed()))
     }
 
     fun getAndExpr(): org.azauner.minicpp.ast.node.AndExpr {

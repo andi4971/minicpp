@@ -25,7 +25,4 @@ class ConstDefEntryListener(private val initListener: InitListener): minicppBase
         return constDefEntries.removeLast()
     }
 
-    fun getAllConstDefEntries(): List<ConstDefEntryData> {
-        return constDefEntries
-    }
 }

@@ -17,7 +17,17 @@ class OutputStatListener(private val exprListener: ExprListener): minicppBaseLis
     }
 
     override fun exitStringOutputStatEntry(ctx: minicppParser.StringOutputStatEntryContext?) {
-        outputStatEntries.add(org.azauner.minicpp.ast.node.Text(ctx!!.STRING().text))
+        outputStatEntries.add(
+            org.azauner.minicpp.ast.node.Text(
+                ctx!!.STRING().text
+                    .trim('"')
+                    .replace("\\\\", "\\")
+                    .replace("\\t", "\t")
+                    .replace("\\n", "\n")
+                    .replace("\\r", "\r")
+                    .replace("\\\"", "\"")
+            )
+        )
     }
 
     override fun exitEndlOutputStatEntry(ctx: minicppParser.EndlOutputStatEntryContext?) {
@@ -29,7 +39,7 @@ class OutputStatListener(private val exprListener: ExprListener): minicppBaseLis
         repeat(ctx.outputStatEntry().size) {
             entries.add(outputStatEntries.removeLast())
         }
-        outputStats.add(org.azauner.minicpp.ast.node.OutputStat(entries))
+        outputStats.add(org.azauner.minicpp.ast.node.OutputStat(entries.reversed()))
     }
 
 

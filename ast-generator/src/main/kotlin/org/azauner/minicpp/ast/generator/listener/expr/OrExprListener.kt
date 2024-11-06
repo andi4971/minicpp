@@ -17,7 +17,7 @@ class OrExprListener(private val andExprListener: AndExprListener,
         repeat(ctx.andExpr().size) {
             entries.add(andExprListener.getAndExpr())
         }
-        orExprs.add(org.azauner.minicpp.ast.node.OrExpr(andExpressions = entries, scope))
+        orExprs.add(org.azauner.minicpp.ast.node.OrExpr(andExpressions = entries.reversed(), scope))
     }
 
     fun getOrExpr(): org.azauner.minicpp.ast.node.OrExpr {

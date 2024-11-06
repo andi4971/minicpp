@@ -39,7 +39,7 @@ fun org.azauner.minicpp.ast.node.OutputStatEntry.generateSourceCode(sb: StringBu
     when (this) {
         org.azauner.minicpp.ast.node.Endl -> sb.append("endl")
         is org.azauner.minicpp.ast.node.Expr -> generateSourceCode(sb)
-        is org.azauner.minicpp.ast.node.Text -> sb.append(this.text)
+        is org.azauner.minicpp.ast.node.Text -> sb.append("\"${this.text}\"")
     }
 }
 

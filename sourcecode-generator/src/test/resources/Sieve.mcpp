@@ -5,8 +5,11 @@
 
 void Sieve(int n); // declaration
 
-const int lol = 12;
+
+const int help = 15, seas = 12;
+const bool lol = true;
 int seppster = 15;
+int seppster2 = 15;
 
 void main() {
 

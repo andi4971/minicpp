@@ -15,8 +15,12 @@ class ConstDefListener(
     override fun exitConstDef(ctx: minicppParser.ConstDefContext) {
         val type = typeListener.getType()
         val scope = scopeHandler.getScope()
-        val entries = constDefEntryListener.getAllConstDefEntries()
-            .map {
+        val entries = mutableListOf<ConstDefEntryData>()
+        repeat(ctx.constDefEntry().size) {
+            entries.add(constDefEntryListener.getConstDefEntry())
+        }
+
+        val mapped = entries.map {
                 org.azauner.minicpp.ast.node.ConstDefEntry(
                     ident = it.ident,
                     value = it.value,
@@ -26,7 +30,7 @@ class ConstDefListener(
         constDefs.add(
             org.azauner.minicpp.ast.node.ConstDef(
                 type = type,
-                entries = entries
+                entries = mapped.reversed()
             )
         )
     }

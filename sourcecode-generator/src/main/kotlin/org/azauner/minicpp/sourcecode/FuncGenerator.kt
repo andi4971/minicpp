@@ -1,5 +1,7 @@
 package org.azauner.minicpp.sourcecode
 
+import org.azauner.minicpp.ast.node.ARR_TYPES
+
 fun org.azauner.minicpp.ast.node.FuncDecl.generateSourceCode(sb: StringBuilder) {
     funcHead.generateSourceCode(sb)
     sb.appendLine(";")
@@ -32,6 +34,9 @@ fun org.azauner.minicpp.ast.node.FormParListEntries.generateSourceCode(sb: Strin
         formParListEntry.type.generateSourceCode(sb)
         sb.append(" ")
         sb.append(formParListEntry.ident.name)
+        if (formParListEntry.type in ARR_TYPES) {
+            sb.append("[]")
+        }
         if (index != entries.lastIndex) {
             sb.append(", ")
         }

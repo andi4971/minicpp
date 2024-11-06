@@ -29,7 +29,7 @@ class SimpleExprListener(
             org.azauner.minicpp.ast.node.SimpleExpr(
                 sign = sign,
                 term = termListener.getTerm(),
-                simpleExprEntries = entries
+                simpleExprEntries = entries.reversed()
             )
         )
     }

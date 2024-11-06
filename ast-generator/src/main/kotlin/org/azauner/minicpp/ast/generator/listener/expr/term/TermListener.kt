@@ -13,7 +13,7 @@ class TermListener(private val notFactListener: NotFactListener, private val ter
         repeat(ctx.termEntry().size) {
             entries.add(termEntryListener.getTermEntry())
         }
-        terms.add(org.azauner.minicpp.ast.node.Term(notFactListener.getNotFact(), termEntries = entries))
+        terms.add(org.azauner.minicpp.ast.node.Term(notFactListener.getNotFact(), termEntries = entries.reversed()))
     }
 
     fun getTerm(): org.azauner.minicpp.ast.node.Term {

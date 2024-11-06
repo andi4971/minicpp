@@ -81,6 +81,15 @@ import org.azauner.minicpp.ast.util.ScopeHandler;
    	    }
    	    return type;
    	}
+
+   	public String formatString(String s) {
+    			   return s.substring(1, s.length() - 1)
+    					   .replace("\\\\", "\\")
+    					   .replace("\\t", "\t")
+    					   .replace("\\n", "\n")
+    					   .replace("\\r", "\r")
+    					   .replace("\\\"", "\"");
+    	}
 }
 
 
@@ -92,12 +101,13 @@ miniCppEntry:     constDef { miniCppEntries.push(constDefs.pop()); }
                 | funcDef { miniCppEntries.push(funcDefs.pop()); }
                 | SEM
                 ;
-constDef:    CONST type constDefEntry { var entries = List.of(constDefEntries.pop()); }
+constDef:    CONST type constDefEntry { var entries = new ArrayList(List.of(constDefEntries.pop())); }
                 (',' constDefEntry { entries.add(constDefEntries.pop());} )* SEM
                 { constDefs.push(new ConstDef(types.pop(), entries)); };
 constDefEntry: IDENT init {
-        //TODO Variable!!!!
-        constDefEntries.push(new ConstDefEntry(new Ident($IDENT.text), inits.pop(), null)); }
+        var value = inits.peek().getValue().getValue();
+        var variable = scopeHandler.getScope().addVariable(new Ident($IDENT.text), types.peek(), true,value );
+        constDefEntries.push(new ConstDefEntry(new Ident($IDENT.text), inits.pop(), variable)); }
                 ;
 init:        '='  initOption;
 initOption:    BOOLEAN     { inits.push(new Init(new BoolType(Boolean.parseBoolean($BOOLEAN.text)))); }  #BooleanInit
@@ -110,13 +120,14 @@ initOption:    BOOLEAN     { inits.push(new Init(new BoolType(Boolean.parseBoole
                             inits.push(new Init(new IntType(value))); }                                  #IntInit
              ;
 
-varDef:      type varDefEntry {var entries = List.of(varDefEntries.pop()); }
+varDef:      type varDefEntry {var entries = new ArrayList(List.of(varDefEntries.pop())); }
              (',' varDefEntry { entries.add(varDefEntries.pop()); })* SEM
              { varDefs.push(new VarDef(types.pop(), entries)); }
              ;
 varDefEntry: STAR? IDENT (init)? {
-    //TODO Variable!!
-    varDefEntries.push(new VarDefEntry(new Ident($IDENT.text), $STAR != null, ($init.text != null ? inits.pop(): null), null)); }
+    Object value = $init.text != null ? inits.peek().getValue().getValue(): null;
+    var variable = scopeHandler.getScope().addVariable(new Ident($IDENT.text), toArrayTypeOptional(types.peek(), $STAR != null), false, value);
+    varDefEntries.push(new VarDefEntry(new Ident($IDENT.text), $STAR != null, ($init.text != null ? inits.pop(): null), variable)); }
             ;
 funcDecl:    funcHead SEM { funcDecls.push(new FuncDecl(funcHeads.pop())); };
 funcDef:     funcHead
@@ -127,7 +138,7 @@ funcDef:     funcHead
             };
 funcHead:    type STAR? IDENT '(' formParList? ')' { funcHeads.push(new FuncHead(types.pop(), new Ident($IDENT.text), $formParList.text != null ? formParLists.pop(): null)); };
 formParList: (VOID {formParLists.push(VoidFormParListChild.INSTANCE); }
-              |     formParListEntry { var entries = List.of(formParListEntries.pop()); }
+              |     formParListEntry { var entries = new ArrayList(List.of(formParListEntries.pop())); }
                (',' formParListEntry { entries.add(formParListEntries.pop()); })*
                { formParLists.push(new FormParListEntries(entries)); }
               );
@@ -170,19 +181,21 @@ emptyStat:   SEM;
 blockStat:   block;
 exprStat:    expr SEM;
 ifStat:      'if' '(' expr ')' stat elseStat? {
-   stats.push(new IfStat(exprs.pop(), stats.pop(), $elseStat.text != null ? stats.pop(): null));
+   Stat elseStat = $elseStat.text != null ? stats.pop(): null;
+   Stat ifStat = stats.pop();
+   stats.push(new IfStat(exprs.pop(), ifStat, elseStat));
 };
 elseStat:    'else' stat;
 whileStat:   'while' '(' expr ')' stat  { stats.push(new WhileStat(exprs.pop(), stats.pop())); };
 breakStat:   'break' SEM;
 inputStat:   'cin' '>>' IDENT SEM {
 stats.add(new InputStat(new Ident($IDENT.text), scopeHandler.getScope())); };
-outputStat:  'cout' '<<' outputStatEntry { var entries = List.of(outputStatEntries.pop()); }
+outputStat:  'cout' '<<' outputStatEntry { var entries = new ArrayList(List.of(outputStatEntries.pop())); }
                     ('<<' outputStatEntry { entries.add(outputStatEntries.pop());} )* SEM
                     { stats.push(new OutputStat(entries)); }
                     ;
 outputStatEntry: expr   {outputStatEntries.push(exprs.pop());} #ExprOutputStatEntry
-                | STRING {outputStatEntries.push(new Text($STRING.text));} #StringOutputStatEntry
+                | STRING {outputStatEntries.push(new Text(formatString($STRING.text)));} #StringOutputStatEntry
                 | 'endl' {outputStatEntries.push(Endl.INSTANCE);} #EndlOutputStatEntry
                 ;
 deleteStat:  'delete' BRACKETS IDENT SEM {
@@ -202,12 +215,12 @@ exprAssign:  EQUAL      { assignOperators.push(AssignOperator.ASSIGN);}     #Equ
            | DIV_ASSIGN { assignOperators.push(AssignOperator.DIV_ASSIGN);} #DivAssign
            | MOD_ASSIGN { assignOperators.push(AssignOperator.MOD_ASSIGN);} #ModAssign
            ;
-orExpr:     andExpr {var entries = List.of(andExprs.pop());}
+orExpr:     andExpr {var entries = new ArrayList(List.of(andExprs.pop()));}
             ( '||' andExpr {entries.add(andExprs.pop());} )*
             {
             orExprs.push(new OrExpr(entries, scopeHandler.getScope())); }
             ;
-andExpr:     relExpr { var entries = List.of(relExprs.pop()); }
+andExpr:     relExpr { var entries = new ArrayList(List.of(relExprs.pop())); }
             ( '&&' relExpr  { entries.add(relExprs.pop()); })*
             { andExprs.push(new AndExpr(entries)); }
             ;
@@ -219,10 +232,10 @@ relExprEntry: relOperator simpleExpr { relExprEntries.push(new RelExprEntry(simp
             ;
 relOperator: EQUAL_EQUAL {relOperators.push(RelOperator.EQUAL);}               #EqualEqualOperator
             | NOT_EQUAL  {relOperators.push(RelOperator.NOT_EQUAL);}           #NotEqualOperator
-            | LT         {relOperators.push(RelOperator.LESS_THAN_EQUAL);}     #LessThanOperator
-            | LE         {relOperators.push(RelOperator.LESS_THAN);}           #LessEqualOperator
-            | GT         {relOperators.push(RelOperator.GREATER_THAN_EQUAL);}  #GreaterThanOperator
-            | GE         {relOperators.push(RelOperator.GREATER_THAN);}        #GreaterEqualOperator
+            | LT         {relOperators.push(RelOperator.LESS_THAN);}     #LessThanOperator
+            | LE         {relOperators.push(RelOperator.LESS_THAN_EQUAL);}           #LessEqualOperator
+            | GT         {relOperators.push(RelOperator.GREATER_THAN);}  #GreaterThanOperator
+            | GE         {relOperators.push(RelOperator.GREATER_THAN_EQUAL);}        #GreaterEqualOperator
             ;
 simpleExpr:  (SIGN)?
              term
@@ -288,11 +301,11 @@ callFactEntryOperation:
                    if($actParList.text != null) {
                        actParList.addAll(actParLists.pop());
                    }
-                   //TODO scope
-                   actionOperations.push(new CallOperation(actParList, null));
+
+                   actionOperations.push(new CallOperation(actParList, scopeHandler.getScope()));
                  }  #ActParListFactOperation
                  ;
-actParList:  expr { var entries = List.of(exprs.pop());}
+actParList:  expr { var entries = new ArrayList(List.of(exprs.pop()));}
              (',' expr {entries.add(exprs.pop()); })*
             { actParLists.push(entries); }
             ;
