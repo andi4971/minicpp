@@ -5,8 +5,15 @@ import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
 import java.util.*
 
-class FuncHeadListener(private val typeListener: TypeListener, private val formParListListener: FormParListListener) :
+class FuncHeadListener() :
     minicppBaseListener() {
+    private lateinit var typeListener: TypeListener
+    private lateinit var formParListListener: FormParListListener
+
+    fun initListeners(typeListener: TypeListener, formParListListener: FormParListListener) {
+        this.typeListener = typeListener
+        this.formParListListener = formParListListener
+    }
 
     private val funcHeads = Collections.synchronizedList(mutableListOf<org.azauner.minicpp.ast.node.FuncHead>())
 

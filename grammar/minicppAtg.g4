@@ -129,12 +129,28 @@ varDefEntry: STAR? IDENT (init)? {
     var variable = scopeHandler.getScope().addVariable(new Ident($IDENT.text), toArrayTypeOptional(types.peek(), $STAR != null), false, value);
     varDefEntries.push(new VarDefEntry(new Ident($IDENT.text), $STAR != null, ($init.text != null ? inits.pop(): null), variable)); }
             ;
-funcDecl:    funcHead SEM { funcDecls.push(new FuncDecl(funcHeads.pop())); };
+funcDecl:    funcHead SEM {
+            var funcHead = funcHeads.pop();
+            funcDecls.push(new FuncDecl(funcHead));
+            scopeHandler.getScope().addFunction(funcHead.getIdent(), funcHead.getType(), funcHead.getFormParList(), false);
+
+            };
 funcDef:     funcHead
-            {scopeHandler.pushChildScope();}
+            {scopeHandler.pushChildScope();
+            var funcHead = funcHeads.pop();
+            var scope = scopeHandler.getScope();
+            if(funcHead.getFormParList() instanceof FormParListEntries) {
+                var entries = ((FormParListEntries) funcHead.getFormParList()).getEntries();
+                for (FormParListEntry entry : entries) {
+                    scope.addVariable(entry.getIdent(), entry.getType(), false, null);
+                }
+            }
+            }
             block  {
-            funcDefs.push(new FuncDef(funcHeads.pop(), blocks.pop()));
+
+            funcDefs.push(new FuncDef(funcHead, blocks.pop()));
             scopeHandler.popScope();
+            scopeHandler.getScope().addFunction(funcHead.getIdent(), funcHead.getType(), funcHead.getFormParList(), true);
             };
 funcHead:    type STAR? IDENT '(' formParList? ')' { funcHeads.push(new FuncHead(types.pop(), new Ident($IDENT.text), $formParList.text != null ? formParLists.pop(): null)); };
 formParList: (VOID {formParLists.push(VoidFormParListChild.INSTANCE); }
@@ -153,13 +169,11 @@ type:        VOID  { types.push(ExprType.VOID);  } #VoidType
             ;
 block:      {
                 var entries = new ArrayList<BlockEntry>();
-                scopeHandler.pushChildScope();
             }
         '{' (blockEntry { entries.add(blockEntries.pop()); })* '}'
             {
 
             blocks.push(new Block(entries, scopeHandler.getScope()));
-            scopeHandler.popScope();
             }
         ;
 blockEntry:   constDef { blockEntries.push(constDefs.pop()); }
@@ -167,7 +181,9 @@ blockEntry:   constDef { blockEntries.push(constDefs.pop()); }
             | stat     { blockEntries.push(stats.pop()); }
             ;
 stat:        ( emptyStat { stats.push(EmptyStat.INSTANCE); }
-             | blockStat { stats.push(new BlockStat(blocks.pop())); }
+             |  { scopeHandler.pushChildScope(); }
+                blockStat { stats.push(new BlockStat(blocks.pop())); }
+                {   scopeHandler.popScope(); }
              | exprStat  { stats.push(new ExprStat(exprs.pop())); }
              | ifStat
              | whileStat

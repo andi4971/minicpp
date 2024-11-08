@@ -65,10 +65,7 @@ private fun createListeners(className: String): List<ParseTreeListener> {
     val varDefEntryListener = VarDefEntryListener(initListener)
     val varDefListener = VarDefListener(typeListener, varDefEntryListener, scopeHandler)
 
-    val formParListEntryListener = FormParListEntriesListener(typeListener)
-    val formParListListener = FormParListListener(formParListEntryListener)
-    val funcHeadListener = FuncHeadListener(typeListener, formParListListener)
-    val funcDeclListener = FuncDeclListener(funcHeadListener)
+
 
     val exprListener = ExprListener(scopeHandler)
 
@@ -95,7 +92,14 @@ private fun createListeners(className: String): List<ParseTreeListener> {
 
     val blockEntryListener = BlockEntryListener(statListener, varDefListener, constDefListener)
     val blockListener = BlockListener(blockEntryListener, scopeHandler)
+
+    val formParListEntryListener = FormParListEntriesListener(typeListener)
+    val funcHeadListener = FuncHeadListener()
     val funcDefListener = FuncDefListener(funcHeadListener, blockListener, scopeHandler)
+    val formParListListener = FormParListListener(formParListEntryListener, scopeHandler, funcDefListener)
+    funcHeadListener.initListeners(typeListener, formParListListener)
+
+    val funcDeclListener = FuncDeclListener(funcHeadListener, scopeHandler)
 
     val whileStatListener = WhileStatListener(exprListener, statListener)
     val outputStatListener = OutputStatListener(exprListener)
@@ -103,7 +107,7 @@ private fun createListeners(className: String): List<ParseTreeListener> {
     val inputStatListener = InputStatListener(scopeHandler)
     val deleteStatListener = DeleteStatListener(scopeHandler)
     val emptyStatListener = EmptyStatListener()
-    val blockStatListener = BlockStatListener(blockListener)
+    val blockStatListener = BlockStatListener(blockListener, scopeHandler)
     val returnStatListener = ReturnStatListener(exprListener)
     val exprStatListener = ExprStatListener(exprListener)
     val ifStatListener = IfStatListener(exprListener, statListener)

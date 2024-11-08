@@ -11,9 +11,6 @@ class BlockListener(private val blockEntryListener: BlockEntryListener,
 
     private val blocks = Collections.synchronizedList(mutableListOf<org.azauner.minicpp.ast.node.Block>())
 
-    override fun enterBlock(ctx: minicppParser.BlockContext?) {
-        scopeHandler.pushChildScope()
-    }
 
     override fun exitBlock(ctx: minicppParser.BlockContext) {
         val scope = scopeHandler.getScope()
@@ -22,7 +19,6 @@ class BlockListener(private val blockEntryListener: BlockEntryListener,
             entries.add(blockEntryListener.getBlockEntry())
         }
         blocks.add(org.azauner.minicpp.ast.node.Block(entries = entries.reversed(), scope = scope))
-        scopeHandler.popScope()
     }
 
     fun getBlock(): org.azauner.minicpp.ast.node.Block {

@@ -59,6 +59,12 @@ class SourceCodeGenerationTest {
             )
         val sourceCodeFromSecondParse = secondParse.generateSourceCode()
         assert(sourceCodeFromParse == sourceCodeFromSecondParse)
+
+        val thirdParse =
+            org.azauner.minicpp.ast.generator.generateAstForATG(sourceCodeFromParse.byteInputStream(), filename)
+        val sourceCodeFromThirdParse = thirdParse.generateSourceCode()
+        assert(sourceCodeFromParse == sourceCodeFromThirdParse)
+
     }
 
     companion object {

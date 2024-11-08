@@ -1,0 +1,86 @@
+// Sieve.mcpp                                HDO, 2006-09-13
+// ----------
+// Sieve of Erathostenes in MiniCpp.
+//=====================================|====================
+
+void Sieve(int n); // declaration
+
+
+const int help = 15, seas = 12;
+const bool lol = true;
+int seppster = 15;
+int seppster2 = 15;
+
+void main() {
+
+  int n;
+
+  cout << "n > ";
+  cin >> n;
+  
+  if (n < 3) {
+    cout << "error: number too small (min. 3)" << endl;
+    return;
+  } else if (n > 46340) {
+    cout << "error: number too large (max. 46340)" << endl;
+    return;
+  } // if
+  
+  Sieve(n);
+  
+  // int dummy;
+  // cin >> dummy;
+  
+} // main
+
+void Seas(int a, bool b) {
+
+}
+
+
+void Sieve(int n) { // defintion
+  Seas(5, true);
+  int col, i, j;
+  int intTest = 6;
+  bool test = true;
+  bool test2 = false;
+  bool *sieve = nullptr;
+  int *arr = nullptr;
+  bool testerg;
+  testerg = test || test2;
+  sieve = new bool[n + 1];
+  Sieve(0);
+  i = 2;
+  while (i <= n) {
+    sieve[i] = true;
+    i++;
+  } // while
+  
+  cout << 2 << "\t";
+  
+  col = 1;
+  i = 3;
+  while (i <= n) {
+    if (sieve[i]) {
+      if (col == 10) {
+        cout << endl;
+        col = 0;
+      } // if
+      ++col;
+      cout << i  << "\t";
+      j = i * i; // attention: 46341 * 46341 > 2**31
+      while (j <= n) {
+        sieve[j] = false;
+        j += 2 * i;
+      } // while
+    } // if
+    i += 2;
+  } // while
+  
+  delete[] sieve;
+  
+} // Sieve
+
+// End of Sieve.mcpp
+//=====================================|====================
+

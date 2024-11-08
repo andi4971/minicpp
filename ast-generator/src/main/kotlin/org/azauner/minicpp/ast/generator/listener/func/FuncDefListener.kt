@@ -13,13 +13,24 @@ class FuncDefListener(
 
     private val funcDefs = Collections.synchronizedList(mutableListOf<org.azauner.minicpp.ast.node.FuncDef>())
 
+    var addNextFormParListToVariables = false
+
     override fun enterFuncDef(ctx: minicppParser.FuncDefContext?) {
         scopeHandler.pushChildScope()
+        addNextFormParListToVariables = true
     }
 
+
     override fun exitFuncDef(ctx: minicppParser.FuncDefContext) {
-        funcDefs.add(org.azauner.minicpp.ast.node.FuncDef(funcHeadListener.getFuncHead(), blockListener.getBlock()))
+        addNextFormParListToVariables = false
+        val funcDef = org.azauner.minicpp.ast.node.FuncDef(funcHeadListener.getFuncHead(), blockListener.getBlock())
+        funcDefs.add(funcDef)
+
         scopeHandler.popScope()
+
+        funcDef.funHead.run {
+            scopeHandler.getScope().addFunction(ident, type, formParList, true)
+        }
     }
 
     fun getFuncDef(): org.azauner.minicpp.ast.node.FuncDef {
