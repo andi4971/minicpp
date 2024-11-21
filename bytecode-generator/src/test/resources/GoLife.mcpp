@@ -44,7 +44,6 @@ int map(int x, int y) {
   return y * size + x;
 } // map
 
-
 int countNeighbors(int x, int y) {
   int neighbors = 0;
 
