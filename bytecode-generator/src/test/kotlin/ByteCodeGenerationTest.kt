@@ -52,7 +52,7 @@ class ByteCodeGenerationTest {
     companion object {
         @JvmStatic
         fun getTestFiles(): List<String> {
-            return listOf("Sieve.mcpp", "BubbleSort.mcpp", "GoLife.mcpp")
+            return listOf("Sieve.mcpp", "BubbleSort.mcpp", "GoLife.mcpp", "longsrc.mcpp")
         }
     }
 

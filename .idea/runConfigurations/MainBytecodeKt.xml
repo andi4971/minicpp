@@ -3,6 +3,7 @@
     <option name="MAIN_CLASS_NAME" value="org.azauner.minicpp.bytecode.MainBytecodeKt" />
     <module name="minicpp.bytecode-generator.main" />
     <shortenClasspath name="NONE" />
+    <option name="VM_PARAMETERS" value="-Xmx16g" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
