@@ -3,14 +3,13 @@ package org.azauner.minicpp.ast.generator.listener.expr
 import org.azauner.minicpp.ast.generator.listener.expr.term.TermListener
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
-import java.util.*
 
 class SimpleExprListener(
     private val termListener: TermListener,
     private val simpleExprEntryListener: SimpleExprEntryListener
 ) : minicppBaseListener() {
 
-    private var simpleExprs = Collections.synchronizedList(mutableListOf<org.azauner.minicpp.ast.node.SimpleExpr>())
+    private var simpleExprs = mutableListOf<org.azauner.minicpp.ast.node.SimpleExpr>()
 
     override fun exitSimpleExpr(ctx: minicppParser.SimpleExprContext) {
         val sign = ctx.SIGN()?.let {

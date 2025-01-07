@@ -2,11 +2,10 @@ package org.azauner.minicpp.ast.generator.listener.expr
 
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
-import java.util.*
 
 class AndExprListener(private val relExprListener: RelExprListener): minicppBaseListener() {
 
-    private var andExprs = Collections.synchronizedList(mutableListOf<org.azauner.minicpp.ast.node.AndExpr>())
+    private var andExprs = mutableListOf<org.azauner.minicpp.ast.node.AndExpr>()
 
     override fun exitAndExpr(ctx: minicppParser.AndExprContext) {
         val entries = mutableListOf<org.azauner.minicpp.ast.node.RelExpr>()

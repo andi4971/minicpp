@@ -4,7 +4,6 @@ import org.azauner.minicpp.ast.util.ScopeHandler
 import org.azauner.minicpp.ast.util.getTerminalNodeFromTokenList
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
-import java.util.*
 
 class CallFactEntryListener(
     private val callFactEntryOperationListener: CallFactEntryOperationListener,
@@ -12,7 +11,7 @@ class CallFactEntryListener(
 ) :
     minicppBaseListener() {
 
-    private var callFactEntries = Collections.synchronizedList(mutableListOf<org.azauner.minicpp.ast.node.ActionFact>())
+    private var callFactEntries = mutableListOf<org.azauner.minicpp.ast.node.ActionFact>()
 
     override fun exitCallFactEntry(ctx: minicppParser.CallFactEntryContext) {
         val prefix = ctx.preIncDec?.getTerminalNodeFromTokenList(ctx.INC_DEC())?.text?.getIncDec()

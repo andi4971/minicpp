@@ -2,11 +2,10 @@ package org.azauner.minicpp.ast.generator.listener.expr
 
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
-import java.util.*
 
 class RelOperatorListener : minicppBaseListener() {
 
-    private var relOperators = Collections.synchronizedList(mutableListOf<org.azauner.minicpp.ast.node.RelOperator>())
+    private var relOperators = mutableListOf<org.azauner.minicpp.ast.node.RelOperator>()
 
     override fun exitEqualEqualOperator(ctx: minicppParser.EqualEqualOperatorContext?) {
         relOperators.add(org.azauner.minicpp.ast.node.RelOperator.EQUAL)

@@ -6,14 +6,13 @@ import org.azauner.minicpp.ast.generator.listener.func.FuncDeclListener
 import org.azauner.minicpp.ast.generator.listener.func.FuncDefListener
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
-import java.util.*
 
 class MiniCppEntryListener(private val constDefListener: ConstDefListener, private val varDefListener: VarDefListener,
     private val funcDeclListener: FuncDeclListener,
     private val funcDefListener: FuncDefListener) :
     minicppBaseListener() {
 
-    private val entries = Collections.synchronizedList(mutableListOf<org.azauner.minicpp.ast.node.MiniCppEntry>())
+    private val entries = mutableListOf<org.azauner.minicpp.ast.node.MiniCppEntry>()
 
     override fun exitMiniCppEntry(ctx: minicppParser.MiniCppEntryContext) {
         val entry = when {

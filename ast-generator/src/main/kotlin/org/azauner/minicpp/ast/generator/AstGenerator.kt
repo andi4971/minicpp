@@ -2,6 +2,7 @@ package org.azauner.minicpp.ast.generator
 
 import org.antlr.v4.runtime.BufferedTokenStream
 import org.antlr.v4.runtime.CharStreams
+import org.antlr.v4.runtime.tree.ParseTree
 import org.antlr.v4.runtime.tree.ParseTreeListener
 import org.azauner.atg.parser.minicppAtgLexer
 import org.azauner.atg.parser.minicppAtgParser
@@ -15,6 +16,7 @@ import org.azauner.minicpp.ast.generator.listener.field.*
 import org.azauner.minicpp.ast.generator.listener.func.*
 import org.azauner.minicpp.ast.generator.listener.stat.*
 import org.azauner.minicpp.ast.generator.visitor.MiniCppVisitor
+import org.azauner.minicpp.ast.generator.visitor.NodeCounterVisitor
 import org.azauner.minicpp.ast.node.MiniCpp
 import org.azauner.minicpp.ast.util.ScopeHandler
 import org.azauner.parser.minicppLexer
@@ -27,6 +29,14 @@ fun generateASTForFileVisitor(inputStream: InputStream, className: String): org.
     val tokenStream = BufferedTokenStream(lexer)
     val parser = minicppParser(tokenStream)
     return MiniCppVisitor(className).visit(parser.miniCpp())
+}
+
+fun generateParse(inputStream: InputStream): org.azauner.barebone.parser.minicppParser.MiniCppContext {
+    val charStream = CharStreams.fromStream(inputStream)
+    val lexer = org.azauner.barebone.parser.minicppLexer(charStream)
+    val tokenStream = BufferedTokenStream(lexer)
+    val parser = org.azauner.barebone.parser.minicppParser(tokenStream)
+    return parser.miniCpp()
 }
 
 fun generateAstForFileListener(inputStream: InputStream, className: String): org.azauner.minicpp.ast.node.MiniCpp {
@@ -42,6 +52,11 @@ fun generateAstForFileListener(inputStream: InputStream, className: String): org
     val miniCppListener = listeners.filterIsInstance<MiniCppListener>().first()
     parser.miniCpp()
     return miniCppListener.result
+}
+
+fun countNodes(parseTree: ParseTree): Int {
+    val visitor = NodeCounterVisitor()
+    return visitor.visit(parseTree)
 }
 
 fun generateAstForATG(inputStream: InputStream, className: String): MiniCpp {

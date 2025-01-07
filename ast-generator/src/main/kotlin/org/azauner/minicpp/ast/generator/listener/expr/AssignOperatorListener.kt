@@ -2,12 +2,11 @@ package org.azauner.minicpp.ast.generator.listener.expr
 
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
-import java.util.*
 
 class AssignOperatorListener: minicppBaseListener() {
 
     private var assignOperators =
-        Collections.synchronizedList(mutableListOf<org.azauner.minicpp.ast.node.AssignOperator>())
+        mutableListOf<org.azauner.minicpp.ast.node.AssignOperator>()
 
     override fun exitEqualAssign(ctx: minicppParser.EqualAssignContext?) {
         assignOperators.add(org.azauner.minicpp.ast.node.AssignOperator.ASSIGN)

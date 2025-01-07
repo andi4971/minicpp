@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/ast" />
             <option value="$PROJECT_DIR$/ast-generator" />
             <option value="$PROJECT_DIR$/atg-parser" />
+            <option value="$PROJECT_DIR$/barebone-parser" />
             <option value="$PROJECT_DIR$/bytecode-generator" />
             <option value="$PROJECT_DIR$/minicpp-console" />
             <option value="$PROJECT_DIR$/parser" />

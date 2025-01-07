@@ -2,14 +2,13 @@ package org.azauner.minicpp.ast.generator.listener.expr
 
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
-import java.util.*
 
 class ExprEntryListener(
     private val orExprListener: OrExprListener,
     private val assignOperatorListener: AssignOperatorListener
 ) : minicppBaseListener() {
 
-    private var exprEntries = Collections.synchronizedList(mutableListOf<org.azauner.minicpp.ast.node.ExprEntry>())
+    private var exprEntries = mutableListOf<org.azauner.minicpp.ast.node.ExprEntry>()
 
     override fun exitExprEntry(ctx: minicppParser.ExprEntryContext) {
         exprEntries.add(

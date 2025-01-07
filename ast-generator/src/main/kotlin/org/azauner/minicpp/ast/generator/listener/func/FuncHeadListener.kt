@@ -3,7 +3,6 @@ package org.azauner.minicpp.ast.generator.listener.func
 import org.azauner.minicpp.ast.generator.listener.field.TypeListener
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
-import java.util.*
 
 class FuncHeadListener() :
     minicppBaseListener() {
@@ -15,7 +14,7 @@ class FuncHeadListener() :
         this.formParListListener = formParListListener
     }
 
-    private val funcHeads = Collections.synchronizedList(mutableListOf<org.azauner.minicpp.ast.node.FuncHead>())
+    private val funcHeads = mutableListOf<org.azauner.minicpp.ast.node.FuncHead>()
 
     override fun exitFuncHead(ctx: minicppParser.FuncHeadContext) {
         funcHeads.add(

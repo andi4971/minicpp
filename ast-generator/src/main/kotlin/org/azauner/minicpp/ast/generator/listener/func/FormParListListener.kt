@@ -3,7 +3,6 @@ package org.azauner.minicpp.ast.generator.listener.func
 import org.azauner.minicpp.ast.util.ScopeHandler
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
-import java.util.*
 
 class FormParListListener(
     private val formParListEntriesListener: FormParListEntriesListener,
@@ -11,7 +10,7 @@ class FormParListListener(
     private val funcDefListener: FuncDefListener
 ) : minicppBaseListener() {
 
-    private val formParLists = Collections.synchronizedList(mutableListOf<org.azauner.minicpp.ast.node.FormParList>())
+    private val formParLists = mutableListOf<org.azauner.minicpp.ast.node.FormParList>()
 
     override fun exitFormParList(ctx: minicppParser.FormParListContext) {
         if(ctx.VOID() != null) {

@@ -14,6 +14,7 @@ dependencies {
     testImplementation(kotlin("test"))
     api(project(":parser"))
     api(project(":atg-parser"))
+    api(project(":barebone-parser"))
     api(project(":ast"))
     implementation("org.aspectj:aspectjrt:1.9.21")
     implementation("org.aspectj:aspectjweaver:1.9.21")

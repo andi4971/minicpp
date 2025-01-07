@@ -4,8 +4,8 @@ import org.azauner.minicpp.ast.node.scope.Variable
 
 
 data class VarDefEntry(
-    val ident: org.azauner.minicpp.ast.node.Ident,
+    val ident: Ident,
     val pointer: Boolean,
-    val value: org.azauner.minicpp.ast.node.Init?,
+    val value: Init?,
     val variable: Variable
 )

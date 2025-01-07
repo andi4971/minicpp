@@ -14,6 +14,9 @@ fun main() {
 }
 
 
+// Usage example
+
+
 fun Any.prettyPrint(): String {
 
     var indentLevel = 0

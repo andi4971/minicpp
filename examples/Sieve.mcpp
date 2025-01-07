@@ -10,6 +10,11 @@ const bool isTesting = true;
 int seppster = 15, bert = 4;
 
 void main() {
+   int a = 5, b = 10, c;
+    c = a + b;
+}
+
+void main() {
     seppster++;
     int x = 0;
     int y = 5;
@@ -27,7 +32,7 @@ void main() {
   cout << "n > ";
   cin >> n;
   cout << "n is: "<<  n << endl;
-  
+
   if (n < 3) {
     cout << "error: number too small (min. 3)" << endl;
     return;
@@ -35,12 +40,12 @@ void main() {
     cout << "error: number too large (max. 46340)" << endl;
     return;
   } // if
-  
+
   Sieve(n);
-  
+
   // int dummy;
   // cin >> dummy;
-  
+
 } // main
 
 

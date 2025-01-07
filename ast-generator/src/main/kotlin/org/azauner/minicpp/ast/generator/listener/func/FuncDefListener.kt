@@ -4,14 +4,13 @@ import org.azauner.minicpp.ast.generator.listener.block.BlockListener
 import org.azauner.minicpp.ast.util.ScopeHandler
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
-import java.util.*
 
 class FuncDefListener(
     private val funcHeadListener: FuncHeadListener, private val blockListener: BlockListener,
     private val scopeHandler: ScopeHandler
 ) : minicppBaseListener() {
 
-    private val funcDefs = Collections.synchronizedList(mutableListOf<org.azauner.minicpp.ast.node.FuncDef>())
+    private val funcDefs = mutableListOf<org.azauner.minicpp.ast.node.FuncDef>()
 
     var addNextFormParListToVariables = false
 

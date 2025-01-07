@@ -4,12 +4,11 @@ import org.azauner.minicpp.ast.generator.listener.block.BlockListener
 import org.azauner.minicpp.ast.util.ScopeHandler
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
-import java.util.*
 
 class BlockStatListener(private val blockListener: BlockListener, private val scopeHandler: ScopeHandler) :
     minicppBaseListener() {
 
-    private var blockStats = Collections.synchronizedList(mutableListOf<org.azauner.minicpp.ast.node.BlockStat>())
+    private var blockStats = mutableListOf<org.azauner.minicpp.ast.node.BlockStat>()
 
     override fun enterBlockStat(ctx: minicppParser.BlockStatContext?) {
         scopeHandler.pushChildScope()

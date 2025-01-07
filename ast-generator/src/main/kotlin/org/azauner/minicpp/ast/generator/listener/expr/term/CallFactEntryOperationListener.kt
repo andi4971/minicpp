@@ -4,7 +4,6 @@ import org.azauner.minicpp.ast.generator.listener.expr.ExprListener
 import org.azauner.minicpp.ast.util.ScopeHandler
 import org.azauner.parser.minicppBaseListener
 import org.azauner.parser.minicppParser
-import java.util.*
 
 class CallFactEntryOperationListener(
     private val exprListener: ExprListener,
@@ -13,7 +12,7 @@ class CallFactEntryOperationListener(
 ) : minicppBaseListener() {
 
     private var actionOperations =
-        Collections.synchronizedList(mutableListOf<org.azauner.minicpp.ast.node.ActionOperation>())
+        mutableListOf<org.azauner.minicpp.ast.node.ActionOperation>()
 
     override fun exitActParListFactOperation(ctx: minicppParser.ActParListFactOperationContext) {
         val actParList = ctx.actParList()?.let { actParListListener.getActParList().reversed() }.orEmpty()

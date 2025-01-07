@@ -6,12 +6,12 @@
         <PerGrammarGenerationSettings>
           <option name="fileName" value="$PROJECT_DIR$/grammar/minicpp.g4" />
           <option name="autoGen" value="true" />
-          <option name="outputDir" value="C:\Users\andi4\Desktop\FH\master\masterarbeit\minicpp\parser\src\main\java" />
+          <option name="outputDir" value="C:\Users\andi4\Desktop\FH\master\masterarbeit\minicpp\barebone-parser\src\main\java" />
           <option name="libDir" value="" />
           <option name="encoding" value="" />
-          <option name="pkg" value="org.azauner.parser" />
+          <option name="pkg" value="org.azauner.barebone.parser" />
           <option name="language" value="" />
-          <option name="generateVisitor" value="true" />
+          <option name="generateListener" value="false" />
         </PerGrammarGenerationSettings>
         <PerGrammarGenerationSettings>
           <option name="fileName" value="$PROJECT_DIR$/grammar/minicppAtg.g4" />
