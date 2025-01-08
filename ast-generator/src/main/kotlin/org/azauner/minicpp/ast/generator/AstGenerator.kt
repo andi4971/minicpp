@@ -54,7 +54,7 @@ fun generateAstForFileListener(inputStream: InputStream, className: String): org
     return miniCppListener.result
 }
 
-fun countNodes(parseTree: ParseTree): Int {
+fun countMiniCppEntries(parseTree: ParseTree): Int {
     val visitor = NodeCounterVisitor()
     return visitor.visit(parseTree)
 }

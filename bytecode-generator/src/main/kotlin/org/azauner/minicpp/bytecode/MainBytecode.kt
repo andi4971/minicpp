@@ -36,7 +36,8 @@ data class EvalResult(val duration: Duration, val memory: String, val rawMemory:
 }
 
 fun evaluate(className: String) {
-    var nodecount = generateParse(getMiniCppIS(className)).let { parseTree -> countNodes(parseTree) }
+    var nodecount = generateParse(getMiniCppIS(className)).let { parseTree -> countMiniCppEntries(parseTree) }
+    val astNodeCount = generateAstForATG(getMiniCppIS(className), className).let { ast -> countMiniCppEntries(ast) }
     val listener = measureTimeMultiple { generateAstForFileListener(getMiniCppIS(className), className) }
     val visitor = measureTimeMultiple { generateASTForFileVisitor(getMiniCppIS(className), className) }
     val atg = measureTimeMultiple { generateAstForATG(getMiniCppIS(className), className) }
@@ -44,7 +45,8 @@ fun evaluate(className: String) {
 
 
     println("class:     $className")
-    println("nodecount: $nodecount")
+    println("nodes:     $nodecount")
+    println("astNodes:  $astNodeCount")
     //print durations
     println("Parse:     $parse")
     println("Visitor:   $visitor")
