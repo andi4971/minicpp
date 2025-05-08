@@ -10,7 +10,5 @@ fun org.azauner.minicpp.ast.node.ExprType.generateSourceCode(sb: StringBuilder) 
         NULLPTR -> sb.append("nullptr")
         INT_ARR -> sb.append("int")
         BOOL_ARR -> sb.append("bool")
-        INT_PTR -> sb.append("int*")
-        BOOL_PTR -> sb.append("bool*")
     }
 }

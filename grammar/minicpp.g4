@@ -7,23 +7,25 @@ miniCppEntry:     constDef
                 | funcDef
                 | SEM
                 ;
-constDef:    CONST type constDefEntry (',' constDefEntry)* SEM;
+constDef:    CONST type constDefEntry (COMMA constDefEntry)* SEM;
 constDefEntry: IDENT init;
-init:        '='  initOption;
+init:        EQUAL  initOption;
+
+
 initOption:    BOOLEAN      #BooleanInit
              | NULLPTR      #NullptrInit
              | (SIGN)? INT  #IntInit
              ;
 
 varDef:      type varDefEntry
-             (',' varDefEntry)* SEM;
+             (COMMA varDefEntry)* SEM;
 varDefEntry: STAR? IDENT (init)?;
 funcDecl:    funcHead SEM;
 funcDef:     funcHead block;
-funcHead:    type STAR? IDENT '(' formParList? ')';
+funcHead:    type STAR? IDENT LPAREN formParList? RPAREN;
 formParList: (VOID
               |     formParListEntry
-               (',' formParListEntry)*
+               (COMMA formParListEntry)*
               );
 formParListEntry: type STAR? IDENT (BRACKETS)?;
 
@@ -31,24 +33,24 @@ type:        VOID #VoidType
             | BOOL #BoolType
             | INT_LIT #IntType
             ;
-block:       '{' (blockEntry)* '}';
+block:       LBRACE (blockEntry)* RBRACE;
 blockEntry: constDef|varDef|stat;
-stat:        ( emptyStat
+stat:        ( emptyStat  | breakStat
              | blockStat  | exprStat
-             | ifStat     | whileStat  | breakStat
+             | ifStat     | whileStat
              | inputStat  | outputStat
              | deleteStat | returnStat
              );
 emptyStat:   SEM;
 blockStat:   block;
 exprStat:    expr SEM;
-ifStat:      'if' '(' expr ')' stat elseStat?;
+ifStat:      'if' LPAREN expr RPAREN stat elseStat?;
 elseStat:    'else' stat;
-whileStat:   'while' '(' expr ')' stat;
+whileStat:   'while' LPAREN expr RPAREN stat;
 breakStat:   'break' SEM;
-inputStat:   'cin' '>>' IDENT SEM;
-outputStat:  'cout' '<<' outputStatEntry
-                    ('<<' outputStatEntry )* SEM;
+inputStat:   'cin' T__1 IDENT SEM;
+outputStat:  'cout' T__3 outputStatEntry
+                    (T__3 outputStatEntry )* SEM;
 outputStatEntry: expr    #ExprOutputStatEntry
                 | STRING #StringOutputStatEntry
                 | 'endl' #EndlOutputStatEntry
@@ -63,7 +65,6 @@ exprAssign:  EQUAL      #EqualAssign
            | MUL_ASSIGN #MulAssign
            | DIV_ASSIGN #DivAssign
            | MOD_ASSIGN #ModAssign
-
            ;
 orExpr:      andExpr ( '||' andExpr )*;
 andExpr:     relExpr ( '&&' relExpr )*;
@@ -92,8 +93,8 @@ fact:
              | NULLPTR #NullptrFact
              | INT     #IntFact
              | callFactEntry         #CallFact
-             | NEW type '[' expr ']' #NewArrayFact
-             | '(' expr ')'          #ExprFact
+             | NEW type LBRACK expr RBRACK #NewArrayFact
+             | LPAREN expr RPAREN          #ExprFact
              ;
 callFactEntry:
             preIncDec=INC_DEC?
@@ -102,11 +103,20 @@ callFactEntry:
               postIncDec=INC_DEC?
               ;
 callFactEntryOperation:
-                   ( '[' expr    ']')          #ExprFactOperation
-                 | ( '(' (actParList)?    ')') #ActParListFactOperation
+                   ( LBRACK expr    RBRACK)          #ExprFactOperation
+                 | ( LPAREN (actParList)?    RPAREN) #ActParListFactOperation
                  ;
-actParList:  expr (',' expr)*;
+actParList:  expr (COMMA expr)*;
 
+COMMA : ',' ;
+LPAREN : '(' ;
+RPAREN : ')' ;
+LBRACE : '{' ;
+RBRACE : '}' ;
+T__1 : '>>' ;
+T__3 : '<<' ;
+LBRACK : '[' ;
+RBRACK : ']' ;
 INC_DEC: INC | DEC;
 BOOLEAN: TRUE | FALSE;
 SEM: ';';

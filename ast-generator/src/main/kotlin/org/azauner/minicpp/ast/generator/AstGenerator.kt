@@ -23,7 +23,7 @@ import org.azauner.parser.minicppLexer
 import org.azauner.parser.minicppParser
 import java.io.InputStream
 
-fun generateASTForFileVisitor(inputStream: InputStream, className: String): org.azauner.minicpp.ast.node.MiniCpp {
+fun generateASTForFileVisitor(inputStream: InputStream, className: String): MiniCpp {
     val charStream = CharStreams.fromStream(inputStream)
     val lexer = minicppLexer(charStream)
     val tokenStream = BufferedTokenStream(lexer)
@@ -31,15 +31,19 @@ fun generateASTForFileVisitor(inputStream: InputStream, className: String): org.
     return MiniCppVisitor(className).visit(parser.miniCpp())
 }
 
-fun generateParse(inputStream: InputStream): org.azauner.barebone.parser.minicppParser.MiniCppContext {
+fun generateParse(
+    inputStream: InputStream,
+    buildParseTree: Boolean = true
+): org.azauner.barebone.parser.minicppParser.MiniCppContext {
     val charStream = CharStreams.fromStream(inputStream)
     val lexer = org.azauner.barebone.parser.minicppLexer(charStream)
     val tokenStream = BufferedTokenStream(lexer)
     val parser = org.azauner.barebone.parser.minicppParser(tokenStream)
+    parser.buildParseTree = buildParseTree
     return parser.miniCpp()
 }
 
-fun generateAstForFileListener(inputStream: InputStream, className: String): org.azauner.minicpp.ast.node.MiniCpp {
+fun generateAstForFileListener(inputStream: InputStream, className: String): MiniCpp {
     val charStream = CharStreams.fromStream(inputStream)
     val lexer = minicppLexer(charStream)
     val tokenStream = BufferedTokenStream(lexer)
@@ -65,6 +69,7 @@ fun generateAstForATG(inputStream: InputStream, className: String): MiniCpp {
     val tokenStream = BufferedTokenStream(lexer)
     val parser = minicppAtgParser(tokenStream)
     parser.className = className
+    parser.buildParseTree = false
     parser.miniCpp()
     val ast = parser.result
     return ast

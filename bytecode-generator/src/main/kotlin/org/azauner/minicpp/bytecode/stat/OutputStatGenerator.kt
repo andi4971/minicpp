@@ -1,5 +1,9 @@
 package org.azauner.minicpp.bytecode.stat
 
+import org.azauner.minicpp.ast.node.Endl
+import org.azauner.minicpp.ast.node.Expr
+import org.azauner.minicpp.ast.node.ExprType
+import org.azauner.minicpp.ast.node.Text
 import org.azauner.minicpp.ast.util.getType
 import org.azauner.minicpp.bytecode.expr.ExprGenerator
 import org.objectweb.asm.MethodVisitor
@@ -25,16 +29,16 @@ class OutputStatGenerator(private val mv: MethodVisitor) {
         stat.entries.forEach { entry ->
             loadPrintlnOutField()
             when (entry) {
-                org.azauner.minicpp.ast.node.Endl -> generatePrintln()
-                is org.azauner.minicpp.ast.node.Expr -> generatePrintExpr(entry)
-                is org.azauner.minicpp.ast.node.Text -> generatePrintText(entry.text)
+                Endl -> generatePrintln()
+                is Expr -> generatePrintExpr(entry)
+                is Text -> generatePrintText(entry.text)
             }
         }
     }
 
-    private fun generatePrintExpr(expr: org.azauner.minicpp.ast.node.Expr) {
+    private fun generatePrintExpr(expr: Expr) {
         ExprGenerator(mv).generate(expr)
-        val descriptor = if (expr.getType() == org.azauner.minicpp.ast.node.ExprType.INT) {
+        val descriptor = if (expr.getType() == ExprType.INT) {
             PRINT_INT_DESC
         }else {
             PRINT_BOOL_DESC

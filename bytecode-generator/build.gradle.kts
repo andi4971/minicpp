@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm")
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "org.azauner"
@@ -7,6 +8,15 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+}
+
+tasks {
+    shadowJar {
+        archiveClassifier.set("all")
+        manifest {
+            attributes(mapOf("Main-Class" to "org.azauner.minicpp.bytecode.MainBytecodeKt"))
+        }
+    }
 }
 
 dependencies {

@@ -1,5 +1,6 @@
 package org.azauner.minicpp.bytecode
 
+import org.azauner.minicpp.ast.node.*
 import org.azauner.minicpp.bytecode.expr.ActionFactGenerator
 import org.azauner.minicpp.bytecode.field.StaticConstDefGenerator
 import org.azauner.minicpp.bytecode.field.StaticVarDefGenerator
@@ -29,10 +30,10 @@ class MiniCppGenerator(private val miniCpp: org.azauner.minicpp.ast.node.MiniCpp
         val staticVarDefGenerator = StaticVarDefGenerator(classWriter)
         miniCpp.entries.forEach {
             when (it) {
-                is org.azauner.minicpp.ast.node.VarDef -> staticVarDefGenerator.generateStatic(it)
-                is org.azauner.minicpp.ast.node.ConstDef -> StaticConstDefGenerator(classWriter).generateStatic(it)
-                is org.azauner.minicpp.ast.node.FuncDef -> FuncDefGenerator(classWriter, miniCpp.className).generate(it)
-                else -> ""
+                is VarDef -> staticVarDefGenerator.generateStatic(it)
+                is ConstDef -> StaticConstDefGenerator(classWriter).generateStatic(it)
+                is FuncDef -> FuncDefGenerator(classWriter, miniCpp.className).generate(it)
+                is Sem, is FuncDecl -> ""
             }
         }
         staticVarDefGenerator.generateStaticInitBlock(miniCpp)

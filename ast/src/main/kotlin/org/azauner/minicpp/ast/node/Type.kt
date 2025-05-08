@@ -6,16 +6,8 @@ enum class ExprType(val descriptor: String = "") {
     BOOL("Z"),
     INT("I"),
     NULLPTR,
-    //used when an index operation on the array is performed
     INT_ARR("[I"),
     BOOL_ARR("[Z"),
-
-    INT_PTR,
-    BOOL_PTR;
-
-    /*//used when the array as a whole is used
-    BOOL_ARR_PTR,
-    INT_ARR_PTR*/
 }
 
 val ARR_TYPES = setOf(

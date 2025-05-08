@@ -1,6 +1,8 @@
 package org.azauner.minicpp.sourcecode
 
-fun org.azauner.minicpp.ast.node.ConstDef.generateSourceCode(sb: StringBuilder) {
+import org.azauner.minicpp.ast.node.ConstDef
+
+fun ConstDef.generateSourceCode(sb: StringBuilder) {
     sb.append("const ")
     type.generateSourceCode(sb)
     sb.append(" ")

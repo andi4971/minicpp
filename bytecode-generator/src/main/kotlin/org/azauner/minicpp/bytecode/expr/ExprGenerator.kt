@@ -1,5 +1,8 @@
 package org.azauner.minicpp.bytecode.expr
 
+import org.azauner.minicpp.ast.node.AssignOperator
+import org.azauner.minicpp.ast.node.Expr
+import org.azauner.minicpp.ast.node.OrExpr
 import org.azauner.minicpp.ast.node.scope.Variable
 import org.azauner.minicpp.ast.util.getIdent
 import org.azauner.minicpp.ast.util.mapToAssignPairs
@@ -20,7 +23,7 @@ class ExprGenerator(private val mv: MethodVisitor) {
         return fact is org.azauner.minicpp.ast.node.ActionFact && fact.actionOp is org.azauner.minicpp.ast.node.ArrayAccessOperation
     }
 
-    fun generate(expr: org.azauner.minicpp.ast.node.Expr, shouldEmitValue: Boolean = true) {
+    fun generate(expr: Expr, shouldEmitValue: Boolean = true) {
         val generator = OrExprGenerator(mv)
         if (expr.exprEntries.isEmpty()) {
             generator.generate(expr.firstExpr, shouldEmitValue)
@@ -35,7 +38,7 @@ class ExprGenerator(private val mv: MethodVisitor) {
         }
     }
 
-    private fun OrExprGenerator.generateAssignCode(exprEntries: List<Pair<org.azauner.minicpp.ast.node.OrExpr, org.azauner.minicpp.ast.node.AssignOperator?>>) {
+    private fun OrExprGenerator.generateAssignCode(exprEntries: List<Pair<OrExpr, AssignOperator?>>) {
         val entriesReversed = exprEntries.reversed()
         entriesReversed.forEachIndexed { index, exprEntry ->
             if (exprEntry.second == null) {
@@ -59,23 +62,21 @@ class ExprGenerator(private val mv: MethodVisitor) {
     }
 
 
-    private fun OrExprGenerator.putExprValuesOnStack(exprEntries: List<Pair<org.azauner.minicpp.ast.node.OrExpr, org.azauner.minicpp.ast.node.AssignOperator?>>) {
-
+    private fun OrExprGenerator.putExprValuesOnStack(exprEntries: List<Pair<OrExpr, AssignOperator?>>) {
         exprEntries.filter { entry ->
             entry.second != null
         }.forEach {
             if (it.first.isArrayAccess()) {
-                if (it.second == org.azauner.minicpp.ast.node.AssignOperator.ASSIGN) {
+                if (it.second == AssignOperator.ASSIGN) {
                     ActionFactGenerator.skipLoadOfNextArray = true
                 } else {
                     ActionFactGenerator.duplicateNextArrayIndex = true
                 }
                 this.generate(it.first)
             } else {
-                if (it.second != org.azauner.minicpp.ast.node.AssignOperator.ASSIGN) {
+                if (it.second != AssignOperator.ASSIGN) {
                     this.generate(it.first)
                 }
-
             }
         }
     }
@@ -95,12 +96,12 @@ class ExprGenerator(private val mv: MethodVisitor) {
 
     private fun generateCalculation(assignOperator: org.azauner.minicpp.ast.node.AssignOperator) {
         when (assignOperator) {
-            org.azauner.minicpp.ast.node.AssignOperator.ADD_ASSIGN -> mv.visitInsn(Opcodes.IADD)
-            org.azauner.minicpp.ast.node.AssignOperator.SUB_ASSIGN -> mv.visitInsn(Opcodes.ISUB)
-            org.azauner.minicpp.ast.node.AssignOperator.MUL_ASSIGN -> mv.visitInsn(Opcodes.IMUL)
-            org.azauner.minicpp.ast.node.AssignOperator.DIV_ASSIGN -> mv.visitInsn(Opcodes.IDIV)
-            org.azauner.minicpp.ast.node.AssignOperator.MOD_ASSIGN -> mv.visitInsn(Opcodes.IREM)
-            org.azauner.minicpp.ast.node.AssignOperator.ASSIGN -> ""
+            AssignOperator.ADD_ASSIGN -> mv.visitInsn(Opcodes.IADD)
+            AssignOperator.SUB_ASSIGN -> mv.visitInsn(Opcodes.ISUB)
+            AssignOperator.MUL_ASSIGN -> mv.visitInsn(Opcodes.IMUL)
+            AssignOperator.DIV_ASSIGN -> mv.visitInsn(Opcodes.IDIV)
+            AssignOperator.MOD_ASSIGN -> mv.visitInsn(Opcodes.IREM)
+            AssignOperator.ASSIGN -> ""
         }
     }
 

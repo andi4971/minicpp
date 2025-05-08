@@ -1,8 +1,11 @@
 package org.azauner.minicpp.ast.node.scope
 
+import org.azauner.minicpp.ast.node.ExprType
+import org.azauner.minicpp.ast.node.Ident
+
 class Variable(
-    val ident: org.azauner.minicpp.ast.node.Ident,
-    val type: org.azauner.minicpp.ast.node.ExprType,
+    val ident: Ident,
+    val type: ExprType,
     val const: Boolean,
     val static: Boolean,
     var index: Int,

@@ -7,29 +7,17 @@ import kotlin.time.Duration
 import kotlin.time.measureTime
 
 fun main() {
-    /*    val fileName = "Sieve.mcpp"
-        //val fileName = "GoLife.mcpp"
-        //val fileName = "BubbleSort.mcpp"
-        var inputStream = Path("examples/$fileName").inputStream()
-        val className = fileName.substringBefore(".mcpp")
-
-
-        //walker.walk(MiniCppListener(parser), parser.miniCpp())
-        val result2 = org.azauner.minicpp.ast.generator.generateAstForFileListener(inputStream, className)
-        inputStream = Path("examples/$fileName").inputStream()
-        val result = org.azauner.minicpp.ast.generator.generateASTForFileVisitor(inputStream, className)
-        val bytes = MiniCppGenerator(result).generateByteCode()
-        val bytes2 = MiniCppGenerator(result2).generateByteCode()
-        Path("examples/${result.className}_list.class").toFile().writeBytes(bytes2)
-        Path("examples/${result.className}2 .class").toFile().writeBytes(bytes)*/
-    evaluate("shortsrc")
-    evaluate("mediumsrc")
-    evaluate("longsrc")
-    evaluate("verylongsrc")
-    //evaluate("superlongsrc")
+    evaluate("golife10000")
+    evaluate("golife20000")
+    evaluate("golife40000")
+    /*    evaluate("shortsrc")
+        evaluate("mediumsrc")
+        evaluate("longsrc")
+        evaluate("verylongsrc")
+        evaluate("superlongsrc")*/
 }
 
-fun getMiniCppIS(fileName: String) = Path("examples/$fileName.mcpp").inputStream()
+fun getMiniCppIS(fileName: String) = Path("$fileName.mcpp").inputStream()
 
 data class EvalResult(val duration: Duration, val memory: String, val rawMemory: Long) {
     override fun toString() = "Duration: \t\t $duration, Memory:\t $memory Raw bytes\t $rawMemory"
@@ -42,6 +30,7 @@ fun evaluate(className: String) {
     val visitor = measureTimeMultiple { generateASTForFileVisitor(getMiniCppIS(className), className) }
     val atg = measureTimeMultiple { generateAstForATG(getMiniCppIS(className), className) }
     val parse = measureTimeMultiple { generateParse(getMiniCppIS(className)) }
+    val parseNoParseTree = measureTimeMultiple { generateParse(getMiniCppIS(className), false) }
 
 
     println("class:     $className")
@@ -49,6 +38,7 @@ fun evaluate(className: String) {
     println("astNodes:  $astNodeCount")
     //print durations
     println("Parse:     $parse")
+    println("NoTreeP:   $parseNoParseTree")
     println("Visitor:   $visitor")
     println("Listener:  $listener")
     println("ATG:       $atg")

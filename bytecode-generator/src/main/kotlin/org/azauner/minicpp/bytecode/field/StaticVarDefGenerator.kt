@@ -1,5 +1,6 @@
 package org.azauner.minicpp.bytecode.field
 
+import org.azauner.minicpp.ast.node.MiniCpp
 import org.azauner.minicpp.ast.util.toPointerTypeOptional
 import org.azauner.minicpp.bytecode.MiniCppGenerator.Companion.scannerVarName
 import org.objectweb.asm.ClassWriter
@@ -18,13 +19,13 @@ class StaticVarDefGenerator(private val cw: ClassWriter) {
                 entry.ident.name,
                 varDef.type.toPointerTypeOptional(entry.pointer).descriptor,
                 null,
-                entry.value?.value?.getValue()
+                null//entry.value?.value?.getValue()
             )
         }
         generatedVarDefs.add(varDef)
     }
 
-    fun generateStaticInitBlock(miniCpp: org.azauner.minicpp.ast.node.MiniCpp) {
+    fun generateStaticInitBlock(miniCpp: MiniCpp) {
         cw.visitMethod(
             ACC_STATIC,
             "<clinit>",
@@ -46,9 +47,7 @@ class StaticVarDefGenerator(private val cw: ClassWriter) {
                     )
                 }
             }
-
             visitScannerInit(miniCpp)
-
             visitInsn(RETURN)
             visitMaxs(0, 0)
             visitEnd()

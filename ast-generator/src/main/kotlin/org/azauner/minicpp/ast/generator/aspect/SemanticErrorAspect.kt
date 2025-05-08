@@ -22,7 +22,7 @@ class SemanticErrorAspect {
     fun visitorPointcut() = Unit
 
     @Around("visitorPointcut()")
-    fun addErrorHandling(joinPoint: ProceedingJoinPoint): Any {
+    fun performErrorHandling(joinPoint: ProceedingJoinPoint): Any {
         //todo potentially refactor to not use exceptions but static variable with errors
         //problem still remains then when required functions or variables are not found
         //maybe return a dummy variable or function in this case

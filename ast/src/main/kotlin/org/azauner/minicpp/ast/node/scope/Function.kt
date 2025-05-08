@@ -1,8 +1,11 @@
 package org.azauner.minicpp.ast.node.scope
 
+import org.azauner.minicpp.ast.node.ExprType
+import org.azauner.minicpp.ast.node.Ident
+
 data class Function(
-    val ident: org.azauner.minicpp.ast.node.Ident,
-    val returnType: org.azauner.minicpp.ast.node.ExprType,
-    val formParTypes: List<org.azauner.minicpp.ast.node.ExprType>,
+    val ident: Ident,
+    val returnType: ExprType,
+    val formParTypes: List<ExprType>,
     var isDefined: Boolean = false
 )

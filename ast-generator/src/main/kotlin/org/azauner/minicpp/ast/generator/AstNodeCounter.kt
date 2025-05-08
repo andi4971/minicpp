@@ -15,7 +15,7 @@ fun countMiniCppEntry(entry: MiniCppEntry): Int {
         is ConstDef -> countConstDef(entry)
         is FuncDecl -> countFuncDecl(entry)
         is FuncDef -> countFuncDef(entry)
-        Sem -> 1
+        Sem -> 0
         is VarDef -> countVarDef(entry)
     }
 }
@@ -44,9 +44,9 @@ fun countBlockEntry(it: BlockEntry): Int {
 fun countStat(it: Stat): Int {
     return when (it) {
         is BlockStat -> countBlockStat(it)
-        BreakStat -> 1
+        BreakStat -> 0
         is DeleteStat -> countDeleteStat(it)
-        EmptyStat -> 1
+        EmptyStat -> 0
         is ExprStat -> countExprStat(it)
         is IfStat -> countIfStat(it)
         is InputStat -> countInputStat(it)
@@ -62,9 +62,9 @@ fun countOutputStat(it: OutputStat): Int {
 
 fun countOutputStatEntry(it: OutputStatEntry): Int {
     return when (it) {
-        Endl -> 1
+        is Endl -> 0
         is Expr -> countExpr(it)
-        is Text -> 1 + 1
+        is Text -> 1
     }
 }
 
@@ -155,9 +155,9 @@ fun countFact(fact: Fact): Int {
     return when (fact) {
         is ActionFact -> countActionFact(fact)
         is BoolType,
-        is IntType -> 2
+        is IntType -> 1
 
-        NullPtrType -> 1
+        NullPtrType -> 0
         is ExprFact -> 1 + countExpr(fact.expr)
         is NewArrayTypeFact -> 1 + 1 + countExpr(fact.expr)
     }
@@ -231,6 +231,7 @@ fun countVarDefEntry(it: VarDefEntry): Int {
         count += countInit(it)
     }
     //pointer
+    //TODO
     count += 1
     count += countIdent(it.ident)
     return count
@@ -258,7 +259,7 @@ fun countFormParList(formParList: FormParList): Int {
     var count = 1
     return when (formParList) {
         is FormParListEntries -> count + formParList.entries.sumOf { countFormpartListEntry(it) }
-        VoidFormParListChild -> count
+        VoidFormParListChild -> 0
     }
 
 }
@@ -273,7 +274,7 @@ fun countFormpartListEntry(it: FormParListEntry): Int {
 
 fun countIdent(ident: Ident): Int {
     //self + name
-    return 2
+    return 1
 }
 
 fun countConstDef(entry: ConstDef): Int {
@@ -288,10 +289,6 @@ fun countConstDef(entry: ConstDef): Int {
 
 fun countInit(value: Init): Int {
     var count = 1
-
-    when (value.value) {
-        is BoolType, is IntType -> count += 2
-        NullPtrType -> count += 1
-    }
+    count += 1
     return count
 }

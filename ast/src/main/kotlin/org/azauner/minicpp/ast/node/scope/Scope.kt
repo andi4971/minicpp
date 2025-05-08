@@ -4,15 +4,15 @@ import org.azauner.minicpp.ast.generator.exception.SemanticException
 import org.azauner.minicpp.ast.node.Ident
 import org.azauner.minicpp.ast.util.requireSemantic
 
-class Scope(private val parent: org.azauner.minicpp.ast.node.scope.Scope?) {
+class Scope(private val parent: Scope?) {
 
     init {
         parent?.childScopes?.add(this)
     }
 
     private val variables = mutableListOf<Variable>()
-    private val functions: MutableList<org.azauner.minicpp.ast.node.scope.Function> = mutableListOf()
-    private val childScopes = mutableListOf<org.azauner.minicpp.ast.node.scope.Scope>()
+    private val functions: MutableList<Function> = mutableListOf()
+    private val childScopes = mutableListOf<Scope>()
 
     fun addVariable(
         ident: Ident,
@@ -39,9 +39,8 @@ class Scope(private val parent: org.azauner.minicpp.ast.node.scope.Scope?) {
         get() = parent == null
 
     private fun getNextAvailableIndex(static: Boolean): Int {
-        if (static) {
-            return -1
-        }
+        if (static) return -1
+
         val nonStaticVars = variables.filterNot { it.static }
         return if (nonStaticVars.isEmpty()) {
             parent?.getNextAvailableIndex(static) ?: 0
